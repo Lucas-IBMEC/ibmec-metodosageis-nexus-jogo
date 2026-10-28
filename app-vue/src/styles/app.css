@@ -1,0 +1,316 @@
+@import "tailwindcss";
+
+/* ------------------------------------------------------------------ *
+ * Tema: as mesmas cores do app original (e das cartas impressas),
+ * expostas como tokens do Tailwind. As cores mudam sozinhas no escuro
+ * porque apontam para as variáveis --fundo, --superficie, etc. abaixo.
+ * ------------------------------------------------------------------ */
+@theme {
+  --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+
+  --color-fundo: var(--fundo);
+  --color-superficie: var(--superficie);
+  --color-superficie-2: var(--superficie-2);
+  --color-texto: var(--texto);
+  --color-texto-2: var(--texto-2);
+  --color-borda: var(--borda);
+  --color-topo: var(--topo);
+  --color-topo-texto: var(--topo-texto);
+  --color-vez: var(--vez);
+  --color-destaque: var(--destaque);
+  --color-destaque-texto: var(--destaque-texto);
+  --color-ok: var(--ok);
+  --color-ok-fundo: var(--ok-fundo);
+  --color-erro: var(--erro);
+  --color-erro-fundo: var(--erro-fundo);
+  --color-aviso: var(--aviso);
+  --color-aviso-fundo: var(--aviso-fundo);
+
+  /* Uma cor por tipo de carta, igual às cartas impressas */
+  --color-c-missao: var(--c-missao);
+  --color-c-persona: var(--c-persona);
+  --color-c-contexto: var(--c-contexto);
+  --color-c-dnc: var(--c-dnc);
+  --color-c-precisao: var(--c-precisao);
+  --color-c-formato: var(--c-formato);
+  --color-c-documento: var(--c-documento);
+  --color-c-etica: var(--c-etica);
+  --color-c-nacao: var(--c-nacao);
+
+  --radius-raio: 16px;
+  --radius-raio-p: 10px;
+  --shadow-card: var(--sombra);
+}
+
+/* Paleta base (claro). Os valores de escuro vêm nos blocos abaixo.
+   Também ficam aqui o raio padrão, a curva de transição e a altura do
+   menu (usados no CSS puro, que o Tailwind não expressa). */
+:root {
+  --fundo: #f3f5f9;
+  --superficie: #ffffff;
+  --superficie-2: #eef2f8;
+  --texto: #16203a;
+  --texto-2: #4a5368;
+  --borda: #d9dfea;
+  --topo: #16274f;
+  --topo-texto: #ffffff;
+  --vez: #16274f;
+  --destaque: #1f5fd1;
+  --destaque-texto: #ffffff;
+  --ok: #0d7a43;
+  --ok-fundo: #e3f4ea;
+  --erro: #b42318;
+  --erro-fundo: #fde8e7;
+  --aviso: #8a5a00;
+  --aviso-fundo: #fff4d6;
+
+  --c-missao: #c98a00;
+  --c-persona: #6d3fc0;
+  --c-contexto: #1f5fd1;
+  --c-dnc: #0f8a8a;
+  --c-precisao: #c7362f;
+  --c-formato: #e06c00;
+  --c-documento: #198754;
+  --c-etica: #3d4452;
+  --c-nacao: #16274f;
+
+  --sombra: 0 1px 2px rgba(16, 32, 74, 0.06), 0 6px 18px rgba(16, 32, 74, 0.07);
+  --raio: 16px;
+  --suave: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --altura-menu: 64px;
+  color-scheme: light dark;
+}
+
+/* Escuro automático pelo sistema */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --fundo: #0d1322;
+    --superficie: #161f36;
+    --superficie-2: #1d2843;
+    --texto: #e8ecf6;
+    --texto-2: #a9b3c9;
+    --borda: #2b3758;
+    --topo: #0b1530;
+    --vez: #24407f;
+    --destaque: #6f9cf3;
+    --destaque-texto: #0b1530;
+    --ok: #4cc38a;
+    --ok-fundo: #12301f;
+    --erro: #ff8a7f;
+    --erro-fundo: #3a1714;
+    --aviso: #f0c35a;
+    --aviso-fundo: #33280e;
+    --c-etica: #9aa3b5;
+    --c-nacao: #8fa6e6;
+    --sombra: 0 1px 2px rgba(0, 0, 0, 0.3);
+  }
+}
+
+/* Escuro forçado pelo usuário (data-theme="dark") */
+:root[data-theme="dark"] {
+  --fundo: #0d1322;
+  --superficie: #161f36;
+  --superficie-2: #1d2843;
+  --texto: #e8ecf6;
+  --texto-2: #a9b3c9;
+  --borda: #2b3758;
+  --topo: #0b1530;
+  --vez: #24407f;
+  --destaque: #6f9cf3;
+  --destaque-texto: #0b1530;
+  --ok: #4cc38a;
+  --ok-fundo: #12301f;
+  --erro: #ff8a7f;
+  --erro-fundo: #3a1714;
+  --aviso: #f0c35a;
+  --aviso-fundo: #33280e;
+  --c-etica: #9aa3b5;
+  --c-nacao: #8fa6e6;
+  --sombra: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* Claro forçado pelo usuário (data-theme="light") — anula o automático */
+:root[data-theme="light"] {
+  --fundo: #f3f5f9;
+  --superficie: #ffffff;
+  --superficie-2: #eef2f8;
+  --texto: #16203a;
+  --texto-2: #4a5368;
+  --borda: #d9dfea;
+  --topo: #16274f;
+  --topo-texto: #ffffff;
+  --vez: #16274f;
+  --destaque: #1f5fd1;
+  --destaque-texto: #ffffff;
+  --ok: #0d7a43;
+  --ok-fundo: #e3f4ea;
+  --erro: #b42318;
+  --erro-fundo: #fde8e7;
+  --aviso: #8a5a00;
+  --aviso-fundo: #fff4d6;
+  --c-missao: #c98a00;
+  --c-persona: #6d3fc0;
+  --c-contexto: #1f5fd1;
+  --c-dnc: #0f8a8a;
+  --c-precisao: #c7362f;
+  --c-formato: #e06c00;
+  --c-documento: #198754;
+  --c-etica: #3d4452;
+  --c-nacao: #16274f;
+  --sombra: 0 1px 2px rgba(16, 32, 74, 0.06), 0 6px 18px rgba(16, 32, 74, 0.07);
+}
+
+/* ---------- Base ---------- */
+@layer base {
+  html {
+    @apply overscroll-none bg-fundo;
+    /* Sem utilidade no Tailwind: brilho de toque do iOS/Safari */
+    -webkit-tap-highlight-color: transparent;
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    @apply m-0 min-h-dvh bg-fundo text-texto text-base leading-[1.45] font-sans;
+  }
+  button, a, summary, [role="button"] {
+    @apply touch-manipulation select-none;
+    /* Prefixo webkit: ainda necessário no iOS (o select-none só emite user-select) */
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+  }
+  input, select, textarea {
+    font: inherit;
+    color: inherit;
+    /* 16px: evita o zoom de foco no iOS (a linha crua acima vem antes, como no original) */
+    @apply text-base;
+  }
+  :focus-visible {
+    @apply outline-3 outline-offset-2 outline-destaque;
+  }
+  [hidden] {
+    @apply hidden!;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition-duration: 0ms !important;
+  }
+}
+
+/* ---------- Componentes reutilizáveis (aplicados com @apply) ---------- */
+@layer components {
+  /* Campo de texto / select */
+  .campo {
+    @apply w-full min-h-12 rounded-raio-p border border-borda bg-superficie px-3 py-2.5;
+  }
+
+  /* Botão principal e variantes */
+  .botao {
+    @apply min-h-12 cursor-pointer rounded-raio-p border-0 bg-destaque px-[18px] py-2.5 text-base font-bold text-destaque-texto transition-[transform,filter] duration-150 active:scale-[0.97] active:brightness-[0.92] disabled:opacity-45;
+  }
+  .botao.secundario {
+    @apply border border-borda bg-superficie-2 text-texto;
+  }
+  .botao.perigo {
+    @apply bg-erro-fundo text-erro;
+  }
+  .botao.largo {
+    @apply w-full;
+  }
+  .acoes {
+    @apply flex flex-wrap gap-2;
+  }
+  .acoes > .botao {
+    @apply flex-1;
+  }
+
+  /* Chip (pílula): filtros, códigos, escolhas rápidas */
+  .chip {
+    @apply inline-flex min-h-10 cursor-pointer items-center gap-1.5 rounded-full border border-borda bg-superficie px-3 py-1.5 text-sm font-semibold transition-transform duration-150 active:scale-95;
+  }
+  .chip[aria-pressed="true"] {
+    @apply border-vez bg-vez text-white;
+  }
+
+  /* Botão de +/− dos contadores */
+  .mais-menos {
+    @apply h-11 w-11 cursor-pointer rounded-[12px] border border-borda bg-superficie text-2xl font-bold transition-transform duration-100 active:scale-92 active:bg-superficie-2 disabled:opacity-35;
+  }
+
+  /* Seleção de modo de jogo */
+  .modo {
+    @apply cursor-pointer rounded-raio-p border-2 border-borda bg-superficie px-2 py-2.5 text-center transition-transform active:scale-[0.97];
+  }
+  .modo[aria-pressed="true"] {
+    @apply border-destaque;
+    /* Mistura 10% da cor de destaque com a superfície (o Tailwind não expressa) */
+    background: color-mix(in srgb, var(--destaque) 10%, var(--superficie));
+  }
+
+  /* Faixa de chips que rola para o lado (filtros) */
+  .chips-rolagem {
+    @apply flex gap-2 overflow-x-auto px-4 pb-0.5 snap-x;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x proximity;
+    /* Igual ao padding-left: sem ele, o snap cola a 1ª chip na borda esquerda ("tocando") */
+    scroll-padding-left: 16px;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .chips-rolagem::-webkit-scrollbar {
+    display: none;
+  }
+  .chips-rolagem > * {
+    @apply flex-none snap-start;
+  }
+
+  /* <details> das listas de cartas/regras: layout do summary + seta que gira */
+  .detalle > summary {
+    @apply m-0 flex min-h-13 cursor-pointer items-center gap-2.5 p-3;
+    list-style: none;
+  }
+  .detalle > summary::-webkit-details-marker {
+    display: none;
+  }
+  /* Seta: pseudo-elemento, o Tailwind não expressa */
+  .detalle > summary::after {
+    content: "▾";
+    @apply ml-auto text-texto-2;
+    transition: transform 160ms var(--suave);
+  }
+  .detalle[open] > summary::after {
+    @apply rotate-180;
+  }
+
+  /* Cronômetro do turno: círculo SVG que encurta conforme o tempo passa.
+     Os traços (stroke/dash) ficam em CSS puro, porque o Tailwind não expressa. */
+  .relogio {
+    @apply relative h-16 w-16 flex-none;
+  }
+  .relogio svg {
+    @apply h-16 w-16 -rotate-90;
+  }
+  .relogio circle {
+    fill: none;
+    stroke-width: 6;
+  }
+  .relogio .trilho { stroke: var(--superficie-2); }
+  .relogio .arco {
+    stroke: var(--destaque);
+    stroke-linecap: round;
+    transition: stroke-dashoffset 250ms linear, stroke 200ms;
+  }
+  .relogio.pouco .arco { stroke: var(--aviso); }
+  .relogio.fim .arco { stroke: var(--erro); }
+  .relogio .seg {
+    @apply absolute inset-0 flex items-center justify-center text-xl font-extrabold tabular-nums;
+  }
+
+  /* Janelas modais do próprio app (fim da partida, nova partida) */
+  dialog {
+    /* w-[92vw] + max-w-105 == width: min(92vw, 420px) do original */
+    @apply m-auto w-[92vw] max-w-105 rounded-raio border-0 bg-superficie p-5 text-texto;
+  }
+  /* Pseudo-elemento, o Tailwind não expressa */
+  dialog::backdrop { background: rgba(5, 10, 25, 0.55); }
+}
