@@ -166,8 +166,12 @@ const MP = (() => {
 
   // Funciona sem internet depois da primeira visita (só em http/https, não em file://)
   function registrarOffline() {
-    if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
-      navigator.serviceWorker.register('sw.js').catch(() => {});
+    try {
+      if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+        navigator.serviceWorker.register('sw.js').catch(() => {});
+      }
+    } catch (erro) {
+      // Alguns lugares (como uma página dentro de outra) não deixam: o app funciona igual, só precisa de internet
     }
   }
 
