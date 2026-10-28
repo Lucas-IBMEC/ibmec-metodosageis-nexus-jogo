@@ -7,7 +7,7 @@ const PERSONAS = DADOS.cartas.filter((c) => c.tipo === 'Persona');
 const NACOES = DADOS.cartas.filter((c) => c.tipo === 'Nação');
 const DNC = ['Dor', 'Necessidade', 'Conceito'];
 const TEXTO_DNC = { DOR: 'Uma DOR', NECESSIDADE: 'Uma NECESSIDADE', CONCEITO: 'Um CONCEITO' };
-const MARGEM_DA_NACAO = { N3: 3, N4: 1 }; // EUA tem margem 3, China tem margem 1, o resto 2
+const MARGEM_DA_NACAO = { N3: 3 }; // EUA tem margem 3, as outras nações 2
 
 // Ignora códigos guardados que não existem mais (se uma carta mudar em dados.js)
 let combo = MP.ler('mp-combo', []).filter((codigo) => DADOS.porCodigo[codigo]);
@@ -189,8 +189,7 @@ function calcularForca(cartas) {
   }
   if (nacao === 'N2') {
     ataque -= 1;
-    defesa += 1;
-    contas.push({ tipo: 'menos', texto: '-1 de ataque e +1 de defesa: Índia' });
+    contas.push({ tipo: 'menos', texto: '-1 de ataque: Índia (mas quem atacar a Índia leva 2 de dano)' });
   }
 
   const nacoes = new Set(cartas.filter((c) => c.tipo === 'Contexto').map((c) => c.nacao));
@@ -304,7 +303,7 @@ function atualizar() {
   resultadoEl.innerHTML = `
     <p class="veredito">${resultado.cumpriu ? '✓ Missão cumprida' : '✗ Ainda não cumpriu'}</p>
     <p class="sub" style="margin: 0">${resultado.cumpriu
-      ? 'O lado que avisou antes de atacar pega a carta de missão.'
+      ? 'O lado que avisou antes de atacar pega a carta de missão. Depois do ataque, este combo vai para o descarte: o prompt foi entregue.'
       : resultado.valido
         ? `Falta${faltam > 1 ? 'm' : ''} ${faltam} ${faltam > 1 ? 'itens' : 'item'}. O ataque vale, mas o lado não pega a missão.`
         : 'Esse combo não pode ser baixado na mesa. Confira as regras do combo.'}</p>
@@ -359,7 +358,7 @@ $('#lados-missao').addEventListener('click', (evento) => {
   const lado = partida.lados[Number(botao.dataset.lado)];
   lado.missoes += 1;
   MP.salvarPartida(partida);
-  MP.aviso(`+1 missão para ${lado.nome}. Vire uma missão nova.`);
+  MP.aviso(`+1 missão para ${lado.nome}. Combo para o descarte e vire uma missão nova.`);
   combo = [];
   atualizar();
 });

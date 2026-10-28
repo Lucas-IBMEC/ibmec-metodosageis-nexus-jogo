@@ -2,7 +2,11 @@
 // Histórias: 2.5.1 (vida e efeitos de cada lado) e o cronômetro de 40 segundos.
 
 const DURACAO_DO_TURNO = 40; // segundos
-const VIDA_INICIAL = 15;
+
+// Vida inicial de cada nação (15; a China começa com 13)
+function vidaInicial(codigoDaNacao) {
+  return DADOS.porCodigo[codigoDaNacao]?.vida || 15;
+}
 const VOLTA_DO_RELOGIO = 2 * Math.PI * 28; // tamanho do círculo do cronômetro
 
 const NACOES = DADOS.cartas.filter((c) => c.tipo === 'Nação');
@@ -62,7 +66,7 @@ function comecarPartida() {
     lados: linhas.map((linha, i) => ({
       nome: linha.querySelector('input').value.trim() || `${nome} ${i + 1}`,
       nacao: nacoes[i],
-      vida: VIDA_INICIAL,
+      vida: vidaInicial(nacoes[i]),
       missoes: 0,
       semAtacar: false,
       semAtacarNoTurno: 0,
@@ -109,7 +113,7 @@ function htmlDoLado(lado, i) {
       </button>
     </div>
     ${lado.vida <= 0 ? `<div class="alerta-lado">Vida zerada
-      <button type="button" class="botao secundario" data-acao="zerou">Devolver missões e voltar com ${VIDA_INICIAL}</button>
+      <button type="button" class="botao secundario" data-acao="zerou">Devolver missões e voltar com ${vidaInicial(lado.nacao)}</button>
     </div>` : ''}
   </article>`;
 }
@@ -171,8 +175,8 @@ function mudarLado(i, acao, delta) {
   if (acao === 'zerou') {
     // Regra: vida zerada devolve as missões para o fundo do monte e volta com a vida cheia
     lado.missoes = 0;
-    lado.vida = VIDA_INICIAL;
-    MP.aviso(`${lado.nome}: missões devolvidas ao monte, vida ${VIDA_INICIAL}`);
+    lado.vida = vidaInicial(lado.nacao);
+    MP.aviso(`${lado.nome}: missões devolvidas ao monte, vida ${lado.vida}`);
   }
   MP.salvarPartida(partida);
   mostrarPlacar();

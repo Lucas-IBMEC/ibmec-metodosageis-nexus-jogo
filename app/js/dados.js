@@ -1,6 +1,6 @@
 // Dados das cartas do Magic Prompt (protótipo de 28/10/2026): 145 códigos e 154 cartas impressas.
 // Gerado a partir da lista de códigos, a mesma das cartas impressas. Para mudar uma carta, edite a linha dela aqui.
-// "copias" aparece só nas cartas impressas em mais de uma cópia (os formatos têm 2).
+// "copias" aparece só nas cartas impressas em mais de uma cópia (os formatos têm 2). "vida" é a vida inicial de cada nação.
 const DADOS = {
   cartas: [
     {"codigo":"M01","tipo":"Missão","nome":"Explique a dengue para uma criança de 10 anos.","assunto":"Saúde","efeito":"Combo precisa ter: Contexto de Saúde · Formato para criança: Lista curta ou Resumo em 2 frases · Nenhuma carta com problema de ética sem conserto"},
@@ -143,11 +143,11 @@ const DADOS = {
     {"codigo":"E08","tipo":"Ética","nome":"Tire os dados pessoais","efeito":"Conserta: Dado pessoal","texto":"Apague nome, CPF, endereço, telefone, e-mail ou senha. A IA não precisa deles para responder."},
     {"codigo":"E09","tipo":"Ética","nome":"Tire o preconceito","efeito":"Conserta: Viés","texto":"Troque frases como \"só os meninos\" ou \"todos os idosos\" por fatos. Generalizar pessoas é viés."},
     {"codigo":"E10","tipo":"Ética","nome":"Tire o preconceito","efeito":"Conserta: Viés","texto":"Troque frases como \"só os meninos\" ou \"todos os idosos\" por fatos. Generalizar pessoas é viés."},
-    {"codigo":"N1","tipo":"Nação","nome":"Brasil","efeito":"Buff: Ataque +1 em cada combo · Debuff: Defesa -1 em cada combo","texto":"Vida inicial 15"},
-    {"codigo":"N2","tipo":"Nação","nome":"Índia","efeito":"Buff: Defesa +1 em cada combo · Debuff: Ataque -1 em cada combo","texto":"Vida inicial 15"},
-    {"codigo":"N3","tipo":"Nação","nome":"EUA","efeito":"Buff: Margem do contexto 3 (em vez de 2) · Debuff: Quem denunciar você com razão ganha +1 de vida extra","texto":"Vida inicial 15"},
-    {"codigo":"N4","tipo":"Nação","nome":"China","efeito":"Buff: Mão: 1 carta a mais · Debuff: Margem do contexto 1 (em vez de 2)","texto":"Vida inicial 15"},
-    {"codigo":"N5","tipo":"Nação","nome":"União Europeia","efeito":"Buff: Denúncia certa sua dá +1 de vida extra · Debuff: Mão: 1 carta a menos","texto":"Vida inicial 15"},
+    {"codigo":"N1","tipo":"Nação","nome":"Brasil","efeito":"Buff: Ataque +1 em cada combo · Debuff: Defesa -1 em cada combo","texto":"Vida inicial 15","vida":15},
+    {"codigo":"N2","tipo":"Nação","nome":"Índia","efeito":"Buff: Quem atacar a Índia leva 2 de dano · Debuff: Ataque -1 em cada combo","texto":"Vida inicial 15","vida":15},
+    {"codigo":"N3","tipo":"Nação","nome":"EUA","efeito":"Buff: Margem do contexto 3 (em vez de 2) · Debuff: Quem denunciar você com razão ganha +1 de vida extra","texto":"Vida inicial 15","vida":15},
+    {"codigo":"N4","tipo":"Nação","nome":"China","efeito":"Buff: Mão: 1 carta a mais · Debuff: Começa com 13 de vida","texto":"Vida inicial 13","vida":13},
+    {"codigo":"N5","tipo":"Nação","nome":"União Europeia","efeito":"Buff: Denúncia certa sua dá +1 de vida extra · Debuff: Mão: 1 carta a menos","texto":"Vida inicial 15","vida":15},
   ],
   // O que o combo precisa ter para cumprir cada missão (dor, necessidade e conceito precisam ser do assunto da missão)
   missoes: [
