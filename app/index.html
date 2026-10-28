@@ -13,7 +13,7 @@
   <link rel="icon" href="icones/icone.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="icones/icone-192.png">
   <link rel="stylesheet" href="css/app.css">
-  <title>Partida · Magic Prompt</title>
+  <title>Magic Prompt Companion</title>
 </head>
 <body data-pagina="partida">
   <header class="topo">
@@ -102,6 +102,15 @@
     <div class="acoes" style="margin-top: 12px">
       <button type="button" class="botao secundario" id="voltar-jogo">Voltar ao jogo</button>
       <button type="button" class="botao" id="nova-do-fim">Nova partida</button>
+    </div>
+  </dialog>
+
+  <dialog id="confirmar-nova">
+    <h2>Começar outra partida?</h2>
+    <p class="nota">O placar atual será apagado.</p>
+    <div class="acoes" style="margin-top: 12px">
+      <button type="button" class="botao secundario" id="cancelar-nova">Cancelar</button>
+      <button type="button" class="botao perigo" id="confirmar-nova-botao">Apagar e começar</button>
     </div>
   </dialog>
 

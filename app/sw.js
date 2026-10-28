@@ -1,7 +1,7 @@
 // Service worker: guarda o app no celular para funcionar sem internet (história 2.4.1).
 // Ao mudar qualquer arquivo, aumente a VERSAO para os celulares baixarem de novo.
 
-const VERSAO = 'magic-prompt-v1';
+const VERSAO = 'magic-prompt-v2';
 const ARQUIVOS = [
   './',
   './index.html',
@@ -42,8 +42,11 @@ self.addEventListener('fetch', (evento) => {
   evento.respondWith(
     fetch(evento.request)
       .then((resposta) => {
-        const copia = resposta.clone();
-        caches.open(VERSAO).then((cache) => cache.put(evento.request, copia));
+        // Só guarda o que veio certo (não guarda página de erro)
+        if (resposta.ok) {
+          const copia = resposta.clone();
+          caches.open(VERSAO).then((cache) => cache.put(evento.request, copia));
+        }
         return resposta;
       })
       .catch(() => caches.match(evento.request, { ignoreSearch: true })),

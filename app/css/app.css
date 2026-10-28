@@ -39,7 +39,7 @@
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme="light"]) {
     --fundo: #0d1322;
     --superficie: #161f36;
     --superficie-2: #1d2843;
@@ -60,6 +60,29 @@
     --c-nacao: #8fa6e6;
     --sombra: 0 1px 2px rgba(0, 0, 0, 0.3);
   }
+}
+
+/* Mesmo tema escuro quando a página pede escuro direto (data-theme) */
+:root[data-theme="dark"] {
+  --fundo: #0d1322;
+  --superficie: #161f36;
+  --superficie-2: #1d2843;
+  --texto: #e8ecf6;
+  --texto-2: #a9b3c9;
+  --borda: #2b3758;
+  --topo: #0b1530;
+  --vez: #24407f;
+  --destaque: #6f9cf3;
+  --destaque-texto: #0b1530;
+  --ok: #4cc38a;
+  --ok-fundo: #12301f;
+  --erro: #ff8a7f;
+  --erro-fundo: #3a1714;
+  --aviso: #f0c35a;
+  --aviso-fundo: #33280e;
+  --c-etica: #9aa3b5;
+  --c-nacao: #8fa6e6;
+  --sombra: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 * { box-sizing: border-box; }
@@ -163,7 +186,7 @@ body.com-barra .conteudo {
 }
 .bloco > h2 { margin: 0 0 4px; font-size: 17px; }
 .bloco > .sub { margin: 0 0 12px; color: var(--texto-2); font-size: 14px; }
-.passo { display: inline-flex; width: 24px; height: 24px; border-radius: 50%; background: var(--topo); color: #fff; font-size: 13px; font-weight: 800; align-items: center; justify-content: center; margin-right: 6px; }
+.passo { display: inline-flex; width: 24px; height: 24px; border-radius: 50%; background: var(--vez); color: #fff; font-size: 13px; font-weight: 800; align-items: center; justify-content: center; margin-right: 6px; }
 
 .rotulo { display: block; font-size: 13px; font-weight: 700; color: var(--texto-2); margin: 10px 0 6px; }
 .campo {
@@ -216,7 +239,8 @@ body.com-barra .conteudo {
   transition: transform 120ms var(--suave);
 }
 .chip:active { transform: scale(0.96); }
-.chip[aria-pressed="true"] { background: var(--topo); color: #fff; border-color: var(--topo); }
+.chip[aria-pressed="true"] { background: var(--vez); color: #fff; border-color: var(--vez); }
+.cod.selo-vez { background: var(--destaque); color: var(--destaque-texto); }
 
 /* Faixa de chips que rola para o lado (filtros) */
 .chips.rolagem {

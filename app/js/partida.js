@@ -86,7 +86,7 @@ function htmlDoLado(lado, i) {
         <p class="lado-nome">${MP.esc(lado.nome)}</p>
         <span class="nacao-tag">${MP.esc(nacao.nome)}</span>
       </div>
-      ${daVez ? '<span class="cod" style="--c: var(--destaque)">VEZ</span>' : ''}
+      ${daVez ? '<span class="cod selo-vez">VEZ</span>' : ''}
     </div>
     <p class="buffs">▲ ${MP.esc(buff)} · ▼ ${MP.esc(debuff)}</p>
     <div class="contadores">
@@ -270,16 +270,22 @@ function encerrar() {
   const ordem = [...partida.lados].sort((a, b) => b.missoes - a.missoes || b.vida - a.vida);
   $('#ranking').innerHTML = ordem.map((lado, i) => `<li>
     <span>${i === 0 ? '🏆 ' : ''}${MP.esc(lado.nome)}</span>
-    <span>${lado.missoes} missões · ${lado.vida} de vida</span></li>`).join('');
+    <span>${MP.plural(lado.missoes, 'missão', 'missões')} · ${lado.vida} de vida</span></li>`).join('');
   $('#fim').showModal();
 }
 
-function novaPartida() {
-  if (partida && !confirm('Apagar o placar e começar outra partida?')) return;
-  partida = null;
-  localStorage.removeItem('mp-partida');
+// Pede confirmação numa janela do próprio app (o confirm() do navegador some em alguns celulares)
+function pedirNovaPartida() {
   if ($('#fim').open) $('#fim').close();
+  $('#confirmar-nova').showModal();
+}
+
+function novaPartida() {
+  partida = null;
+  MP.apagar('mp-partida');
+  $('#confirmar-nova').close();
   mostrar();
+  window.scrollTo({ top: 0 });
 }
 
 // ---------- Ligações ----------
@@ -320,8 +326,10 @@ $('#lados').addEventListener('click', (evento) => {
 $('#cronometro').addEventListener('click', botaoDoCronometro);
 $('#proximo').addEventListener('click', () => { prepararSom(); proximoTurno(); });
 $('#encerrar').addEventListener('click', encerrar);
-$('#nova').addEventListener('click', novaPartida);
-$('#nova-do-fim').addEventListener('click', novaPartida);
+$('#nova').addEventListener('click', pedirNovaPartida);
+$('#nova-do-fim').addEventListener('click', pedirNovaPartida);
+$('#confirmar-nova-botao').addEventListener('click', novaPartida);
+$('#cancelar-nova').addEventListener('click', () => $('#confirmar-nova').close());
 $('#voltar-jogo').addEventListener('click', () => $('#fim').close());
 
 // Outra página (Missão ou Denúncia) pode ter mudado o placar

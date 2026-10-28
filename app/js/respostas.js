@@ -32,6 +32,14 @@ const RESPOSTAS = {
       titulo: 'Combo incompleto',
       texto: 'Sem contexto e instrução, a IA não sabe o que fazer:\n"Desculpe, não entendi o que você precisa. Pode explicar melhor?"',
     },
+    regras: {
+      titulo: 'Combo fora das regras',
+      texto: 'Esse combo não pode ser baixado na mesa, então ainda não vira um prompt. Veja o item "Combo válido".',
+    },
+    margem: {
+      titulo: 'A instrução não combina com o contexto',
+      texto: 'A instrução pede mais (ou menos) do que o contexto dá conta. A IA inventa o que falta ou corta o que importa:\n"Vou supor algumas informações que você não deu e responder do meu jeito..."',
+    },
     contexto: {
       titulo: 'Sem o contexto certo',
       texto: 'A IA não sabe de onde você fala nem qual é a situação. A resposta fica genérica:\n"Existem muitos fatores envolvidos neste tema. É importante considerar diversos aspectos antes de tomar uma decisão."',

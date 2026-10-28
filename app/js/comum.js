@@ -79,6 +79,19 @@ const MP = (() => {
     }
   }
 
+  function apagar(chave) {
+    try {
+      localStorage.removeItem(chave);
+    } catch (erro) {
+      // Sem acesso ao armazenamento: nada a apagar
+    }
+  }
+
+  // "1 missão", "2 missões"
+  function plural(n, umNome, variosNomes) {
+    return `${n} ${n === 1 ? umNome : variosNomes}`;
+  }
+
   function lerPartida() {
     return ler('mp-partida', null);
   }
@@ -164,7 +177,7 @@ const MP = (() => {
   });
 
   return {
-    esc, normalizarCodigo, buscarCarta, classeDoTipo, ler, salvar,
+    esc, normalizarCodigo, buscarCarta, classeDoTipo, ler, salvar, apagar, plural,
     lerPartida, salvarPartida, aviso, entradaDeCodigo, chipDeCarta,
   };
 })();

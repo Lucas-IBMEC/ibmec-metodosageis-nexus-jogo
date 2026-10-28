@@ -6,16 +6,18 @@ const $ = (seletor) => document.querySelector(seletor);
 const PERSONAS = DADOS.cartas.filter((c) => c.tipo === 'Persona');
 const NACOES = DADOS.cartas.filter((c) => c.tipo === 'Nação');
 const DNC = ['Dor', 'Necessidade', 'Conceito'];
-const TEXTO_DNC = { DOR: 'Uma DOR de quem vai ler', NECESSIDADE: 'Uma NECESSIDADE de quem vai ler', CONCEITO: 'Um CONCEITO' };
+const TEXTO_DNC = { DOR: 'Uma DOR', NECESSIDADE: 'Uma NECESSIDADE', CONCEITO: 'Um CONCEITO' };
 const MARGEM_DA_NACAO = { N3: 3, N4: 1 }; // EUA tem margem 3, China tem margem 1, o resto 2
 
-let combo = MP.ler('mp-combo', []);
+// Ignora códigos guardados que não existem mais (se uma carta mudar em dados.js)
+let combo = MP.ler('mp-combo', []).filter((codigo) => DADOS.porCodigo[codigo]);
 
 // ---------- Montagem da tela ----------
 
 $('#missao').innerHTML = DADOS.missoes.map((m) => (
   `<option value="${m.codigo}">${m.codigo} · ${MP.esc(m.pedido)}</option>`)).join('');
-$('#missao').value = MP.ler('mp-missao', 'M01');
+const missaoGuardada = MP.ler('mp-missao', 'M01');
+$('#missao').value = DADOS.missoes.some((m) => m.codigo === missaoGuardada) ? missaoGuardada : 'M01';
 
 $('#persona').innerHTML = '<option value="">Nenhuma</option>' + PERSONAS.map((p) => (
   `<option value="${p.codigo}">${MP.esc(p.nome)} (${p.assunto})</option>`)).join('');
@@ -78,10 +80,14 @@ function conferir(missao, cartas) {
     detalhe: problemasDoCombo.length ? problemasDoCombo.join(' · ') : 'Contexto e precisão, sem cartas sobrando.',
   });
   if (!contextos.length || !precisoes.length) falhas.push('combo');
+  else if (problemasDoCombo.length) falhas.push('regras');
 
+  let foraDaMargem = [];
   if (contextos.length && precisoes.length) {
     const n = contextos[0].numero;
     const fora = precisoes.filter((p) => Math.abs(p.ataque - n) > margem || Math.abs(p.defesa - n) > margem);
+    foraDaMargem = fora;
+    if (fora.length) falhas.push('margem');
     itens.push({
       ok: fora.length === 0,
       titulo: `A precisão combina com o contexto (entre ${n - margem} e ${n + margem})`,
@@ -104,14 +110,20 @@ function conferir(missao, cartas) {
       ? `O contexto é de ${contextos.map((c) => c.assunto).join(' e ')}.`
       : 'Nenhum contexto no combo.',
   });
-  if (!okContexto) falhas.push('contexto');
+  if (!okContexto && contextos.length) falhas.push('contexto');
 
+  // A dor, a necessidade ou o conceito precisa ser do mesmo assunto da missão
   if (missao.precisa.dnc) {
-    const okDnc = dncs.some((c) => c.tipo.toUpperCase() === missao.precisa.dnc);
+    const pedido = missao.precisa.dnc;
+    const okDnc = dncs.some((c) => c.tipo.toUpperCase() === pedido && c.assunto === missao.assunto);
+    const doTipoCerto = dncs.find((c) => c.tipo.toUpperCase() === pedido);
+    let detalhe = '';
+    if (!okDnc && doTipoCerto) detalhe = `${doTipoCerto.codigo} é de ${doTipoCerto.assunto}, mas a missão é de ${missao.assunto}.`;
+    else if (!okDnc && dncs.length) detalhe = `O combo tem ${dncs[0].tipo.toLowerCase()}, mas a missão pede ${pedido.toLowerCase()}.`;
     itens.push({
       ok: okDnc,
-      titulo: TEXTO_DNC[missao.precisa.dnc],
-      detalhe: okDnc ? '' : dncs.length ? `O combo tem ${dncs[0].tipo.toLowerCase()}, mas a missão pede ${missao.precisa.dnc.toLowerCase()}.` : '',
+      titulo: `${TEXTO_DNC[pedido]} de ${missao.assunto}${pedido === 'CONCEITO' ? '' : ' (de quem vai ler)'}`,
+      detalhe,
     });
     if (!okDnc) falhas.push('dnc');
   }
@@ -139,7 +151,8 @@ function conferir(missao, cartas) {
   semConserto.forEach((c) => falhas.push(c));
 
   const cumpriu = itens.every((i) => i.ok);
-  return { itens, falhas, cumpriu };
+  const valido = problemasDoCombo.length === 0 && foraDaMargem.length === 0;
+  return { itens, falhas, cumpriu, valido };
 }
 
 // ---------- O prompt e a resposta simulada ----------
@@ -225,7 +238,9 @@ function atualizar() {
     <p class="veredito">${resultado.cumpriu ? '✓ Missão cumprida' : '✗ Ainda não cumpriu'}</p>
     <p class="sub" style="margin: 0">${resultado.cumpriu
       ? 'O lado que avisou antes de atacar pega a carta de missão.'
-      : `Falta${faltam > 1 ? 'm' : ''} ${faltam} ${faltam > 1 ? 'itens' : 'item'}. O ataque vale, mas o lado não pega a missão.`}</p>
+      : resultado.valido
+        ? `Falta${faltam > 1 ? 'm' : ''} ${faltam} ${faltam > 1 ? 'itens' : 'item'}. O ataque vale, mas o lado não pega a missão.`
+        : 'Esse combo não pode ser baixado na mesa. Confira as regras do combo.'}</p>
     <ul class="checklist">${resultado.itens.map((i) => `
       <li class="${i.ok ? 'sim' : 'nao'}"><span class="ic">${i.ok ? '✓' : '✗'}</span>
         <span>${MP.esc(i.titulo)}${i.detalhe ? `<small>${MP.esc(i.detalhe)}</small>` : ''}</span></li>`).join('')}
@@ -238,7 +253,7 @@ function atualizar() {
   if (resultado.cumpriu && partida && partida.vez !== null) {
     $('#dar-missao').hidden = false;
     $('#lados-missao').innerHTML = partida.lados.map((lado, i) => (
-      `<button type="button" class="chip" data-lado="${i}">${MP.esc(lado.nome)} · ${lado.missoes} missões</button>`)).join('');
+      `<button type="button" class="chip" data-lado="${i}">${MP.esc(lado.nome)} · ${MP.plural(lado.missoes, 'missão', 'missões')}</button>`)).join('');
   }
 }
 
