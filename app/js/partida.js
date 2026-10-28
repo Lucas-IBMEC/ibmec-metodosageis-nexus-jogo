@@ -6,6 +6,7 @@ const VIDA_INICIAL = 15;
 const VOLTA_DO_RELOGIO = 2 * Math.PI * 28; // tamanho do círculo do cronômetro
 
 const NACOES = DADOS.cartas.filter((c) => c.tipo === 'Nação');
+const PERSONAS = DADOS.cartas.filter((c) => c.tipo === 'Persona');
 
 const MODOS = {
   duelo: { min: 2, max: 2, padrao: 2, nome: 'Lado', texto: '1 contra 1, ou dupla contra dupla (cada dupla é um lado).' },
@@ -68,6 +69,7 @@ function comecarPartida() {
     })),
     vez: null,
     turno: 0,
+    persona: '', // só uma persona fica na mesa e vale para todos os lados
     cronometro: { fim: null, restante: DURACAO_DO_TURNO, esgotou: false },
   };
   MP.salvarPartida(partida);
@@ -132,8 +134,30 @@ function mostrarPlacar() {
     $('#aviso-turno').hidden = avisos.length === 0;
     $('#aviso-turno').textContent = avisos.join(' ');
   }
+  $('#bloco-persona').hidden = escolhendo;
+  if (!escolhendo) mostrarPersona();
   $('#lados').innerHTML = partida.lados.map(htmlDoLado).join('');
   atualizarRelogio();
+}
+
+// Persona na mesa: a precisão do mesmo assunto ganha +1 de ataque, em qualquer combo
+function mostrarPersona() {
+  const atual = partida.persona || '';
+  const persona = DADOS.porCodigo[atual];
+  $('#efeito-persona').textContent = persona
+    ? `${persona.nome}: toda precisão de ${persona.assunto} ganha +1 de ataque, em qualquer combo.`
+    : 'Nenhuma persona na mesa. Quando alguém jogar uma, toque nela aqui.';
+  $('#personas').innerHTML = [{ codigo: '', nome: 'Nenhuma' }, ...PERSONAS].map((p) => (
+    `<button type="button" class="chip" data-persona="${p.codigo}" aria-pressed="${p.codigo === atual}">
+      ${p.codigo ? `<span class="cod t-persona">${p.codigo}</span>` : ''}${MP.esc(p.nome)}${p.assunto ? ` · ${p.assunto}` : ''}
+    </button>`)).join('');
+}
+
+function trocarPersona(codigo) {
+  partida.persona = codigo;
+  MP.salvarPartida(partida);
+  mostrarPersona();
+  MP.aviso(codigo ? `${DADOS.porCodigo[codigo].nome} na mesa` : 'Persona tirada da mesa');
 }
 
 function mudarLado(i, acao, delta) {
@@ -322,6 +346,10 @@ $('#lados').addEventListener('click', (evento) => {
   if (!botao) return;
   const i = Number(botao.closest('[data-lado]').dataset.lado);
   mudarLado(i, botao.dataset.acao, Number(botao.dataset.delta || 0));
+});
+$('#personas').addEventListener('click', (evento) => {
+  const botao = evento.target.closest('[data-persona]');
+  if (botao) trocarPersona(botao.dataset.persona);
 });
 $('#cronometro').addEventListener('click', botaoDoCronometro);
 $('#proximo').addEventListener('click', () => { prepararSom(); proximoTurno(); });

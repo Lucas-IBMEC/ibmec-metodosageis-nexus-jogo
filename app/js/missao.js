@@ -21,11 +21,18 @@ $('#missao').value = DADOS.missoes.some((m) => m.codigo === missaoGuardada) ? mi
 
 $('#persona').innerHTML = '<option value="">Nenhuma</option>' + PERSONAS.map((p) => (
   `<option value="${p.codigo}">${MP.esc(p.nome)} (${p.assunto})</option>`)).join('');
-$('#persona').value = MP.ler('mp-persona', '');
-
-$('#nacao').innerHTML = '<option value="">Não sei (margem 2)</option>' + NACOES.map((n) => (
+$('#nacao').innerHTML = '<option value="">Não sei (sem bônus, margem 2)</option>' + NACOES.map((n) => (
   `<option value="${n.codigo}">${MP.esc(n.nome)}${MARGEM_DA_NACAO[n.codigo] ? ` (margem ${MARGEM_DA_NACAO[n.codigo]})` : ''}</option>`)).join('');
-$('#nacao').value = MP.ler('mp-nacao', '');
+
+// Com uma partida aberta, a persona é a da mesa e a nação é a do lado da vez
+function carregarDaPartida() {
+  const partida = MP.lerPartida();
+  const emJogo = Boolean(partida && partida.vez !== null);
+  $('#persona').value = (partida ? partida.persona : MP.ler('mp-persona', '')) || '';
+  $('#nacao').value = emJogo ? partida.lados[partida.vez].nacao : MP.ler('mp-nacao', '');
+  $('#dica-partida').hidden = !emJogo;
+}
+carregarDaPartida();
 
 MP.entradaDeCodigo($('#entrada'), {
   prefixos: ['C', 'P', 'D', 'F', 'DC', 'E'],
@@ -70,6 +77,7 @@ function conferir(missao, cartas) {
   const problemasDoCombo = [];
   if (!contextos.length) problemasDoCombo.push('falta 1 contexto');
   if (!precisoes.length) problemasDoCombo.push('falta 1 precisão');
+  if (precisoes.length > 1) problemasDoCombo.push('só cabe 1 precisão');
   if (dncs.length > 1) problemasDoCombo.push('só cabe 1 dor, necessidade ou conceito');
   if (formatos.length > 1) problemasDoCombo.push('a precisão só recebe 1 formato');
   if (documentos.length > 1) problemasDoCombo.push('só cabe 1 documento');
@@ -155,6 +163,65 @@ function conferir(missao, cartas) {
   return { itens, falhas, cumpriu, valido };
 }
 
+// ---------- Força do combo ----------
+
+// Ataque e defesa da precisão com os bônus da mesa. Devolve null se não há precisão.
+function calcularForca(cartas) {
+  const precisao = cartas.find((c) => c.tipo === 'Precisão');
+  if (!precisao) return null;
+  let ataque = precisao.ataque;
+  let defesa = precisao.defesa;
+  const contas = [{ texto: `${precisao.codigo} (${precisao.assunto}): ataque ${ataque} e defesa ${defesa}` }];
+
+  const persona = DADOS.porCodigo[$('#persona').value];
+  if (persona && persona.assunto === precisao.assunto) {
+    ataque += 1;
+    contas.push({ tipo: 'mais', texto: `+1 de ataque: ${persona.nome} na mesa (${persona.assunto})` });
+  } else if (persona) {
+    contas.push({ texto: `${persona.nome} é de ${persona.assunto}: não ajuda uma precisão de ${precisao.assunto}` });
+  }
+
+  const nacao = $('#nacao').value;
+  if (nacao === 'N1') {
+    ataque += 1;
+    defesa -= 1;
+    contas.push({ tipo: 'mais', texto: '+1 de ataque e -1 de defesa: Brasil' });
+  }
+  if (nacao === 'N2') {
+    ataque -= 1;
+    defesa += 1;
+    contas.push({ tipo: 'menos', texto: '-1 de ataque e +1 de defesa: Índia' });
+  }
+
+  const nacoes = new Set(cartas.filter((c) => c.tipo === 'Contexto').map((c) => c.nacao));
+  if (nacoes.size > 1) {
+    ataque -= 1;
+    contas.push({ tipo: 'menos', texto: '-1 de ataque: contextos de nações diferentes' });
+  }
+
+  // Estilos dos equipamentos: mudam como o ataque acerta ou como o combo se defende
+  let naoAtaca = false;
+  cartas.filter((c) => c.tipo === 'Formato' || c.tipo === 'Documento').forEach((c) => {
+    contas.push({ texto: `${c.estilo} (${c.codigo}): ${c.efeito}` });
+    if (c.estilo === 'Virar defesa') {
+      naoAtaca = true;
+      defesa += 3;
+    }
+  });
+
+  return { ataque: naoAtaca ? 0 : Math.max(0, ataque), defesa: Math.max(0, defesa), contas, naoAtaca };
+}
+
+function mostrarForca(cartas) {
+  const forca = calcularForca(cartas);
+  $('#forca').hidden = !forca;
+  if (!forca) return;
+  $('#forca-ataque').textContent = forca.naoAtaca ? '—' : forca.ataque;
+  $('#forca-defesa').textContent = forca.defesa;
+  $('#forca-contas').innerHTML = forca.contas.map((c) => (
+    `<li class="${c.tipo || ''}">${MP.esc(c.texto)}</li>`)).join('');
+}
+
 // ---------- O prompt e a resposta simulada ----------
 
 function minuscula(texto) {
@@ -212,8 +279,7 @@ function htmlDaResposta(missao, resultado) {
 function atualizar() {
   MP.salvar('mp-combo', combo);
   MP.salvar('mp-missao', $('#missao').value);
-  MP.salvar('mp-persona', $('#persona').value);
-  MP.salvar('mp-nacao', $('#nacao').value);
+  if (!MP.lerPartida()) MP.salvar('mp-nacao', $('#nacao').value);
 
   const missao = DADOS.missoes.find((m) => m.codigo === $('#missao').value);
   const textoDaCarta = DADOS.porCodigo[missao.codigo].efeito.replace('Combo precisa ter: ', '').split(' · ');
@@ -228,6 +294,7 @@ function atualizar() {
   const temCombo = cartas.length > 0;
   ['#resultado', '#prompt', '#resposta'].forEach((s) => { $(s).hidden = !temCombo; });
   $('#dar-missao').hidden = true;
+  mostrarForca(cartas);
   if (!temCombo) return;
 
   const resultado = conferir(missao, cartas);
@@ -265,7 +332,25 @@ $('#combo').addEventListener('click', (evento) => {
   combo = combo.filter((codigo) => codigo !== botao.dataset.remover);
   atualizar();
 });
-['#missao', '#persona', '#nacao'].forEach((s) => $(s).addEventListener('change', atualizar));
+['#missao', '#nacao'].forEach((s) => $(s).addEventListener('change', atualizar));
+// Trocar a persona aqui também troca a persona da mesa na Partida
+$('#persona').addEventListener('change', () => {
+  const partida = MP.lerPartida();
+  if (partida) {
+    partida.persona = $('#persona').value;
+    MP.salvarPartida(partida);
+  } else {
+    MP.salvar('mp-persona', $('#persona').value);
+  }
+  atualizar();
+});
+// Ao voltar de outra página, pega a persona e o lado da vez atualizados
+window.addEventListener('pageshow', (evento) => {
+  if (evento.persisted) {
+    carregarDaPartida();
+    atualizar();
+  }
+});
 $('#limpar').addEventListener('click', () => { combo = []; atualizar(); });
 $('#lados-missao').addEventListener('click', (evento) => {
   const botao = evento.target.closest('[data-lado]');

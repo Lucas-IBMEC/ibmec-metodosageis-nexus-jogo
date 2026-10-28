@@ -33,15 +33,26 @@
       <div id="entrada"></div>
       <div class="chips" id="combo" style="margin-top: 12px"></div>
 
-      <label class="rotulo" for="persona">Persona na mesa (opcional)</label>
+      <label class="rotulo" for="persona">Persona na mesa</label>
       <select class="campo" id="persona"></select>
-      <label class="rotulo" for="nacao">Nação de quem jogou (muda a margem do contexto)</label>
+      <label class="rotulo" for="nacao">Nação de quem jogou</label>
       <select class="campo" id="nacao"></select>
+      <p class="dica" id="dica-partida">Com uma partida aberta, a persona e a nação do lado da vez vêm da página Partida.</p>
 
       <button type="button" class="botao secundario largo" id="limpar" style="margin-top: 12px">Limpar combo</button>
     </section>
 
     <section class="bloco resultado" id="resultado" hidden aria-live="polite"></section>
+
+    <section class="bloco" id="forca" hidden>
+      <h2>Força do combo</h2>
+      <p class="sub">Já com a persona, a nação e o -1 de misturar nações.</p>
+      <div class="forca">
+        <div><span>Ataque</span><b id="forca-ataque">0</b></div>
+        <div><span>Defesa</span><b id="forca-defesa">0</b></div>
+      </div>
+      <ul class="contas" id="forca-contas"></ul>
+    </section>
 
     <section class="bloco" id="prompt" hidden>
       <h2>O prompt que o combo forma</h2>

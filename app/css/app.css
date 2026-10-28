@@ -313,6 +313,15 @@ body.com-barra .conteudo {
 }
 .etiqueta { display: inline-block; font-size: 12px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--texto-2); }
 
+/* Força do combo: ataque e defesa com os bônus */
+.forca { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.forca div { background: var(--superficie-2); border-radius: var(--raio-p); padding: 10px; text-align: center; }
+.forca span { display: block; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--texto-2); }
+.forca b { font-size: 36px; font-weight: 800; font-variant-numeric: tabular-nums; }
+.contas { margin: 12px 0 0; padding-left: 20px; display: flex; flex-direction: column; gap: 6px; font-size: 14px; }
+.contas .mais { color: var(--ok); font-weight: 600; }
+.contas .menos { color: var(--erro); font-weight: 600; }
+
 /* ---------- Placar ---------- */
 
 .vez {
