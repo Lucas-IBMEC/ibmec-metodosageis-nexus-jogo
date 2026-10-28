@@ -29,6 +29,7 @@ function linhasDaCarta(c) {
   if (c.numero !== undefined) linhas.push(['Número', `${c.numero} (a precisão precisa ficar entre ${c.numero - 2} e ${c.numero + 2})`]);
   if (c.ataque !== undefined) linhas.push(['Ataque e defesa', `${c.ataque} e ${c.defesa}`]);
   if (c.estilo) linhas.push(['Estilo', c.estilo]);
+  if (c.copias > 1) linhas.push(['Cópias no baralho', `${c.copias}, com o mesmo código`]);
   if (c.efeito && c.tipo !== 'Contexto') linhas.push([c.tipo === 'Missão' ? 'O combo precisa ter' : 'Efeito', c.efeito.replace('Combo precisa ter: ', '')]);
   if (c.texto && c.texto !== c.nome) linhas.push(['Texto da carta', `“${c.texto}”`]);
   return linhas;

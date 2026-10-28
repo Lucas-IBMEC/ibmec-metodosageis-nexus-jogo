@@ -51,4 +51,4 @@ Ao **criar um arquivo novo**, coloque o nome dele na lista `ARQUIVOS` de `app/sw
 - Testar num celular de verdade: modo sem internet, som e vibração do cronômetro, tela que não apaga.
 - Testar com alguém que não sabe engenharia de prompt (tarefa da história 2.2.1).
 - Decidir o limite da mão e a condição de vitória (hoje: limite de 7 cartas e vence quem tiver mais missões no fim).
-- Ajustar os números (vida 15, mão 6, compra 2, denúncia 2) depois do playtest.
+- Ajustar os números (vida 15, mão 6, limite 7, compra 3, denúncia 2, turno de 40 segundos) depois do playtest.

@@ -1,5 +1,6 @@
-// Dados das 141 cartas do Magic Prompt (protótipo de 28/10/2026).
+// Dados das cartas do Magic Prompt (protótipo de 28/10/2026): 145 códigos e 154 cartas impressas.
 // Gerado a partir da lista de códigos, a mesma das cartas impressas. Para mudar uma carta, edite a linha dela aqui.
+// "copias" aparece só nas cartas impressas em mais de uma cópia (os formatos têm 2).
 const DADOS = {
   cartas: [
     {"codigo":"M01","tipo":"Missão","nome":"Explique a dengue para uma criança de 10 anos.","assunto":"Saúde","efeito":"Combo precisa ter: Contexto de Saúde · Formato para criança: Lista curta ou Resumo em 2 frases · Nenhuma carta com problema de ética sem conserto"},
@@ -86,6 +87,10 @@ const DADOS = {
     {"codigo":"D18","tipo":"Conceito","nome":"Notícia falsa (fake news).","assunto":"Tecnologia","texto":"Notícia falsa (fake news)."},
     {"codigo":"D19","tipo":"Necessidade","nome":"A escola precisa gastar menos água e luz.","assunto":"Meio ambiente","texto":"A escola precisa gastar menos água e luz."},
     {"codigo":"D20","tipo":"Conceito","nome":"Aquecimento global.","assunto":"Meio ambiente","texto":"Aquecimento global."},
+    {"codigo":"D21","tipo":"Dor","nome":"Muitos alunos chegam sem tomar café da manhã e passam mal.","assunto":"Saúde","texto":"Muitos alunos chegam sem tomar café da manhã e passam mal."},
+    {"codigo":"D22","tipo":"Necessidade","nome":"A turma precisa de um jogo em que todo mundo participe.","assunto":"Esporte","texto":"A turma precisa de um jogo em que todo mundo participe."},
+    {"codigo":"D23","tipo":"Necessidade","nome":"Os alunos precisam pesquisar sem cair em notícia falsa.","assunto":"Tecnologia","texto":"Os alunos precisam pesquisar sem cair em notícia falsa."},
+    {"codigo":"D24","tipo":"Dor","nome":"Depois da chuva, a água do rio fica escura e com cheiro ruim.","assunto":"Meio ambiente","texto":"Depois da chuva, a água do rio fica escura e com cheiro ruim."},
     {"codigo":"P01","tipo":"Precisão","nome":"Explique com palavras simples.","assunto":"Saúde","ataque":4,"defesa":3},
     {"codigo":"P02","tipo":"Precisão","nome":"Liste 3 formas de prevenir a doença.","assunto":"Saúde","ataque":6,"defesa":4},
     {"codigo":"P03","tipo":"Precisão","nome":"Compare os sintomas de duas doenças.","assunto":"Saúde","ataque":5,"defesa":6},
@@ -110,15 +115,15 @@ const DADOS = {
     {"codigo":"P22","tipo":"Precisão","nome":"Explique o que cada pessoa pode fazer em casa.","assunto":"Meio ambiente","ataque":4,"defesa":5},
     {"codigo":"P23","tipo":"Precisão","nome":"Mostre o que acontece se nada mudar.","assunto":"Meio ambiente","ataque":7,"defesa":4},
     {"codigo":"P24","tipo":"Precisão","nome":"Dê 3 fatos ou números sobre o problema.","assunto":"Meio ambiente","ataque":5,"defesa":6},
-    {"codigo":"F01","tipo":"Formato","nome":"Lista curta (3 itens)","estilo":"Perfurar","efeito":"O dano que sobra depois de quebrar a defesa vai para a vida central."},
-    {"codigo":"F02","tipo":"Formato","nome":"Passo a passo","estilo":"Perfurar","efeito":"O dano que sobra depois de quebrar a defesa vai para a vida central."},
-    {"codigo":"F03","tipo":"Formato","nome":"Resumo em 2 frases","estilo":"Vínculo","efeito":"O dano que este combo causa vira vida para quem jogou."},
-    {"codigo":"F04","tipo":"Formato","nome":"Pergunta e resposta","estilo":"Vínculo","efeito":"O dano que este combo causa vira vida para quem jogou."},
-    {"codigo":"F05","tipo":"Formato","nome":"Tabela","estilo":"Dividir","efeito":"Divida o dano como quiser entre os lados adversários."},
-    {"codigo":"F06","tipo":"Formato","nome":"Mapa mental","estilo":"Dividir","efeito":"Divida o dano como quiser entre os lados adversários."},
-    {"codigo":"F07","tipo":"Formato","nome":"Cartaz (título e 3 frases)","estilo":"Perfurar","efeito":"O dano que sobra depois de quebrar a defesa vai para a vida central."},
-    {"codigo":"F08","tipo":"Formato","nome":"Diálogo curto","estilo":"Vínculo","efeito":"O dano que este combo causa vira vida para quem jogou."},
-    {"codigo":"F09","tipo":"Formato","nome":"Linha do tempo","estilo":"Dividir","efeito":"Divida o dano como quiser entre os lados adversários."},
+    {"codigo":"F01","tipo":"Formato","nome":"Lista curta (3 itens)","estilo":"Perfurar","efeito":"O dano que sobra depois de quebrar a defesa vai para a vida central.","copias":2},
+    {"codigo":"F02","tipo":"Formato","nome":"Passo a passo","estilo":"Perfurar","efeito":"O dano que sobra depois de quebrar a defesa vai para a vida central.","copias":2},
+    {"codigo":"F03","tipo":"Formato","nome":"Resumo em 2 frases","estilo":"Vínculo","efeito":"O dano que este combo causa vira vida para quem jogou.","copias":2},
+    {"codigo":"F04","tipo":"Formato","nome":"Pergunta e resposta","estilo":"Vínculo","efeito":"O dano que este combo causa vira vida para quem jogou.","copias":2},
+    {"codigo":"F05","tipo":"Formato","nome":"Tabela","estilo":"Dividir","efeito":"Divida o dano como quiser entre os lados adversários.","copias":2},
+    {"codigo":"F06","tipo":"Formato","nome":"Mapa mental","estilo":"Dividir","efeito":"Divida o dano como quiser entre os lados adversários.","copias":2},
+    {"codigo":"F07","tipo":"Formato","nome":"Cartaz (título e 3 frases)","estilo":"Perfurar","efeito":"O dano que sobra depois de quebrar a defesa vai para a vida central.","copias":2},
+    {"codigo":"F08","tipo":"Formato","nome":"Diálogo curto","estilo":"Vínculo","efeito":"O dano que este combo causa vira vida para quem jogou.","copias":2},
+    {"codigo":"F09","tipo":"Formato","nome":"Linha do tempo","estilo":"Dividir","efeito":"Divida o dano como quiser entre os lados adversários.","copias":2},
     {"codigo":"DC1","tipo":"Documento","nome":"Cartilha do Ministério da Saúde","estilo":"Muralha","efeito":"Bloqueia o próximo ataque inteiro contra este combo."},
     {"codigo":"DC2","tipo":"Documento","nome":"Regulamento do campeonato","estilo":"Muralha","efeito":"Bloqueia o próximo ataque inteiro contra este combo."},
     {"codigo":"DC3","tipo":"Documento","nome":"Notícia checada","estilo":"Revide","efeito":"Quem atacar este combo leva 2 de dano de volta."},
