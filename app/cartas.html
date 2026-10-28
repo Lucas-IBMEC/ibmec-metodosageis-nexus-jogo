@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
+  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#16274f">
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0b1530">
+  <meta name="color-scheme" content="light dark">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icones/icone.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icones/icone-192.png">
+  <link rel="stylesheet" href="css/app.css">
+  <title>Cartas · Magic Prompt</title>
+</head>
+<body data-pagina="cartas">
+  <header class="topo">
+    <div class="topo-linha"><span class="marca">Magic Prompt</span><h1>Consultar carta</h1></div>
+  </header>
+
+  <main class="conteudo">
+    <section class="bloco">
+      <label class="rotulo" for="busca" style="margin-top: 0">Código ou nome</label>
+      <input class="campo" id="busca" type="search" placeholder="Ex.: C01, dengue, Muralha"
+        autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" enterkeyhint="search">
+      <div class="chips rolagem" id="filtros" role="group" aria-label="Tipo de carta"></div>
+    </section>
+
+    <p class="nota" id="contagem" aria-live="polite" style="margin: 0 4px"></p>
+    <div class="lista" id="lista"></div>
+  </main>
+
+  <nav id="menu" class="menu" aria-label="Páginas"></nav>
+
+  <script src="js/dados.js"></script>
+  <script src="js/comum.js"></script>
+  <script src="js/cartas.js"></script>
+</body>
+</html>

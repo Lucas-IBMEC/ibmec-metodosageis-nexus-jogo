@@ -1,0 +1,267 @@
+// Página Missão: o professor escolhe a missão, digita as cartas do combo
+// e o app mostra o que falta. Histórias: 2.1.1, 2.1.2, 2.2.1, 2.2.2 e 2.2.3.
+
+const $ = (seletor) => document.querySelector(seletor);
+
+const PERSONAS = DADOS.cartas.filter((c) => c.tipo === 'Persona');
+const NACOES = DADOS.cartas.filter((c) => c.tipo === 'Nação');
+const DNC = ['Dor', 'Necessidade', 'Conceito'];
+const TEXTO_DNC = { DOR: 'Uma DOR de quem vai ler', NECESSIDADE: 'Uma NECESSIDADE de quem vai ler', CONCEITO: 'Um CONCEITO' };
+const MARGEM_DA_NACAO = { N3: 3, N4: 1 }; // EUA tem margem 3, China tem margem 1, o resto 2
+
+let combo = MP.ler('mp-combo', []);
+
+// ---------- Montagem da tela ----------
+
+$('#missao').innerHTML = DADOS.missoes.map((m) => (
+  `<option value="${m.codigo}">${m.codigo} · ${MP.esc(m.pedido)}</option>`)).join('');
+$('#missao').value = MP.ler('mp-missao', 'M01');
+
+$('#persona').innerHTML = '<option value="">Nenhuma</option>' + PERSONAS.map((p) => (
+  `<option value="${p.codigo}">${MP.esc(p.nome)} (${p.assunto})</option>`)).join('');
+$('#persona').value = MP.ler('mp-persona', '');
+
+$('#nacao').innerHTML = '<option value="">Não sei (margem 2)</option>' + NACOES.map((n) => (
+  `<option value="${n.codigo}">${MP.esc(n.nome)}${MARGEM_DA_NACAO[n.codigo] ? ` (margem ${MARGEM_DA_NACAO[n.codigo]})` : ''}</option>`)).join('');
+$('#nacao').value = MP.ler('mp-nacao', '');
+
+MP.entradaDeCodigo($('#entrada'), {
+  prefixos: ['C', 'P', 'D', 'F', 'DC', 'E'],
+  aoAdicionar(carta) {
+    const permitidos = ['Contexto', 'Precisão', 'Formato', 'Documento', 'Ética', ...DNC];
+    if (!permitidos.includes(carta.tipo)) {
+      MP.aviso(`${carta.codigo} é ${carta.tipo.toLowerCase()}: não entra no combo`);
+      return;
+    }
+    if (combo.includes(carta.codigo)) {
+      MP.aviso(`${carta.codigo} já está no combo`);
+      return;
+    }
+    combo.push(carta.codigo);
+    atualizar();
+  },
+});
+
+// ---------- Conferência ----------
+
+function nomeDoFormato(codigo) {
+  return DADOS.porCodigo[codigo].nome.replace(/ \(.*\)$/, '');
+}
+
+function tipoDoDefeito(defeito) {
+  return defeito.problema.startsWith('Viés') ? 'Viés' : 'Dado pessoal';
+}
+
+function conferir(missao, cartas) {
+  const doTipo = (...tipos) => cartas.filter((c) => tipos.includes(c.tipo));
+  const contextos = doTipo('Contexto');
+  const precisoes = doTipo('Precisão');
+  const dncs = doTipo(...DNC);
+  const formatos = doTipo('Formato');
+  const documentos = doTipo('Documento');
+  const eticas = doTipo('Ética');
+  const margem = MARGEM_DA_NACAO[$('#nacao').value] || 2;
+  const itens = [];
+  const falhas = [];
+
+  // Regras do combo (vale para qualquer missão)
+  const problemasDoCombo = [];
+  if (!contextos.length) problemasDoCombo.push('falta 1 contexto');
+  if (!precisoes.length) problemasDoCombo.push('falta 1 precisão');
+  if (dncs.length > 1) problemasDoCombo.push('só cabe 1 dor, necessidade ou conceito');
+  if (formatos.length > 1) problemasDoCombo.push('a precisão só recebe 1 formato');
+  if (documentos.length > 1) problemasDoCombo.push('só cabe 1 documento');
+  if (cartas.length - formatos.length > 5) problemasDoCombo.push('no máximo 5 cartas (o formato não conta)');
+  itens.push({
+    ok: problemasDoCombo.length === 0,
+    titulo: 'Combo válido',
+    detalhe: problemasDoCombo.length ? problemasDoCombo.join(' · ') : 'Contexto e precisão, sem cartas sobrando.',
+  });
+  if (!contextos.length || !precisoes.length) falhas.push('combo');
+
+  if (contextos.length && precisoes.length) {
+    const n = contextos[0].numero;
+    const fora = precisoes.filter((p) => Math.abs(p.ataque - n) > margem || Math.abs(p.defesa - n) > margem);
+    itens.push({
+      ok: fora.length === 0,
+      titulo: `A precisão combina com o contexto (entre ${n - margem} e ${n + margem})`,
+      detalhe: fora.length
+        ? `${fora.map((p) => `${p.codigo} tem ataque ${p.ataque} e defesa ${p.defesa}`).join(' · ')}. Esse combo não pode ser baixado.`
+        : `${contextos[0].codigo} tem número ${n}.`,
+    });
+    const nacoes = new Set(contextos.map((c) => c.nacao));
+    if (nacoes.size > 1) {
+      itens.push({ ok: true, titulo: 'Nações misturadas', detalhe: 'Vale, mas esse ataque leva -1.' });
+    }
+  }
+
+  // O que a missão pede
+  const okContexto = contextos.some((c) => c.assunto === missao.assunto);
+  itens.push({
+    ok: okContexto,
+    titulo: `Contexto de ${missao.assunto}`,
+    detalhe: okContexto ? '' : contextos.length
+      ? `O contexto é de ${contextos.map((c) => c.assunto).join(' e ')}.`
+      : 'Nenhum contexto no combo.',
+  });
+  if (!okContexto) falhas.push('contexto');
+
+  if (missao.precisa.dnc) {
+    const okDnc = dncs.some((c) => c.tipo.toUpperCase() === missao.precisa.dnc);
+    itens.push({
+      ok: okDnc,
+      titulo: TEXTO_DNC[missao.precisa.dnc],
+      detalhe: okDnc ? '' : dncs.length ? `O combo tem ${dncs[0].tipo.toLowerCase()}, mas a missão pede ${missao.precisa.dnc.toLowerCase()}.` : '',
+    });
+    if (!okDnc) falhas.push('dnc');
+  }
+
+  const okFormato = formatos.some((f) => missao.precisa.formatos.includes(f.codigo));
+  itens.push({
+    ok: okFormato,
+    titulo: `Formato: ${missao.precisa.formatos.map(nomeDoFormato).join(' ou ')}`,
+    detalhe: okFormato ? '' : formatos.length ? `O combo tem ${nomeDoFormato(formatos[0].codigo)}.` : 'Nenhum formato na precisão.',
+  });
+  if (!okFormato) falhas.push('formato');
+
+  // Ética: carta com problema só vale se o combo tiver a ética que conserta
+  const semConserto = contextos
+    .filter((c) => DADOS.defeitos[c.codigo])
+    .filter((c) => !eticas.some((e) => e.efeito === `Conserta: ${tipoDoDefeito(DADOS.defeitos[c.codigo])}`));
+  itens.push({
+    ok: semConserto.length === 0,
+    titulo: 'Nenhuma carta com problema de ética sem conserto',
+    detalhe: semConserto.map((c) => {
+      const d = DADOS.defeitos[c.codigo];
+      return `${c.codigo} tem ${d.problema.toLowerCase()}. Conserta com ${d.consertaCom}.`;
+    }).join(' '),
+  });
+  semConserto.forEach((c) => falhas.push(c));
+
+  const cumpriu = itens.every((i) => i.ok);
+  return { itens, falhas, cumpriu };
+}
+
+// ---------- O prompt e a resposta simulada ----------
+
+function minuscula(texto) {
+  return texto.charAt(0).toLowerCase() + texto.slice(1);
+}
+
+function montarPrompt(missao, cartas) {
+  const partes = [`Tarefa: ${missao.pedido}`];
+  const persona = DADOS.porCodigo[$('#persona').value];
+  if (persona) partes.push(`Você é ${minuscula(persona.nome)}.`);
+  const eticas = cartas.filter((c) => c.tipo === 'Ética');
+  cartas.filter((c) => c.tipo === 'Contexto').forEach((c) => {
+    const defeito = DADOS.defeitos[c.codigo];
+    const consertado = defeito && eticas.some((e) => e.efeito === `Conserta: ${tipoDoDefeito(defeito)}`);
+    partes.push(consertado ? `${defeito.versaoConsertada} (revisado com ética)` : c.texto);
+  });
+  cartas.filter((c) => DNC.includes(c.tipo)).forEach((c) => {
+    if (c.tipo === 'Dor') partes.push(`O problema é: ${minuscula(c.texto)}`);
+    else if (c.tipo === 'Conceito') partes.push(`Quero entender: ${minuscula(c.texto)}`);
+    else partes.push(c.texto);
+  });
+  cartas.filter((c) => c.tipo === 'Documento').forEach((c) => partes.push(`Use como fonte: ${minuscula(c.nome)}.`));
+  cartas.filter((c) => c.tipo === 'Precisão').forEach((c) => partes.push(c.nome));
+  cartas.filter((c) => c.tipo === 'Formato').forEach((c) => partes.push(`Responda em formato de ${minuscula(nomeDoFormato(c.codigo))}.`));
+  return partes.join('\n');
+}
+
+function htmlDaResposta(missao, resultado) {
+  if (resultado.cumpriu) {
+    return `<span class="etiqueta">Resposta boa ✓</span>
+      <p class="texto-ia">${MP.esc(RESPOSTAS.boas[missao.codigo])}</p>`;
+  }
+  return resultado.falhas.map((falha) => {
+    if (falha === 'formato') {
+      const usado = combo.map((c) => DADOS.porCodigo[c]).find((c) => c.tipo === 'Formato');
+      const pedidos = missao.precisa.formatos.map(nomeDoFormato).join(' ou ');
+      const texto = usado
+        ? `A missão pede ${minuscula(pedidos)}, mas a resposta veio em ${minuscula(nomeDoFormato(usado.codigo))}. Para quem vai ler, isso atrapalha.`
+        : RESPOSTAS.falhas.formato.texto;
+      return `<span class="etiqueta">${RESPOSTAS.falhas.formato.titulo}</span><p class="texto-ia">${MP.esc(texto)}</p>`;
+    }
+    if (typeof falha === 'string') {
+      const f = RESPOSTAS.falhas[falha];
+      return `<span class="etiqueta">${f.titulo}</span><p class="texto-ia">${MP.esc(f.texto)}</p>`;
+    }
+    // Carta com dado pessoal ou viés: a IA repete o problema da carta
+    const f = RESPOSTAS.falhas[tipoDoDefeito(DADOS.defeitos[falha.codigo])];
+    return `<span class="etiqueta">${f.titulo} (${falha.codigo})</span>
+      <p class="texto-ia">${MP.esc(`${f.texto}"Certo! ${falha.texto} Vou responder pensando nisso..."`)}</p>`;
+  }).join('<div style="height: 10px"></div>');
+}
+
+// ---------- Atualiza a tela ----------
+
+function atualizar() {
+  MP.salvar('mp-combo', combo);
+  MP.salvar('mp-missao', $('#missao').value);
+  MP.salvar('mp-persona', $('#persona').value);
+  MP.salvar('mp-nacao', $('#nacao').value);
+
+  const missao = DADOS.missoes.find((m) => m.codigo === $('#missao').value);
+  const textoDaCarta = DADOS.porCodigo[missao.codigo].efeito.replace('Combo precisa ter: ', '').split(' · ');
+  $('#lista-missao').innerHTML = textoDaCarta.map((t) => (
+    `<li><span class="ic" style="background: var(--c-missao)">☐</span><span>${MP.esc(t)}</span></li>`)).join('');
+
+  const cartas = combo.map((codigo) => DADOS.porCodigo[codigo]);
+  $('#combo').innerHTML = cartas.length
+    ? cartas.map((c) => MP.chipDeCarta(c, { removivel: true })).join('')
+    : '<p class="nota">Nenhuma carta ainda. Ex.: toque em C e digite 1 para o C01.</p>';
+
+  const temCombo = cartas.length > 0;
+  ['#resultado', '#prompt', '#resposta'].forEach((s) => { $(s).hidden = !temCombo; });
+  $('#dar-missao').hidden = true;
+  if (!temCombo) return;
+
+  const resultado = conferir(missao, cartas);
+  const resultadoEl = $('#resultado');
+  resultadoEl.className = `bloco resultado ${resultado.cumpriu ? 'ok' : 'falha'}`;
+  const faltam = resultado.itens.filter((i) => !i.ok).length;
+  resultadoEl.innerHTML = `
+    <p class="veredito">${resultado.cumpriu ? '✓ Missão cumprida' : '✗ Ainda não cumpriu'}</p>
+    <p class="sub" style="margin: 0">${resultado.cumpriu
+      ? 'O lado que avisou antes de atacar pega a carta de missão.'
+      : `Falta${faltam > 1 ? 'm' : ''} ${faltam} ${faltam > 1 ? 'itens' : 'item'}. O ataque vale, mas o lado não pega a missão.`}</p>
+    <ul class="checklist">${resultado.itens.map((i) => `
+      <li class="${i.ok ? 'sim' : 'nao'}"><span class="ic">${i.ok ? '✓' : '✗'}</span>
+        <span>${MP.esc(i.titulo)}${i.detalhe ? `<small>${MP.esc(i.detalhe)}</small>` : ''}</span></li>`).join('')}
+    </ul>`;
+
+  $('#texto-prompt').textContent = montarPrompt(missao, cartas);
+  $('#texto-resposta').innerHTML = htmlDaResposta(missao, resultado);
+
+  const partida = MP.lerPartida();
+  if (resultado.cumpriu && partida && partida.vez !== null) {
+    $('#dar-missao').hidden = false;
+    $('#lados-missao').innerHTML = partida.lados.map((lado, i) => (
+      `<button type="button" class="chip" data-lado="${i}">${MP.esc(lado.nome)} · ${lado.missoes} missões</button>`)).join('');
+  }
+}
+
+// ---------- Ligações ----------
+
+$('#combo').addEventListener('click', (evento) => {
+  const botao = evento.target.closest('[data-remover]');
+  if (!botao) return;
+  combo = combo.filter((codigo) => codigo !== botao.dataset.remover);
+  atualizar();
+});
+['#missao', '#persona', '#nacao'].forEach((s) => $(s).addEventListener('change', atualizar));
+$('#limpar').addEventListener('click', () => { combo = []; atualizar(); });
+$('#lados-missao').addEventListener('click', (evento) => {
+  const botao = evento.target.closest('[data-lado]');
+  if (!botao) return;
+  const partida = MP.lerPartida();
+  const lado = partida.lados[Number(botao.dataset.lado)];
+  lado.missoes += 1;
+  MP.salvarPartida(partida);
+  MP.aviso(`+1 missão para ${lado.nome}. Vire uma missão nova.`);
+  combo = [];
+  atualizar();
+});
+
+atualizar();

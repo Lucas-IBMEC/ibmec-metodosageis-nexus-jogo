@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
+  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#16274f">
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0b1530">
+  <meta name="color-scheme" content="light dark">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icones/icone.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icones/icone-192.png">
+  <link rel="stylesheet" href="css/app.css">
+  <title>Missão · Magic Prompt</title>
+</head>
+<body data-pagina="missao">
+  <header class="topo">
+    <div class="topo-linha"><span class="marca">Magic Prompt</span><h1>Conferir missão</h1></div>
+  </header>
+
+  <main class="conteudo">
+    <section class="bloco">
+      <h2><span class="passo">1</span>Qual missão?</h2>
+      <p class="sub">A missão aberta na mesa.</p>
+      <select class="campo" id="missao" aria-label="Missão"></select>
+      <ul class="checklist" id="lista-missao"></ul>
+    </section>
+
+    <section class="bloco">
+      <h2><span class="passo">2</span>Cartas do combo</h2>
+      <p class="sub">Toque na letra do tipo e digite o número de cada carta.</p>
+      <div id="entrada"></div>
+      <div class="chips" id="combo" style="margin-top: 12px"></div>
+
+      <label class="rotulo" for="persona">Persona na mesa (opcional)</label>
+      <select class="campo" id="persona"></select>
+      <label class="rotulo" for="nacao">Nação de quem jogou (muda a margem do contexto)</label>
+      <select class="campo" id="nacao"></select>
+
+      <button type="button" class="botao secundario largo" id="limpar" style="margin-top: 12px">Limpar combo</button>
+    </section>
+
+    <section class="bloco resultado" id="resultado" hidden aria-live="polite"></section>
+
+    <section class="bloco" id="prompt" hidden>
+      <h2>O prompt que o combo forma</h2>
+      <p class="sub">Leia para a turma: cada carta é um pedaço do prompt.</p>
+      <p class="texto-ia" id="texto-prompt"></p>
+    </section>
+
+    <section class="bloco" id="resposta" hidden>
+      <h2>Resposta simulada da IA</h2>
+      <p class="sub">Exemplo para mostrar à turma o efeito do combo. Não usa internet.</p>
+      <div id="texto-resposta"></div>
+    </section>
+
+    <section class="bloco" id="dar-missao" hidden>
+      <h2>Dar a carta de missão para</h2>
+      <p class="sub">Soma 1 missão no placar da Partida.</p>
+      <div class="chips" id="lados-missao"></div>
+    </section>
+  </main>
+
+  <nav id="menu" class="menu" aria-label="Páginas"></nav>
+
+  <script src="js/dados.js"></script>
+  <script src="js/respostas.js"></script>
+  <script src="js/comum.js"></script>
+  <script src="js/missao.js"></script>
+</body>
+</html>

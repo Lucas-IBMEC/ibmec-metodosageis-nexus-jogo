@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
+  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#16274f">
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0b1530">
+  <meta name="color-scheme" content="light dark">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icones/icone.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icones/icone-192.png">
+  <link rel="stylesheet" href="css/app.css">
+  <title>Regras · Magic Prompt</title>
+</head>
+<body data-pagina="regras">
+  <header class="topo">
+    <div class="topo-linha"><span class="marca">Magic Prompt</span><h1>Regras</h1></div>
+  </header>
+
+  <main class="conteudo">
+    <div class="lista regras">
+      <details class="item" open>
+        <summary><span class="nome-item">Passo a passo para começar</span></summary>
+        <div class="corpo">
+          <ol>
+            <li>Escolha o modo de jogo (Duelo, Mesa ou Turma) e divida os lados.</li>
+            <li>Cada lado pega 1 carta de nação e marca 15 de vida com uma moeda ou um clipe.</li>
+            <li>Separe 4 montes embaralhados: Missões, Contextos, Precisões e Geral (dor, necessidade, conceito, formato, documento, ética e persona).</li>
+            <li>Vire 1 missão para cima.</li>
+            <li>Cada lado compra 6 cartas sorteadas: 2 contextos, 2 precisões e 2 do Geral.</li>
+            <li>Limite da mão: 7 cartas. Se a mão não formar nenhum combo, troque a mão inteira 1 vez.</li>
+            <li>Veja quem começa (abaixo) e abra a página Partida.</li>
+          </ol>
+        </div>
+      </details>
+
+      <details class="item">
+        <summary><span class="nome-item">Modos de jogo</span></summary>
+        <div class="corpo">
+          <p><b>Duelo</b> (2 a 4 alunos): 1 contra 1, ou dupla contra dupla.</p>
+          <p><b>Mesa</b> (3 a 10 alunos): 3 a 5 lados, todos contra todos. No ataque, o lado escolhe quem atacar.</p>
+          <p><b>Turma</b> (até 40 alunos): 5 grupos de até 8, um por nação. Os papéis trocam a cada turno:</p>
+          <ul>
+            <li><b>Capitão:</b> decide a jogada e fala com o professor.</li>
+            <li><b>Montador:</b> monta o combo na mesa.</li>
+            <li><b>Fiscal:</b> procura dado pessoal e viés nas cartas dos outros grupos e denuncia.</li>
+            <li><b>Placar:</b> anota a vida e as missões do grupo.</li>
+          </ul>
+        </div>
+      </details>
+
+      <details class="item">
+        <summary><span class="nome-item">Quem começa</span></summary>
+        <div class="corpo">
+          <ol>
+            <li>Cada lado compra 1 carta do monte de Contextos.</li>
+            <li>Quem tirar o maior número começa. Empate: só os empatados compram de novo.</li>
+            <li>As cartas voltam para o monte, que é embaralhado.</li>
+            <li>Depois, a vez segue no sentido horário. No modo Turma, na ordem que o professor escrever no quadro.</li>
+          </ol>
+          <p class="aviso">Quem começa não compra cartas no primeiro turno.</p>
+        </div>
+      </details>
+
+      <details class="item">
+        <summary><span class="nome-item">O turno (até 40 segundos)</span></summary>
+        <div class="corpo">
+          <ol>
+            <li><b>Compra:</b> pegue 2 cartas. Você escolhe o monte, mas a carta vem sorteada.</li>
+            <li><b>Ativação:</b> monte combos e ponha persona e equipamentos na mesa.</li>
+            <li><b>Ataque:</b> vai tentar a missão? Avise antes. Escolha um combo seu e um lado para atacar.</li>
+            <li><b>Denúncia:</b> alguém viu dado pessoal ou viés? Denuncie agora.</li>
+            <li><b>Missão:</b> o professor confere na página Missão. Cumpriu? Pegue a carta.</li>
+            <li><b>Fim:</b> descarte até ficar com 7 cartas.</li>
+          </ol>
+          <p class="aviso">Acabou o tempo antes do ataque? O turno passa sem ataque, e os combos montados ficam na mesa.</p>
+        </div>
+      </details>
+
+      <details class="item">
+        <summary><span class="nome-item">O combo (é o prompt)</span></summary>
+        <div class="corpo">
+          <ul>
+            <li>Mínimo: 1 contexto e 1 precisão. Máximo: 5 cartas (mais dor, necessidade ou conceito, ética e documento).</li>
+            <li>O número do contexto limita a precisão: ataque e defesa ficam até 2 acima ou 2 abaixo dele.</li>
+            <li>A precisão recebe 1 formato (estilo de ataque). O combo recebe 1 documento (estilo de defesa).</li>
+            <li>Contextos de nações diferentes no mesmo combo: -1 de ataque.</li>
+            <li>Persona na mesa: a precisão do mesmo assunto ganha +1 de ataque.</li>
+          </ul>
+        </div>
+      </details>
+
+      <details class="item">
+        <summary><span class="nome-item">Ataque e defesa</span></summary>
+        <div class="corpo">
+          <p class="aviso">A defesa protege a vida da nação. Enquanto um lado tiver combo na mesa, ninguém ataca a vida dele: primeiro é preciso derrubar o combo ou usar Perfurar.</p>
+          <ul>
+            <li>Quem é atacado escolhe qual combo seu bloqueia.</li>
+            <li>Ataque maior que a defesa: o combo de defesa vai para o descarte. A sobra se perde, a não ser com Perfurar.</li>
+            <li>Ataque igual ou menor: nada acontece.</li>
+            <li>Sem combo na mesa: o ataque vai direto na vida.</li>
+            <li>Dano na vida da nação: quem atacou rouba 1 carta de missão.</li>
+            <li>Vida zerada: as missões voltam para o fundo do monte e a vida volta para 15.</li>
+          </ul>
+        </div>
+      </details>
+
+      <details class="item">
+        <summary><span class="nome-item">Missões</span></summary>
+        <div class="corpo">
+          <ul>
+            <li>Sempre há 1 missão aberta na mesa.</li>
+            <li>Para tentar, o lado avisa antes de atacar.</li>
+            <li>O professor confere a lista na página Missão. Cumpriu? O lado pega a carta e uma nova missão é virada.</li>
+            <li>Só o primeiro que cumprir ganha. Errou? O ataque vale, mas o lado não pega a carta.</li>
+          </ul>
+        </div>
+      </details>
+
+      <details class="item">
+        <summary><span class="nome-item">Ética e denúncia</span></summary>
+        <div class="corpo">
+          <p>Algumas cartas de contexto escondem um dado pessoal (nome, CPF, endereço, telefone, senha) ou um viés (generalizar um grupo de pessoas).</p>
+          <ul>
+            <li><b>Denúncia certa:</b> quem denunciou ganha 2 de vida e o denunciado fica sem atacar no próximo turno.</li>
+            <li>Com a ética que conserta, quem denunciou pode anular o combo no lugar de ganhar vida.</li>
+            <li><b>Denúncia errada:</b> quem denunciou perde 2 de vida e o denunciado ganha 2.</li>
+          </ul>
+          <p>O gabarito está na página <a href="denuncia.html">Denúncia</a>.</p>
+        </div>
+      </details>
+
+      <details class="item">
+        <summary><span class="nome-item">Nações: buff e debuff</span></summary>
+        <div class="corpo">
+          <table>
+            <thead><tr><th>Nação</th><th>Buff</th><th>Debuff</th></tr></thead>
+            <tbody id="nacoes"></tbody>
+          </table>
+        </div>
+      </details>
+
+      <details class="item">
+        <summary><span class="nome-item">Fim da partida</span></summary>
+        <div class="corpo">
+          <p>A partida acaba quando termina o tempo (até 2 tempos de aula) ou quando acabam as missões.</p>
+          <p><b>Vence quem tiver mais cartas de missão.</b> Empate: ganha quem tiver mais vida.</p>
+          <p>Para fechar a aula, cada lado lê em voz alta o combo da última missão que cumpriu, como se fosse o prompt que montou.</p>
+        </div>
+      </details>
+    </div>
+    <p class="nota" style="margin: 0 4px">Números de teste: vida 15, mão 6, limite 7, compra 2 e denúncia de 2. Podem mudar depois do playtest.</p>
+  </main>
+
+  <nav id="menu" class="menu" aria-label="Páginas"></nav>
+
+  <script src="js/dados.js"></script>
+  <script src="js/comum.js"></script>
+  <script>
+    // Tabela das nações a partir das cartas (história 2.3.2)
+    document.getElementById('nacoes').innerHTML = DADOS.cartas
+      .filter((c) => c.tipo === 'Nação')
+      .map((n) => {
+        const [buff, debuff] = n.efeito.replace('Buff: ', '').split(' · Debuff: ');
+        return `<tr><td><b>${MP.esc(n.nome)}</b></td><td>${MP.esc(buff)}</td><td>${MP.esc(debuff)}</td></tr>`;
+      }).join('');
+  </script>
+</body>
+</html>
