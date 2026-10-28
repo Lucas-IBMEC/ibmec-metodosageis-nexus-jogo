@@ -248,9 +248,11 @@ body.com-barra .conteudo {
   overflow-x: auto;
   overscroll-behavior-x: contain;
   scroll-snap-type: x proximity;
+  /* Igual ao padding-left: sem ele, o snap cola a 1ª chip na borda esquerda ("tocando") */
+  scroll-padding-left: 24px;
   scrollbar-width: none;
   margin: 12px -16px 0;
-  padding: 0 16px 2px;
+  padding: 0 16px 2px 24px;
 }
 .chips.rolagem::-webkit-scrollbar { display: none; }
 .chips.rolagem .chip { flex: none; scroll-snap-align: start; }
