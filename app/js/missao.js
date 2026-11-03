@@ -15,7 +15,7 @@ let combo = MP.ler('mp-combo', []).filter((codigo) => DADOS.porCodigo[codigo]);
 // ---------- Montagem da tela ----------
 
 $('#missao').innerHTML = DADOS.missoes.map((m) => (
-  `<option value="${m.codigo}">${m.codigo} · ${MP.esc(m.pedido)}</option>`)).join('');
+  `<option value="${m.codigo}">${m.codigo} · ${MP.esc(m.pedido)} (${m.pontos === 2 ? '★★' : '★'})</option>`)).join('');
 const missaoGuardada = MP.ler('mp-missao', 'M01');
 $('#missao').value = DADOS.missoes.some((m) => m.codigo === missaoGuardada) ? missaoGuardada : 'M01';
 
@@ -103,10 +103,6 @@ function conferir(missao, cartas) {
         ? `${fora.map((p) => `${p.codigo} tem ataque ${p.ataque} e defesa ${p.defesa}`).join(' · ')}. Esse combo não pode ser baixado.`
         : `${contextos[0].codigo} tem número ${n}.`,
     });
-    const nacoes = new Set(contextos.map((c) => c.nacao));
-    if (nacoes.size > 1) {
-      itens.push({ ok: true, titulo: 'Nações misturadas', detalhe: 'Vale, mas esse ataque leva -1.' });
-    }
   }
 
   // O que a missão pede
@@ -190,12 +186,6 @@ function calcularForca(cartas) {
   if (nacao === 'N2') {
     ataque -= 1;
     contas.push({ tipo: 'menos', texto: '-1 de ataque: Índia (mas quem atacar a Índia leva 2 de dano)' });
-  }
-
-  const nacoes = new Set(cartas.filter((c) => c.tipo === 'Contexto').map((c) => c.nacao));
-  if (nacoes.size > 1) {
-    ataque -= 1;
-    contas.push({ tipo: 'menos', texto: '-1 de ataque: contextos de nações diferentes' });
   }
 
   // Estilos dos equipamentos: mudam como o ataque acerta ou como o combo se defende
@@ -283,7 +273,8 @@ function atualizar() {
   const missao = DADOS.missoes.find((m) => m.codigo === $('#missao').value);
   const textoDaCarta = DADOS.porCodigo[missao.codigo].efeito.replace('Combo precisa ter: ', '').split(' · ');
   $('#lista-missao').innerHTML = textoDaCarta.map((t) => (
-    `<li><span class="ic" style="background: var(--c-missao)">☐</span><span>${MP.esc(t)}</span></li>`)).join('');
+    `<li><span class="ic" style="background: var(--c-missao)">☐</span><span>${MP.esc(t)}</span></li>`)).join('')
+    + `<li><span class="ic" style="background: var(--c-missao)">★</span><span>Vale ${MP.plural(missao.pontos, 'ponto', 'pontos')}${missao.pontos === 2 ? ' (pede dor, necessidade ou conceito)' : ''}</span></li>`;
 
   const cartas = combo.map((codigo) => DADOS.porCodigo[codigo]);
   $('#combo').innerHTML = cartas.length
@@ -303,7 +294,7 @@ function atualizar() {
   resultadoEl.innerHTML = `
     <p class="veredito">${resultado.cumpriu ? '✓ Missão cumprida' : '✗ Ainda não cumpriu'}</p>
     <p class="sub" style="margin: 0">${resultado.cumpriu
-      ? 'O lado que avisou antes de atacar pega a carta de missão. Depois do ataque, este combo vai para o descarte: o prompt foi entregue.'
+      ? `O lado que avisou antes de atacar lê o prompt em voz alta e pega a carta de missão (${MP.plural(missao.pontos, 'ponto', 'pontos')}). Depois do ataque, este combo vai para o descarte: o prompt foi entregue.`
       : resultado.valido
         ? `Falta${faltam > 1 ? 'm' : ''} ${faltam} ${faltam > 1 ? 'itens' : 'item'}. O ataque vale, mas o lado não pega a missão.`
         : 'Esse combo não pode ser baixado na mesa. Confira as regras do combo.'}</p>
@@ -319,7 +310,7 @@ function atualizar() {
   if (resultado.cumpriu && partida && partida.vez !== null) {
     $('#dar-missao').hidden = false;
     $('#lados-missao').innerHTML = partida.lados.map((lado, i) => (
-      `<button type="button" class="chip" data-lado="${i}">${MP.esc(lado.nome)} · ${MP.plural(lado.missoes, 'missão', 'missões')}</button>`)).join('');
+      `<button type="button" class="chip" data-lado="${i}">${MP.esc(lado.nome)} · ${MP.plural(lado.pontos, 'ponto', 'pontos')}</button>`)).join('');
   }
 }
 
@@ -356,9 +347,10 @@ $('#lados-missao').addEventListener('click', (evento) => {
   if (!botao) return;
   const partida = MP.lerPartida();
   const lado = partida.lados[Number(botao.dataset.lado)];
-  lado.missoes += 1;
+  const missao = DADOS.missoes.find((m) => m.codigo === $('#missao').value);
+  lado.pontos += missao.pontos;
   MP.salvarPartida(partida);
-  MP.aviso(`+1 missão para ${lado.nome}. Combo para o descarte e vire uma missão nova.`);
+  MP.aviso(`+${MP.plural(missao.pontos, 'ponto', 'pontos')} para ${lado.nome}. Combo para o descarte e vire uma missão nova.`);
   combo = [];
   atualizar();
 });

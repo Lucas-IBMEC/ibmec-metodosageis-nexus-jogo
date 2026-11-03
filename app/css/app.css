@@ -374,6 +374,26 @@ body.com-barra .conteudo {
 .mais-menos:active { transform: scale(0.92); background: var(--superficie-2); }
 .mais-menos:disabled { opacity: 0.35; }
 .efeitos { margin-top: 10px; }
+/* Poderes da nação: tocar desconta os pontos (cada poder 1 vez por turno) */
+.poderes { display: grid; gap: 6px; margin-top: 10px; }
+.poder {
+  display: grid;
+  gap: 2px;
+  text-align: left;
+  font: inherit;
+  color: var(--texto);
+  background: var(--superficie-2);
+  border: 1px solid var(--borda);
+  border-radius: var(--raio-p);
+  padding: 8px 10px;
+  cursor: pointer;
+  transition: transform 100ms var(--suave);
+}
+.poder:active { transform: scale(0.98); }
+.poder:disabled { opacity: 0.45; cursor: default; transform: none; }
+.poder-nome { font-size: 14px; font-weight: 800; color: var(--c-nacao); }
+.poder-nome small { font-weight: 700; color: var(--c-missao); margin-left: 4px; }
+.poder-texto { font-size: 12.5px; color: var(--texto-2); }
 .alerta-lado { margin-top: 10px; padding: 10px 12px; border-radius: var(--raio-p); background: var(--erro-fundo); color: var(--erro); font-weight: 600; display: flex; gap: 8px; align-items: center; justify-content: space-between; }
 
 /* Barra do turno com o cronômetro, presa em cima do menu */

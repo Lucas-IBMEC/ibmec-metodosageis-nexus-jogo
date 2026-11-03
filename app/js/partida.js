@@ -3,10 +3,11 @@
 
 const DURACAO_DO_TURNO = 40; // segundos
 
-// Vida inicial de cada nação (15; a China começa com 13)
+// Vida inicial de cada nação (15; a China começa com 14)
 function vidaInicial(codigoDaNacao) {
   return DADOS.porCodigo[codigoDaNacao]?.vida || 15;
 }
+const VIDA_DA_CURA = 4; // poder ① de todas as nações
 const VOLTA_DO_RELOGIO = 2 * Math.PI * 28; // tamanho do círculo do cronômetro
 
 const NACOES = DADOS.cartas.filter((c) => c.tipo === 'Nação');
@@ -67,7 +68,8 @@ function comecarPartida() {
       nome: linha.querySelector('input').value.trim() || `${nome} ${i + 1}`,
       nacao: nacoes[i],
       vida: vidaInicial(nacoes[i]),
-      missoes: 0,
+      pontos: 0,
+      poderesNoTurno: {}, // poder → turno em que foi usado (cada poder 1 vez por turno)
       semAtacar: false,
       semAtacarNoTurno: 0,
     })),
@@ -102,10 +104,20 @@ function htmlDoLado(lado, i) {
         <button type="button" class="mais-menos" data-acao="vida" data-delta="1" aria-label="Dar 1 de vida a ${MP.esc(lado.nome)}">+</button>
       </div>
       <div class="contador">
-        <button type="button" class="mais-menos" data-acao="missoes" data-delta="-1" aria-label="Tirar 1 missão de ${MP.esc(lado.nome)}">−</button>
-        <div class="valor"><b>${lado.missoes}</b><span>Missões</span></div>
-        <button type="button" class="mais-menos" data-acao="missoes" data-delta="1" aria-label="Dar 1 missão a ${MP.esc(lado.nome)}">+</button>
+        <button type="button" class="mais-menos" data-acao="pontos" data-delta="-1" aria-label="Tirar 1 ponto de ${MP.esc(lado.nome)}">−</button>
+        <div class="valor"><b>${lado.pontos}</b><span>Pontos</span></div>
+        <button type="button" class="mais-menos" data-acao="pontos" data-delta="1" aria-label="Dar 1 ponto a ${MP.esc(lado.nome)}">+</button>
       </div>
+    </div>
+    <div class="poderes">
+      ${nacao.poderes.map((p) => {
+        const usado = lado.poderesNoTurno[p.n] === partida.turno;
+        const semPontos = lado.pontos < p.custo;
+        return `<button type="button" class="poder" data-acao="poder" data-poder="${p.n}" ${usado || semPontos ? 'disabled' : ''}>
+          <span class="poder-nome">${p.n} ${MP.esc(p.nome)} <small>${MP.plural(p.custo, 'ponto', 'pontos')}</small></span>
+          <span class="poder-texto">${usado ? 'Já usado neste turno' : MP.esc(p.texto)}</span>
+        </button>`;
+      }).join('')}
     </div>
     <div class="efeitos">
       <button type="button" class="chip" data-acao="sem-atacar" aria-pressed="${lado.semAtacar}">
@@ -164,17 +176,28 @@ function trocarPersona(codigo) {
   MP.aviso(codigo ? `${DADOS.porCodigo[codigo].nome} na mesa` : 'Persona tirada da mesa');
 }
 
-function mudarLado(i, acao, delta) {
+// Usar um poder: o lado entrega cartas de missão que somam o custo (sem troco)
+function usarPoder(lado, codigoDoPoder) {
+  const poder = DADOS.porCodigo[lado.nacao].poderes.find((p) => p.n === codigoDoPoder);
+  if (lado.pontos < poder.custo || lado.poderesNoTurno[poder.n] === partida.turno) return;
+  lado.pontos -= poder.custo;
+  lado.poderesNoTurno[poder.n] = partida.turno;
+  if (poder.nome === 'Cura') lado.vida += VIDA_DA_CURA;
+  MP.aviso(`${lado.nome}: ${poder.nome}. As missões gastas voltam para o fundo do monte.`);
+}
+
+function mudarLado(i, acao, delta, codigoDoPoder) {
   const lado = partida.lados[i];
   if (acao === 'vida') lado.vida = Math.max(0, lado.vida + delta);
-  if (acao === 'missoes') lado.missoes = Math.max(0, lado.missoes + delta);
+  if (acao === 'pontos') lado.pontos = Math.max(0, lado.pontos + delta);
+  if (acao === 'poder') usarPoder(lado, codigoDoPoder);
   if (acao === 'sem-atacar') {
     lado.semAtacar = !lado.semAtacar;
     lado.semAtacarNoTurno = partida.turno;
   }
   if (acao === 'zerou') {
     // Regra: vida zerada devolve as missões para o fundo do monte e volta com a vida cheia
-    lado.missoes = 0;
+    lado.pontos = 0;
     lado.vida = vidaInicial(lado.nacao);
     MP.aviso(`${lado.nome}: missões devolvidas ao monte, vida ${lado.vida}`);
   }
@@ -295,10 +318,10 @@ async function manterTelaLigada() {
 // ---------- Fim da partida ----------
 
 function encerrar() {
-  const ordem = [...partida.lados].sort((a, b) => b.missoes - a.missoes || b.vida - a.vida);
+  const ordem = [...partida.lados].sort((a, b) => b.pontos - a.pontos || b.vida - a.vida);
   $('#ranking').innerHTML = ordem.map((lado, i) => `<li>
     <span>${i === 0 ? '🏆 ' : ''}${MP.esc(lado.nome)}</span>
-    <span>${MP.plural(lado.missoes, 'missão', 'missões')} · ${lado.vida} de vida</span></li>`).join('');
+    <span>${MP.plural(lado.pontos, 'ponto', 'pontos')} · ${lado.vida} de vida</span></li>`).join('');
   $('#fim').showModal();
 }
 
@@ -349,7 +372,7 @@ $('#lados').addEventListener('click', (evento) => {
   const botao = evento.target.closest('[data-acao]');
   if (!botao) return;
   const i = Number(botao.closest('[data-lado]').dataset.lado);
-  mudarLado(i, botao.dataset.acao, Number(botao.dataset.delta || 0));
+  mudarLado(i, botao.dataset.acao, Number(botao.dataset.delta || 0), botao.dataset.poder);
 });
 $('#personas').addEventListener('click', (evento) => {
   const botao = evento.target.closest('[data-persona]');

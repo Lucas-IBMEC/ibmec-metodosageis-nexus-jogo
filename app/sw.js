@@ -1,7 +1,7 @@
 // Service worker: guarda o app no celular para funcionar sem internet (história 2.4.1).
 // Ao mudar qualquer arquivo, aumente a VERSAO para os celulares baixarem de novo.
 
-const VERSAO = 'magic-prompt-v2';
+const VERSAO = 'magic-prompt-v3';
 const ARQUIVOS = [
   './',
   './index.html',

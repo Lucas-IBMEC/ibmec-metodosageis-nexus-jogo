@@ -87,13 +87,20 @@ const MP = (() => {
     }
   }
 
-  // "1 missão", "2 missões"
+  // "1 ponto", "2 pontos"
   function plural(n, umNome, variosNomes) {
     return `${n} ${n === 1 ? umNome : variosNomes}`;
   }
 
+  // Partidas salvas antes do pacote E contavam missões; agora o placar conta pontos
   function lerPartida() {
-    return ler('mp-partida', null);
+    const partida = ler('mp-partida', null);
+    partida?.lados.forEach((lado) => {
+      if (lado.pontos === undefined) lado.pontos = lado.missoes || 0;
+      delete lado.missoes;
+      lado.poderesNoTurno = lado.poderesNoTurno || {};
+    });
+    return partida;
   }
 
   function salvarPartida(partida) {
