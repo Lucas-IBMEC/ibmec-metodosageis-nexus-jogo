@@ -1,22 +1,15 @@
-// Página Partida: monta a partida, sorteia quem começa, mostra o placar, aplica os poderes
-// e marca o tempo de cada turno. Histórias: 2.5.1 (vida, pontos e poderes de cada lado) e o cronômetro.
+// Página Partida: monta a partida, sorteia quem começa, mostra as estrelas de cada lado,
+// marca o tempo de cada vez e mostra quem ganhou. Histórias: 2.5.1 (placar) e o cronômetro.
+// As estrelas entram pela página Missão, quando o professor confere o prompt de quem bateu.
 
-const DURACAO_DO_TURNO = DADOS.duracaoDoTurno || 60; // segundos
+const DURACAO_DA_VEZ = DADOS.duracaoDaVez || 30; // segundos
+const META = DADOS.metaDeEstrelas || 6;
 const VOLTA_DO_RELOGIO = 2 * Math.PI * 28; // tamanho do círculo do cronômetro
-
-// Vida inicial de cada nação (a carta da nação diz quanto)
-function vidaInicial(codigoDaNacao) {
-  return DADOS.porCodigo[codigoDaNacao]?.vida || 10;
-}
-
-const NACOES = DADOS.cartas.filter((c) => c.tipo === 'Nação');
-// Poderes que pedem para escolher um lado
-const COM_ALVO = ['dano', 'roubo', 'bloqueio'];
 
 const MODOS = {
   duelo: { min: 2, max: 2, padrao: 2, nome: 'Lado', texto: '1 contra 1, ou dupla contra dupla (cada dupla é um lado).' },
-  mesa: { min: 3, max: 5, padrao: 3, nome: 'Lado', texto: 'Cada lado é 1 aluno ou 1 dupla. Todos contra todos: quem usa um poder escolhe o lado.' },
-  turma: { min: 2, max: 5, padrao: 5, nome: 'Grupo', texto: 'Cada grupo é uma nação. Os papéis (Capitão, Montador e Placar) trocam a cada turno.' },
+  mesa: { min: 3, max: 5, padrao: 3, nome: 'Lado', texto: 'Cada lado é 1 aluno ou 1 dupla. Todos contra todos.' },
+  turma: { min: 2, max: 5, padrao: 4, nome: 'Grupo', texto: 'Cada grupo é um lado e decide junto. Quem segura as cartas troca a cada vez.' },
 };
 
 const $ = (seletor) => document.querySelector(seletor);
@@ -36,50 +29,31 @@ function mostrarConfiguracao() {
   $('#rotulo-quantos').textContent = config.modo === 'turma' ? 'Quantos grupos' : 'Quantos lados';
   $('#menos-lados').disabled = config.quantos <= modo.min;
   $('#mais-lados').disabled = config.quantos >= modo.max;
-  const porLado = MP.turnosDaPartida(config.quantos) / config.quantos;
-  $('#explica-turnos').textContent = `Cada ${modo.nome.toLowerCase()} joga ${MP.plural(porLado, 'turno', 'turnos')} (${MP.plural(porLado * config.quantos, 'missão', 'missões')} no total).`;
 
-  // Uma linha por lado: nome e nação (cada nação só pode ser usada uma vez)
-  const anteriores = [...document.querySelectorAll('.lado-config')].map((linha) => ({
-    nome: linha.querySelector('input').value,
-    nacao: linha.querySelector('select').value,
-  }));
-  $('#config-lados').innerHTML = Array.from({ length: config.quantos }, (_, i) => {
-    const nacaoEscolhida = anteriores[i]?.nacao || NACOES[i].codigo;
-    return `<div class="lado-config">
-      <input class="campo" value="${MP.esc(anteriores[i]?.nome || '')}" placeholder="${modo.nome} ${i + 1}"
-        aria-label="Nome do ${modo.nome.toLowerCase()} ${i + 1}" autocomplete="off">
-      <select class="campo" aria-label="Nação do ${modo.nome.toLowerCase()} ${i + 1}">
-        ${NACOES.map((n) => `<option value="${n.codigo}" ${n.codigo === nacaoEscolhida ? 'selected' : ''}>${n.nome}</option>`).join('')}
-      </select>
-    </div>`;
-  }).join('');
+  // Um campo de nome por lado (guarda o que já foi digitado)
+  const anteriores = [...document.querySelectorAll('#config-lados input')].map((campo) => campo.value);
+  $('#config-lados').innerHTML = Array.from({ length: config.quantos }, (_, i) => (
+    `<input class="campo" value="${MP.esc(anteriores[i] || '')}" placeholder="${modo.nome} ${i + 1}"
+      aria-label="Nome do ${modo.nome.toLowerCase()} ${i + 1}" autocomplete="off" enterkeyhint="next">`)).join('');
 }
 
 function comecarPartida() {
-  const linhas = [...document.querySelectorAll('.lado-config')];
-  const nacoes = linhas.map((linha) => linha.querySelector('select').value);
-  if (new Set(nacoes).size !== nacoes.length) {
-    MP.aviso('Cada lado precisa de uma nação diferente');
-    return;
-  }
   const nome = MODOS[config.modo].nome;
   partida = {
+    versao: MP.VERSAO_DA_PARTIDA,
     inicio: Date.now(),
     modo: config.modo,
-    lados: linhas.map((linha, i) => ({
-      nome: linha.querySelector('input').value.trim() || `${nome} ${i + 1}`,
-      nacao: nacoes[i],
-      vida: vidaInicial(nacoes[i]),
-      pontos: 0,
-      poderesNoTurno: {}, // poder → turno em que foi usado (cada poder 1 vez por turno)
-      semPoderesAte: 0, // Fiscalização: sem poderes enquanto o turno for menor que este
+    lados: [...document.querySelectorAll('#config-lados input')].map((campo, i) => ({
+      nome: campo.value.trim() || `${nome} ${i + 1}`,
+      estrelas: 0,
+      missoes: 0, // missões feitas
+      perfeitas: 0, // missões com 3 estrelas (desempate)
     })),
+    feitas: [], // códigos das missões que já saíram da mesa
     vez: null,
     turno: 0,
-    totalDeTurnos: MP.turnosDaPartida(linhas.length),
-    ultimoPoder: null, // o último poder usado contra alguém (para o Espelho da Índia)
-    cronometro: { fim: null, restante: DURACAO_DO_TURNO, esgotou: false },
+    fimMostrado: false,
+    cronometro: { fim: null, restante: DURACAO_DA_VEZ, esgotou: false },
   };
   MP.salvarPartida(partida);
   mostrar();
@@ -87,73 +61,41 @@ function comecarPartida() {
 
 // ---------- Tela 2: placar ----------
 
-// Número do próximo turno em que o lado "i" joga
-function proximoTurnoDe(i) {
-  const n = partida.lados.length;
-  const distancia = (i - partida.vez + n) % n;
-  return partida.turno + (distancia === 0 ? n : distancia);
+// Do mais perto da vitória para o mais longe (empate: mais missões com 3 estrelas)
+function ranking() {
+  return [...partida.lados].sort((a, b) => b.estrelas - a.estrelas || b.perfeitas - a.perfeitas);
 }
 
-function semPoderes(lado) {
-  return partida.turno < (lado.semPoderesAte || 0);
+// Quem chegou à meta (se mais de um, o que tem mais estrelas)
+function vencedor() {
+  const primeiro = ranking()[0];
+  return primeiro && primeiro.estrelas >= META ? primeiro : null;
 }
 
-// O Espelho só vale logo depois de um poder usado contra a Índia, no mesmo turno
-function espelhavel(i) {
-  const u = partida.ultimoPoder;
-  return u && u.alvo === i && u.turno === partida.turno && !u.espelhado ? u : null;
-}
-
-function estadoDoPoder(lado, i, poder) {
-  if (lado.poderesNoTurno[poder.n] === partida.turno) return { pode: false, texto: 'Já usado neste turno' };
-  if (poder.efeito === 'espelho') {
-    const u = espelhavel(i);
-    if (!u) return { pode: false, texto: 'Use logo depois que alguém usar um poder contra você.' };
-    // Pode devolver até a Fiscalização que acabou de travar os poderes
-    const travado = semPoderes(lado) && u.efeito !== 'bloqueio';
-    return { pode: !travado && lado.pontos >= poder.custo, texto: `Devolver ${u.nome} para ${partida.lados[u.de].nome}` };
-  }
-  if (i !== partida.vez) return { pode: false, texto: poder.texto };
-  if (semPoderes(lado)) return { pode: false, texto: 'Sem poderes neste turno (Fiscalização)' };
-  return { pode: lado.pontos >= poder.custo, texto: poder.texto };
+function filaDeEstrelas(n) {
+  const cheias = Math.min(n, META);
+  return `${'★'.repeat(cheias)}<span class="vazias">${'☆'.repeat(META - cheias)}</span>${n > META ? `<small>+${n - META}</small>` : ''}`;
 }
 
 function htmlDoLado(lado, i) {
-  const nacao = DADOS.porCodigo[lado.nacao];
   const daVez = i === partida.vez;
-  return `<article class="lado ${daVez ? 'da-vez' : ''}" data-lado="${i}">
+  const ganhou = lado.estrelas >= META;
+  return `<article class="lado ${daVez ? 'da-vez' : ''} ${ganhou ? 'ganhou' : ''}" data-lado="${i}">
     <div class="lado-topo">
       <div>
-        <p class="lado-nome">${MP.esc(lado.nome)}</p>
-        <span class="nacao-tag">${MP.esc(nacao.nome)}${nacao.lema ? ` · ${MP.esc(nacao.lema)}` : ''}</span>
+        <p class="lado-nome">${ganhou ? '🏆 ' : ''}${MP.esc(lado.nome)}</p>
+        <span class="lado-info">${MP.plural(lado.missoes, 'missão feita', 'missões feitas')}${lado.perfeitas ? ` · ${lado.perfeitas} com ★★★` : ''}</span>
       </div>
       ${daVez ? '<span class="cod selo-vez">VEZ</span>' : ''}
     </div>
-    <div class="contadores">
-      <div class="contador vida">
-        <button type="button" class="mais-menos" data-acao="vida" data-delta="-1" aria-label="Tirar 1 de vida de ${MP.esc(lado.nome)}">−</button>
-        <div class="valor"><b>${lado.vida}</b><span>Vida</span></div>
-        <button type="button" class="mais-menos" data-acao="vida" data-delta="1" aria-label="Dar 1 de vida a ${MP.esc(lado.nome)}">+</button>
-      </div>
+    <div class="estrelas-lado">
+      <p class="fila-estrelas" aria-hidden="true">${filaDeEstrelas(lado.estrelas)}</p>
       <div class="contador">
-        <button type="button" class="mais-menos" data-acao="pontos" data-delta="-1" aria-label="Tirar 1 ponto de ${MP.esc(lado.nome)}">−</button>
-        <div class="valor"><b>${lado.pontos}</b><span>Pontos</span></div>
-        <button type="button" class="mais-menos" data-acao="pontos" data-delta="1" aria-label="Dar 1 ponto a ${MP.esc(lado.nome)}">+</button>
+        <button type="button" class="mais-menos" data-delta="-1" aria-label="Tirar 1 estrela de ${MP.esc(lado.nome)}">−</button>
+        <div class="valor"><b>${lado.estrelas}</b><span>de ${META} ★</span></div>
+        <button type="button" class="mais-menos" data-delta="1" aria-label="Dar 1 estrela a ${MP.esc(lado.nome)}">+</button>
       </div>
     </div>
-    ${semPoderes(lado) ? `<p class="bloqueio">⛔ Fiscalizado: sem poderes até o fim do turno ${lado.semPoderesAte - 1}</p>` : ''}
-    <div class="poderes">
-      ${nacao.poderes.map((p) => {
-        const estado = estadoDoPoder(lado, i, p);
-        return `<button type="button" class="poder ${p.n === '③' ? 'especial' : ''}" data-acao="poder" data-poder="${p.n}" ${estado.pode ? '' : 'disabled'}>
-          <span class="poder-nome">${p.n} ${MP.esc(p.nome)} <small>${MP.plural(p.custo, 'ponto', 'pontos')}</small></span>
-          <span class="poder-texto">${MP.esc(estado.texto)}</span>
-        </button>`;
-      }).join('')}
-    </div>
-    ${lado.vida <= 0 ? `<div class="alerta-lado">Vida zerada
-      <button type="button" class="botao secundario" data-acao="zerou">Perder os pontos e voltar com ${vidaInicial(lado.nacao)}</button>
-    </div>` : ''}
   </article>`;
 }
 
@@ -163,140 +105,58 @@ function mostrarPlacar() {
   $('#vez').hidden = escolhendo;
   $('#barra-turno').hidden = escolhendo;
   document.body.classList.toggle('com-barra', !escolhendo);
+  const campeao = vencedor();
 
   if (escolhendo) {
     $('#opcoes-comeca').innerHTML = partida.lados.map((lado, i) => (
       `<button type="button" class="chip" data-comeca="${i}">${MP.esc(lado.nome)}</button>`)).join('');
   } else {
     const lado = partida.lados[partida.vez];
-    $('#vez').innerHTML = `<div><small>Vez de</small><br><strong>${MP.esc(lado.nome)}</strong></div>
-      <small>Turno ${partida.turno} de ${partida.totalDeTurnos}</small>`;
+    $('#vez').innerHTML = campeao
+      ? `<div><small>Chegou a ${MP.plural(campeao.estrelas, 'estrela', 'estrelas')}</small><br><strong>🏆 ${MP.esc(campeao.nome)} ganhou!</strong></div>`
+      : `<div><small>Vez de</small><br><strong>${MP.esc(lado.nome)}</strong></div>
+        <small>${MP.plural(partida.feitas.length, 'missão feita', 'missões feitas')} de ${DADOS.totalDeMissoes}</small>`;
     const avisos = [];
-    if (partida.turno === 1) avisos.push('Tire 1 missão, escolha 1 contexto, 1 persona e 1 formato e dê a nota na página Missão.');
-    if (semPoderes(lado)) avisos.push(`${lado.nome} está sem poderes neste turno (Fiscalização).`);
-    if (partida.turno === partida.totalDeTurnos) avisos.push('Último turno da partida.');
+    if (!campeao && partida.turno === 1) {
+      avisos.push('Na vez: compre 1, bata se fechou um prompt e descarte 1. Alguém bateu? Confira na página Missão.');
+    }
+    if (!campeao && partida.feitas.length >= DADOS.totalDeMissoes) {
+      avisos.push('As missões acabaram: toque em Encerrar partida. Ganha quem tiver mais estrelas.');
+    }
     $('#aviso-turno').hidden = avisos.length === 0;
     $('#aviso-turno').textContent = avisos.join(' ');
-    $('#proximo').textContent = partida.turno >= partida.totalDeTurnos ? 'Ver resultado' : 'Próximo turno';
   }
   $('#lados').innerHTML = partida.lados.map(htmlDoLado).join('');
   atualizarRelogio();
+
+  // Alguém chegou à meta (na página Missão): mostra o resultado uma vez só.
+  // Se a estrela for desfeita, a vitória some e pode aparecer de novo depois.
+  if (!campeao && partida.fimMostrado) {
+    partida.fimMostrado = false;
+    MP.salvarPartida(partida);
+  }
+  if (campeao && !partida.fimMostrado && !escolhendo) {
+    partida.fimMostrado = true;
+    partida.cronometro = { fim: null, restante: restante(), esgotou: false };
+    MP.salvarPartida(partida);
+    encerrar();
+  }
 }
 
-// ---------- Poderes ----------
-
-function pagar(lado, poder) {
-  lado.pontos -= poder.custo;
-  lado.poderesNoTurno[poder.n] = partida.turno;
-}
-
-function usarPoder(i, codigoDoPoder) {
+// O + e o − corrigem as estrelas à mão (a página Missão já soma sozinha)
+function mudarEstrelas(i, delta) {
   const lado = partida.lados[i];
-  const poder = DADOS.porCodigo[lado.nacao].poderes.find((p) => p.n === codigoDoPoder);
-  if (!estadoDoPoder(lado, i, poder).pode) return;
-  if (COM_ALVO.includes(poder.efeito)) {
-    escolherAlvo(i, poder);
-    return;
-  }
-  pagar(lado, poder);
-  if (poder.efeito === 'cura') {
-    lado.vida += poder.valor;
-    MP.aviso(`${lado.nome}: ${poder.nome}, +${poder.valor} de vida`);
-  }
-  if (poder.efeito === 'espelho') espelhar(i);
-  if (poder.efeito === 'manual') MP.aviso(`${lado.nome}: ${poder.nome}. Monte outro prompt e dê a nota na página Missão.`);
-}
-
-// Janela para escolher em qual lado o poder vai
-let pedidoDeAlvo = null;
-function escolherAlvo(i, poder) {
-  pedidoDeAlvo = { de: i, poder };
-  $('#alvo-titulo').textContent = `${poder.n} ${poder.nome}: em quem?`;
-  $('#alvo-texto').textContent = `${partida.lados[i].nome} vai pagar ${MP.plural(poder.custo, 'ponto', 'pontos')}. Efeito: ${poder.texto}.`;
-  $('#alvo-lados').innerHTML = partida.lados.map((lado, j) => (j === i ? '' : `<button type="button" class="chip" data-alvo="${j}">
-    ${MP.esc(lado.nome)} · ${lado.vida} de vida · ${MP.plural(lado.pontos, 'ponto', 'pontos')}</button>`)).join('');
-  $('#alvo').showModal();
-}
-
-function aplicarNoAlvo(alvo) {
-  const { de, poder } = pedidoDeAlvo;
-  pedidoDeAlvo = null;
-  $('#alvo').close();
-  const quem = partida.lados[de];
-  const outro = partida.lados[alvo];
-  pagar(quem, poder);
-  const registro = { de, alvo, nome: poder.nome, efeito: poder.efeito, valor: poder.valor, turno: partida.turno, espelhado: false };
-  if (poder.efeito === 'dano') {
-    registro.tirou = Math.min(outro.vida, poder.valor);
-    outro.vida -= registro.tirou;
-    MP.aviso(`${quem.nome}: ${poder.nome}! ${outro.nome} perde ${poder.valor} de vida`);
-  }
-  if (poder.efeito === 'roubo') {
-    registro.tirou = Math.min(outro.pontos, poder.valor);
-    outro.pontos -= registro.tirou;
-    quem.pontos += registro.tirou;
-    MP.aviso(`${quem.nome}: ${poder.nome}! Pegou ${MP.plural(registro.tirou, 'ponto', 'pontos')} de ${outro.nome}`);
-  }
-  if (poder.efeito === 'bloqueio') {
-    // Sem poderes desde agora até o fim do próximo turno do alvo
-    registro.antes = outro.semPoderesAte || 0;
-    outro.semPoderesAte = proximoTurnoDe(alvo) + 1;
-    MP.aviso(`${quem.nome}: ${poder.nome}! ${outro.nome} fica sem poderes até o fim do turno ${outro.semPoderesAte - 1}`);
-  }
-  partida.ultimoPoder = registro;
+  lado.estrelas = Math.max(0, lado.estrelas + delta);
   MP.salvarPartida(partida);
   mostrarPlacar();
 }
 
-// Espelho da Índia: desfaz o último poder usado contra ela e aplica o mesmo efeito em quem usou
-function espelhar(i) {
-  const u = espelhavel(i);
-  if (!u) return;
-  const india = partida.lados[i];
-  const quem = partida.lados[u.de];
-  if (u.efeito === 'dano') {
-    india.vida += u.tirou;
-    quem.vida -= Math.min(quem.vida, u.valor);
-  }
-  if (u.efeito === 'roubo') {
-    // Devolve só o que quem usou ainda tem (pode ter gastado antes do Espelho)
-    const devolve = Math.min(quem.pontos, u.tirou);
-    india.pontos += devolve;
-    quem.pontos -= devolve;
-    const pega = Math.min(quem.pontos, u.valor);
-    quem.pontos -= pega;
-    india.pontos += pega;
-  }
-  if (u.efeito === 'bloqueio') {
-    // Quem fiscalizou fica sem poderes até o fim do próximo turno dele
-    india.semPoderesAte = u.antes;
-    quem.semPoderesAte = proximoTurnoDe(u.de) + 1;
-  }
-  u.espelhado = true;
-  MP.aviso(`${india.nome}: Espelho! ${u.nome} voltou para ${quem.nome}`);
-}
-
-function mudarLado(i, acao, delta, codigoDoPoder) {
-  const lado = partida.lados[i];
-  if (acao === 'vida') lado.vida = Math.max(0, lado.vida + delta);
-  if (acao === 'pontos') lado.pontos = Math.max(0, lado.pontos + delta);
-  if (acao === 'poder') usarPoder(i, codigoDoPoder);
-  if (acao === 'zerou') {
-    // Regra: vida zerada perde todos os pontos e volta com a vida inicial
-    lado.pontos = 0;
-    lado.vida = vidaInicial(lado.nacao);
-    MP.aviso(`${lado.nome}: perdeu os pontos e voltou com ${lado.vida} de vida`);
-  }
-  MP.salvarPartida(partida);
-  mostrarPlacar();
-}
-
-// ---------- Turnos ----------
+// ---------- Vez ----------
 
 function escolherQuemComeca(i) {
   partida.vez = i;
   partida.turno = 1;
-  partida.cronometro = { fim: null, restante: DURACAO_DO_TURNO, esgotou: false };
+  partida.cronometro = { fim: null, restante: DURACAO_DA_VEZ, esgotou: false };
   MP.salvarPartida(partida);
   mostrarPlacar();
 }
@@ -307,11 +167,7 @@ function sortearQuemComeca() {
   MP.aviso(`Sorteado: ${partida.lados[i].nome} começa`);
 }
 
-function proximoTurno() {
-  if (partida.turno >= partida.totalDeTurnos) {
-    encerrar();
-    return;
-  }
+function passarAVez() {
   partida.vez = (partida.vez + 1) % partida.lados.length;
   partida.turno += 1;
   iniciarCronometro();
@@ -328,7 +184,7 @@ function restante() {
 }
 
 function iniciarCronometro() {
-  partida.cronometro = { fim: Date.now() + DURACAO_DO_TURNO * 1000, restante: DURACAO_DO_TURNO, esgotou: false };
+  partida.cronometro = { fim: Date.now() + DURACAO_DA_VEZ * 1000, restante: DURACAO_DA_VEZ, esgotou: false };
   MP.salvarPartida(partida);
   manterTelaLigada();
 }
@@ -338,7 +194,7 @@ function botaoDoCronometro() {
   if (c.fim) {
     partida.cronometro = { fim: null, restante: restante(), esgotou: false };
     MP.salvarPartida(partida);
-  } else if (c.esgotou || c.restante >= DURACAO_DO_TURNO) {
+  } else if (c.esgotou || c.restante >= DURACAO_DA_VEZ) {
     iniciarCronometro();
   } else {
     partida.cronometro.fim = Date.now() + c.restante * 1000;
@@ -362,7 +218,7 @@ function atualizarRelogio() {
   $('#segundos').textContent = segundos;
   $('#arco').style.strokeDasharray = VOLTA_DO_RELOGIO;
   // Tempo esgotado: o círculo fica inteiro e vermelho
-  const fracao = partida.cronometro.esgotou ? 1 : restante() / DURACAO_DO_TURNO;
+  const fracao = partida.cronometro.esgotou ? 1 : restante() / DURACAO_DA_VEZ;
   $('#arco').style.strokeDashoffset = VOLTA_DO_RELOGIO * (1 - fracao);
   const relogio = $('#relogio');
   relogio.classList.toggle('pouco', segundos <= 10 && segundos > 0);
@@ -370,10 +226,10 @@ function atualizarRelogio() {
   const botao = $('#cronometro');
   if (partida.cronometro.fim) botao.textContent = 'Pausar';
   else if (partida.cronometro.esgotou) botao.textContent = 'Reiniciar';
-  else botao.textContent = segundos >= DURACAO_DO_TURNO ? 'Iniciar' : 'Continuar';
+  else botao.textContent = segundos >= DURACAO_DA_VEZ ? 'Iniciar' : 'Continuar';
   if (partida.cronometro.esgotou) {
     $('#aviso-turno').hidden = false;
-    $('#aviso-turno').textContent = 'Tempo esgotado! Dê a nota com as cartas que o lado já escolheu: a que faltar não ganha estrela.';
+    $('#aviso-turno').textContent = 'Tempo esgotado! O lado descarta 1 carta e passa a vez.';
   }
 }
 
@@ -413,26 +269,17 @@ async function manterTelaLigada() {
 // ---------- Fim da partida ----------
 
 function encerrar() {
-  const ordem = [...partida.lados].sort((a, b) => b.pontos - a.pontos || b.vida - a.vida);
-  $('#ranking').innerHTML = ordem.map((lado, i) => `<li>
-    <span>${i === 0 ? '🏆 ' : ''}${MP.esc(lado.nome)}</span>
-    <span>${MP.plural(lado.pontos, 'ponto', 'pontos')} · ${lado.vida} de vida</span></li>`).join('');
-  const acabou = partida.turno >= partida.totalDeTurnos;
-  $('#fim-titulo').textContent = acabou ? 'Fim da partida' : 'Placar até agora';
-  // No meio da partida, "Voltar ao jogo" já continua; mais uma rodada só no fim
-  $('#mais-rodada').hidden = !acabou;
-  $('#fim').showModal();
+  const ordem = ranking();
+  const primeiro = ordem[0];
+  const empatados = ordem.filter((l) => l.estrelas === primeiro.estrelas && l.perfeitas === primeiro.perfeitas);
+  $('#fim-titulo').textContent = empatados.length > 1 ? 'Empate!' : `🏆 ${primeiro.nome} ganhou!`;
+  $('#ranking').innerHTML = ordem.map((lado) => `<li>
+    <span>${empatados.includes(lado) ? '🏆 ' : ''}${MP.esc(lado.nome)}</span>
+    <span>${MP.plural(lado.estrelas, 'estrela', 'estrelas')} · ${MP.plural(lado.missoes, 'missão', 'missões')}</span></li>`).join('');
+  if (!$('#fim').open) $('#fim').showModal();
 }
 
-// Mais uma volta: cada lado joga mais 1 turno (as missões feitas voltam embaralhadas para o monte)
-function maisUmaRodada() {
-  partida.totalDeTurnos += partida.lados.length;
-  $('#fim').close();
-  proximoTurno();
-  MP.aviso('Mais uma rodada: embaralhem as missões feitas de volta no monte');
-}
-
-// Pede confirmação numa janela do próprio app (o confirm() do navegador some em alguns celulares)
+// Pede confirmação numa janela do próprio aplicativo (o confirm() do navegador some em alguns celulares)
 function pedirNovaPartida() {
   if ($('#fim').open) $('#fim').close();
   $('#confirmar-nova').showModal();
@@ -477,22 +324,15 @@ $('#opcoes-comeca').addEventListener('click', (evento) => {
   if (botao) escolherQuemComeca(Number(botao.dataset.comeca));
 });
 $('#lados').addEventListener('click', (evento) => {
-  const botao = evento.target.closest('[data-acao]');
+  const botao = evento.target.closest('[data-delta]');
   if (!botao) return;
-  const i = Number(botao.closest('[data-lado]').dataset.lado);
-  mudarLado(i, botao.dataset.acao, Number(botao.dataset.delta || 0), botao.dataset.poder);
+  mudarEstrelas(Number(botao.closest('[data-lado]').dataset.lado), Number(botao.dataset.delta));
 });
-$('#alvo-lados').addEventListener('click', (evento) => {
-  const botao = evento.target.closest('[data-alvo]');
-  if (botao && pedidoDeAlvo) aplicarNoAlvo(Number(botao.dataset.alvo));
-});
-$('#alvo-cancelar').addEventListener('click', () => { pedidoDeAlvo = null; $('#alvo').close(); });
 $('#cronometro').addEventListener('click', botaoDoCronometro);
-$('#proximo').addEventListener('click', () => { prepararSom(); proximoTurno(); });
+$('#proximo').addEventListener('click', () => { prepararSom(); passarAVez(); });
 $('#encerrar').addEventListener('click', encerrar);
 $('#nova').addEventListener('click', pedirNovaPartida);
 $('#nova-do-fim').addEventListener('click', pedirNovaPartida);
-$('#mais-rodada').addEventListener('click', maisUmaRodada);
 $('#confirmar-nova-botao').addEventListener('click', novaPartida);
 $('#cancelar-nova').addEventListener('click', () => $('#confirmar-nova').close());
 $('#voltar-jogo').addEventListener('click', () => $('#fim').close());

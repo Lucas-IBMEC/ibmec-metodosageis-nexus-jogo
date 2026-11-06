@@ -1,0 +1,583 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><title>Palavra Mágica · Manual do Professor</title><style>
+@page { size: A4 portrait; margin: 0; }
+* { box-sizing: border-box; }
+body { margin: 0; font-family: 'Segoe UI', Arial, sans-serif; color: #1b1f2a; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.page { width: 210mm; height: 297mm; page-break-after: always; break-after: page; overflow: hidden; background: #fff; position: relative; }
+.grid { display: grid; grid-template-columns: repeat(3, 63mm); grid-template-rows: repeat(3, 88mm); justify-content: center; align-content: center; }
+
+.t-missao { --c: #c98a00; --claro: #fff6dc; } .t-persona { --c: #6d3fc0; --claro: #f1ebfb; }
+.t-contexto { --c: #1f5fd1; --claro: #e8f0fd; } .t-formato { --c: #e06c00; --claro: #fff0e2; }
+.t-ajuda { --c: #16274f; --claro: #e9edf6; }
+.a-S { color: #c62828; }
+
+.card { width: 63mm; height: 88mm; border: 0.3mm dashed #9aa3b5; padding: 3mm; display: flex; flex-direction: column; gap: 1.6mm; position: relative; }
+.card::before { content: ''; position: absolute; inset: 1.6mm; border: 0.6mm solid var(--c); border-radius: 3mm; pointer-events: none; }
+.hd { background: var(--c); color: #fff; border-radius: 2mm; padding: 1.2mm 2.4mm; display: flex; justify-content: space-between; font-weight: 800; font-size: 8.5pt; letter-spacing: .06em; position: relative; }
+.code { font-weight: 700; background: rgba(255,255,255,.25); border-radius: 1mm; padding: 0 1.4mm; }
+.assunto { display: flex; align-items: center; gap: 1.6mm; margin: 0 1mm; padding: .8mm 2mm .8mm .8mm; background: var(--claro); border-radius: 5mm; font-size: 9pt; font-weight: 800; align-self: flex-start; }
+.assunto .ico { width: 6.4mm; height: 6.4mm; border-radius: 50%; background: #fff; display: inline-flex; align-items: center; justify-content: center; font-size: 10pt; line-height: 1; }
+.body { flex: 1; padding: 0 1.5mm; display: flex; flex-direction: column; justify-content: flex-start; gap: 1.4mm; }
+.body.center { justify-content: center; text-align: center; }
+.pedido { font-size: 13pt; font-weight: 800; line-height: 1.28; margin: .5mm 0 0; }
+.pense { font-size: 7.6pt; color: #4a5368; font-style: italic; margin: 0; }
+.monte { margin: 0 1.5mm; background: var(--claro); border-radius: 2mm; padding: 1.2mm 2mm; font-size: 7.4pt; line-height: 1.3; text-align: center; }
+.monte b { font-size: 8.2pt; }
+.estrelas { display: flex; justify-content: space-between; margin: 0 1.5mm; font-size: 7pt; }
+.estrelas b { color: var(--c); font-size: 8.4pt; }
+.txt { font-size: 11pt; line-height: 1.32; margin: 0; }
+.nome { font-size: 12pt; font-weight: 800; margin: 1mm 0 0; line-height: 1.2; }
+.big { font-size: 12pt; font-weight: 800; margin: 0; line-height: 1.2; }
+.efeito { font-size: 8.2pt; margin: 0; line-height: 1.35; color: #2b3245; }
+.desenho { color: var(--c); margin: 1mm auto; width: 40mm; }
+.desenho svg { width: 100%; height: auto; display: block; }
+.ft { font-size: 6.3pt; line-height: 1.3; color: #4a5368; border-top: 0.3mm solid #d6dbe6; padding: 1mm 1.5mm 0; margin: 0 .5mm .5mm; }
+.ft b { color: var(--c); }
+
+/* Resumo da vez */
+.passos { justify-content: center; gap: 2.4mm; }
+.passos p { margin: 0; display: flex; gap: 2mm; align-items: flex-start; font-size: 8.4pt; line-height: 1.3; }
+.passos p b { display: block; font-size: 10.6pt; color: var(--c); }
+.passos .n { flex: none; width: 6mm; height: 6mm; border-radius: 50%; background: var(--c); color: #fff; font-weight: 800; font-size: 9.6pt; display: inline-flex; align-items: center; justify-content: center; }
+.passos .vale { display: block; background: var(--claro); border-radius: 2mm; padding: 1.4mm 2mm; font-size: 8pt; }
+.passos .vale b { display: inline; color: #c98a00; font-size: 9.2pt; }
+.passos .depois { display: block; font-size: 7.2pt; color: #4a5368; }
+
+/* Folhas de texto */
+.doc { padding: 10mm 12mm; font-size: 9.2pt; line-height: 1.34; }
+.regras { font-size: 10.4pt; line-height: 1.38; }
+.doc h1 { font-size: 18pt; margin: 0 0 2.5mm; } .doc h1 small { display: block; font-size: 9pt; font-weight: 500; color: #4a5368; }
+.doc h2 { font-size: 11.5pt; margin: 3.4mm 0 1.2mm; color: #1f5fd1; }
+.doc p { margin: 0 0 1.4mm; }
+.doc ul, .doc ol { margin: 0 0 1mm; padding-left: 5mm; } .doc li { margin-bottom: 1mm; }
+.cols { display: grid; grid-template-columns: 1fr 1fr; gap: 7mm; }
+.objetivo { background: #fff6dc; border: 0.4mm solid #e0b84a; border-radius: 2mm; padding: 2.4mm 3mm; font-size: 10.6pt; }
+.vez-passos { font-size: 11pt; } .vez-passos li { margin-bottom: 1.4mm; }
+.formula { display: flex; align-items: stretch; gap: 1.4mm; margin: 1mm 0 1.4mm; }
+.formula i { font-style: normal; font-weight: 800; font-size: 13pt; align-self: center; }
+.peca { flex: 1; border: 0.5mm solid var(--c); background: var(--claro); border-radius: 2mm; padding: 1.4mm 1.6mm; font-size: 7.6pt; line-height: 1.25; text-align: center; }
+.peca b { display: block; color: var(--c); font-size: 9.4pt; }
+.assuntos { font-weight: 700; font-size: 9pt; }
+.sem-quebra { white-space: nowrap; }
+.exemplo { margin-top: 3mm; border-left: 1.2mm solid #c98a00; background: #fff6dc; border-radius: 0 2mm 2mm 0; padding: 2.2mm 3mm; font-size: 9.2pt; line-height: 1.35; }
+.exemplo p { margin: 0 0 1.2mm; } .exemplo p:last-child { margin: 0; }
+.exemplo-t { font-weight: 800; font-size: 9pt; letter-spacing: .06em; text-transform: uppercase; color: #8a5a00; }
+.exemplo-missao { font-style: italic; }
+.nota-tab { width: 100%; border-collapse: collapse; margin: 1mm 0 1.6mm; } .nota-tab td { border: 0.3mm solid #e0c27a; padding: 1.2mm 2mm; font-size: 9.6pt; } .nota-tab td:last-child { text-align: right; font-weight: 700; white-space: nowrap; }
+.nota-tab b { color: #c98a00; }
+.ganha { background: #e3f4ea; border: 0.4mm solid #7cc49c; border-radius: 2mm; padding: 1.8mm 2.6mm; }
+.pequeno { font-size: 9pt; }
+.mesa { margin-top: 3mm; border: 0.4mm dashed #9aa3b5; border-radius: 3mm; padding: 2.4mm 3mm 2.6mm; background: #f6f8fc; text-align: center; }
+.mesa-t { font-weight: 800; font-size: 9pt; margin: 0 0 1mm !important; color: #4a5368; letter-spacing: .06em; text-transform: uppercase; }
+.mesa-fila { display: flex; justify-content: center; gap: 3mm; margin: 1.6mm 0; }
+.mini { width: 19mm; height: 26mm; border-radius: 1.6mm; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .6mm; font-size: 8pt; font-weight: 800; color: #fff; }
+.mini small { font-size: 6pt; font-weight: 600; line-height: 1.2; padding: 0 1mm; }
+.mini.m { background: #c98a00; }
+.mini.monte { background: #16274f; }
+.mini.lixo { background: #fff; color: #1b1f2a; border: 0.5mm solid #9aa3b5; }
+.mesa-mao { margin: 1.4mm 0 0 !important; font-size: 8.6pt; font-weight: 700; }
+.aviso { background: #eef2f8; border-radius: 2mm; padding: 2mm 3mm; font-size: 8.4pt; color: #4a5368; margin-top: 3mm; }
+.gab-pag { font-size: 9pt; }
+table.gab { width: 100%; border-collapse: collapse; } .gab th, .gab td { border: 0.3mm solid #c9cfdb; padding: 1.3mm 2mm; text-align: left; vertical-align: top; font-size: 8.6pt; } .gab th { background: #eef2f8; }
+.small2 { font-size: 8.6pt; line-height: 1.45; }
+
+.man { padding: 13mm 14mm 16mm; font-size: 10.2pt; line-height: 1.4; display: flex; flex-direction: column; gap: 2.6mm; }
+.man p { margin: 0; }
+.man ul, .man ol { margin: 0; padding-left: 5mm; } .man li { margin-bottom: 1.2mm; }
+.man h2 { font-size: 13pt; margin: 1mm 0 0; color: #16274f; }
+.man h3 { font-size: 11pt; margin: 2mm 0 0; color: #16274f; }
+.man b { font-weight: 700; }
+.secao { display: flex; align-items: center; gap: 3mm; font-size: 17pt !important; margin: 0 0 1mm !important; }
+.secao > span { width: 9mm; height: 9mm; border-radius: 50%; background: #16274f; color: #fff; display: inline-flex; align-items: center; justify-content: center; font-size: 13pt; flex: none; }
+.secao small { font-size: 10pt; font-weight: 600; color: #4a5368; margin-left: 1mm; }
+.abre { font-size: 10.6pt; }
+.rodape { position: absolute; left: 14mm; right: 14mm; bottom: 7mm; display: flex; justify-content: space-between; font-size: 8pt; color: #6b7489; border-top: 0.3mm solid #d6dbe6; padding-top: 1.6mm; }
+.sem-quebra { white-space: nowrap; }
+.nota-pe { font-size: 9pt; color: #4a5368; }
+
+/* cartas de verdade, menores */
+.mini-carta { display: inline-block; flex: none; }
+.mini-carta .card { border-color: transparent; background: #fff; border-radius: 3.6mm; box-shadow: 0 .5mm 2mm rgba(22, 39, 79, .22); }
+.mini-carta.destaque .card { box-shadow: 0 0 0 1.6mm #198754, 0 .5mm 2mm rgba(22, 39, 79, .22); }
+.verso { width: 63mm; height: 88mm; border-radius: 3.6mm; background: #eef1f6; border: .8mm solid #c3cad8; box-shadow: 0 .5mm 2mm rgba(22, 39, 79, .22); }
+.leque { display: flex; padding: 4mm 6mm 0; }
+.leque .verso { flex: none; transform-origin: 50% 120%; }
+.leque .verso + .verso { margin-left: -46mm; }
+.leque .verso:nth-child(1) { transform: rotate(-14deg); } .leque .verso:nth-child(2) { transform: rotate(-7deg); }
+.leque .verso:nth-child(4) { transform: rotate(7deg); } .leque .verso:nth-child(5) { transform: rotate(14deg); }
+.pilha { position: relative; width: 67mm; height: 92mm; }
+.pilha .verso { position: absolute; }
+.pilha .verso:nth-child(1) { left: 4mm; top: 4mm; } .pilha .verso:nth-child(2) { left: 2mm; top: 2mm; } .pilha .verso:nth-child(3) { left: 0; top: 0; }
+.junto { display: flex; align-items: center; gap: 2.4mm; flex-wrap: wrap; }
+.mais { font-size: 16pt; font-weight: 800; color: #4a5368; padding: 0 1mm; }
+
+/* capa */
+.capa { gap: 4mm; }
+.capa-topo { background: #16274f; color: #fff; margin: -13mm -14mm 0; padding: 16mm 14mm 10mm; }
+.capa-rotulo { font-size: 10pt; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: #f2c14e; }
+.capa h1 { font-size: 40pt; line-height: 1.05; margin: 2mm 0 3mm; letter-spacing: -.01em; }
+.capa-sub { font-size: 13pt; max-width: 150mm; color: #dfe5f3; }
+.capa-cartas { display: flex; justify-content: center; align-items: center; gap: 2.6mm; padding: 5mm 0 3mm; }
+.gira-1 { transform: rotate(-6deg) translateY(3mm); } .gira-2 { transform: rotate(-2deg); }
+.gira-3 { transform: rotate(2deg); } .gira-4 { transform: rotate(6deg) translateY(3mm); }
+.para-quem { background: #e9edf6; font-size: 10.4pt; }
+.imprimir { background: #f3f5f9; border: .4mm dashed #9aa3b5; font-size: 9.6pt; margin-top: 2mm; }
+.numeros { display: grid; grid-template-columns: repeat(4, 1fr); gap: 3mm; }
+.numeros div { background: #f3f5f9; border-radius: 2.4mm; padding: 2.6mm 3mm; display: flex; flex-direction: column; gap: .6mm; }
+.numeros b { font-size: 15pt; color: #16274f; line-height: 1.1; }
+.numeros span { font-size: 8.6pt; line-height: 1.3; color: #4a5368; }
+.capa-cols { display: grid; grid-template-columns: 1.25fr 1fr; gap: 8mm; }
+.sumario li { margin-bottom: .6mm; }
+
+/* o que o jogo ensina */
+.montagem { display: grid; grid-template-columns: auto 1fr; gap: 2.4mm 5mm; align-items: center; background: #f6f8fc; border-radius: 3mm; padding: 4mm; }
+.montagem-cartas { display: grid; grid-template-columns: repeat(2, auto); gap: 2.4mm; grid-row: span 2; }
+.prompt-pronto { background: #fff; border-radius: 2.4mm; border: .4mm solid #d6dbe6; padding: 3mm 3.4mm; display: flex; flex-direction: column; gap: 1.6mm; font-size: 10.4pt; font-family: Consolas, 'Courier New', monospace; }
+.prompt-pronto p { border-left: 1.2mm solid var(--c); padding-left: 2.4mm; }
+.etq { display: block; font-family: 'Segoe UI', Arial, sans-serif; font-size: 7.4pt; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--c); }
+.resposta-ia { font-size: 9.4pt; }
+.resposta-t { font-weight: 700; color: #4a5368; margin-bottom: 1mm !important; }
+.resposta-txt { background: #e9f6ef; border-radius: 2.4mm; padding: 2.4mm 3mm; line-height: 1.45; }
+.tabela { width: 100%; border-collapse: collapse; font-size: 9.6pt; }
+.tabela th, .tabela td { border: .3mm solid #d6dbe6; padding: 1.8mm 2.4mm; text-align: left; vertical-align: top; }
+.tabela th { background: #eef2f8; font-size: 9pt; }
+.ensina td:first-child { border-left: 1.6mm solid var(--c); white-space: nowrap; }
+.ensina td:first-child b { color: var(--c); }
+.caixa { border-radius: 2.6mm; padding: 3mm 3.6mm; }
+.estrelas-caixa { background: #fff6dc; border: .4mm solid #e0b84a; }
+.estrelas-caixa b { color: #8a5a00; }
+
+/* as cartas */
+.cartas-explicadas { display: grid; grid-template-columns: 1fr 1fr; gap: 4mm 6mm; margin-top: 1mm; }
+.carta-explicada { display: flex; gap: 3.4mm; align-items: center; font-size: 9.4pt; line-height: 1.36; }
+.carta-explicada p { margin-bottom: 1mm; }
+.ce-nome { font-size: 12pt; font-weight: 800; color: #16274f; margin: 0 !important; }
+.ce-qtd { font-size: 8.6pt; color: #4a5368; font-weight: 600; }
+.ce-regra { font-weight: 700; color: #16274f; }
+.contas { align-items: center; }
+.mini-tab { font-size: 8.8pt; margin: 1.6mm 0 2mm; } .mini-tab td, .mini-tab th { padding: 1mm 1.8mm; text-align: center; } .mini-tab td:first-child { text-align: left; }
+
+/* preparação */
+.prep { display: grid; grid-template-columns: 1fr 98mm; gap: 6mm; align-items: start; }
+.passos-grandes { padding-left: 6mm !important; }
+.passos-grandes li { margin-bottom: 2.2mm; }
+.mesa-figura { margin: 0; }
+.feltro { background: #e3f1e8; border: .6mm solid #a9d3b8; border-radius: 6mm; padding: 3mm 3mm 4mm; display: flex; flex-direction: column; align-items: center; gap: 3mm; }
+.fila { display: flex; gap: 5mm; justify-content: center; align-items: flex-end; }
+.lugar { display: flex; flex-direction: column; align-items: center; gap: 1.2mm; }
+.rot { font-size: 8pt; font-weight: 800; color: #2c5e3f; text-transform: uppercase; letter-spacing: .05em; }
+.mesa-figura figcaption { font-size: 8.6pt; color: #4a5368; margin-top: 1.6mm; text-align: center; }
+
+/* a vez */
+.tres-passos { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3mm; }
+.tres-passos div { background: #e9edf6; border-radius: 2.6mm; padding: 3mm; font-size: 9.6pt; line-height: 1.35; display: flex; flex-direction: column; gap: .8mm; }
+.tres-passos b { font-size: 11pt; color: #16274f; }
+.n { width: 6.4mm; height: 6.4mm; border-radius: 50%; background: #16274f; color: #fff; font-weight: 800; font-size: 9.6pt; display: inline-flex; align-items: center; justify-content: center; flex: none; }
+.tres-passos .n { margin-bottom: .6mm; }
+.quadro-ex { display: flex; flex-direction: column; gap: 2mm; border-top: .3mm solid #d6dbe6; padding-top: 2.4mm; }
+.ex-t { display: flex; gap: 2.4mm; align-items: center; font-size: 10pt; }
+.ex-t .n, .ex-fim .n { background: #c98a00; }
+.ex-fim { display: flex; flex-direction: column; gap: 2mm; border-top: .3mm solid #d6dbe6; padding-top: 2.4mm; font-size: 10pt; }
+.ex-fim p { display: flex; gap: 2.4mm; align-items: flex-start; }
+
+/* aplicativo */
+.endereco { font-family: Consolas, 'Courier New', monospace; font-size: 11pt; font-weight: 700; background: #eef2f8; border-radius: 1.6mm; padding: 1.6mm 3mm; align-self: flex-start; white-space: nowrap; }
+.telas { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4mm; margin: 1mm 0; }
+.tela { margin: 0; display: flex; flex-direction: column; gap: 2mm; align-items: center; }
+.celular { width: 56mm; height: 115mm; overflow: hidden; border: 1.4mm solid #1b1f2a; border-radius: 6mm; background: #f3f5f9; }
+/* a foto tem 600 px de largura e o aplicativo ocupa os 375 px da esquerda: o resto fica escondido */
+.celular img { width: calc((56mm - 2.8mm) * 600 / 375); display: block; }
+.tela figcaption { font-size: 8.8pt; line-height: 1.32; text-align: center; color: #2b3245; }
+.app-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 6mm; font-size: 9.8pt; }
+
+/* fim e aula */
+.ganha-caixa { background: #e3f4ea; border: .4mm solid #7cc49c; font-size: 11pt; }
+.casos td:first-child { font-weight: 700; width: 52mm; }
+.aula-cols { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3mm; }
+.momento { background: #f3f5f9; border-radius: 2.6mm; padding: 3mm; font-size: 9.6pt; display: flex; flex-direction: column; gap: 1.6mm; }
+.mom-t { font-weight: 800; font-size: 9pt; letter-spacing: .05em; text-transform: uppercase; color: #16274f; }
+.etica { background: #fff0e2; border: .4mm solid #f0b27a; font-size: 9.6pt; display: flex; flex-direction: column; gap: 1.6mm; }
+
+/* glossário */
+.glossario { font-size: 9.2pt; line-height: 1.34; }
+.glossario th, .glossario td { padding: 1.6mm 2.2mm; }
+.glossario td:first-child { width: 38mm; } .glossario td:nth-child(2) { width: 19mm; }
+.trocas { font-size: 9.2pt; } .trocas td { padding: 1.4mm 2.2mm; } .trocas td:first-child { text-decoration: line-through; color: #6b7489; width: 44mm; }
+</style></head><body><section class="page man capa">
+  <div class="capa-topo">
+    <p class="capa-rotulo">Manual do Professor</p>
+    <h1>Palavra Mágica</h1>
+    <p class="capa-sub">Um jogo de cartas para aprender a escrever bons prompts, sem internet na sala de aula.</p>
+  </div>
+  <div class="capa-cartas">
+    <div class="mini-carta gira-1" style="zoom:0.68"><div class="card t-missao"><div class="hd"><span>MISSÃO</span><span class="code">M04</span></div>
+  <div class="assunto"><span class="ico a-E">⚽</span>Esporte</div>
+  <div class="body"><p class="pedido">“Monte um aquecimento seguro para a aula de Educação Física.”</p>
+  <p class="pense">Pense: quem vai ler? Que formato ajuda essa pessoa?</p></div>
+  <div class="monte">Para bater: <b>contexto e persona com <span class="a-E">⚽</span> + 1 formato</b></div>
+  <div class="estrelas"><span><b>★★★</b> formato que ajuda</span><span><b>★★</b> outro formato</span></div>
+  <div class="ft">Fica aberta no meio da mesa. Qualquer lado pode fazer.</div></div></div><div class="mini-carta gira-2" style="zoom:0.68"><div class="card t-contexto"><div class="hd"><span>CONTEXTO</span><span class="code">C07</span></div>
+  <div class="assunto"><span class="ico a-E">⚽</span>Esporte</div>
+  <div class="body"><p class="nome">Futsal da escola</p><p class="txt">“Treino o time de futsal da escola, com meninos e meninas.”</p></div>
+  <div class="ft">A situação: de onde você fala e o que está acontecendo.</div></div></div><div class="mini-carta gira-3" style="zoom:0.68"><div class="card t-persona"><div class="hd"><span>PERSONA</span><span class="code">P04</span></div>
+  <div class="assunto"><span class="ico a-E">⚽</span>Esporte</div>
+  <div class="body center"><p class="big">Professor de Educação Física</p><p class="efeito">No prompt:<br>“Você é professor de Educação Física.”</p></div>
+  <div class="ft">Quem a IA vai ser ao responder.</div></div></div><div class="mini-carta gira-4" style="zoom:0.68"><div class="card t-formato"><div class="hd"><span>FORMATO</span><span class="code">F02</span></div>
+  <div class="body center"><p class="big">Passo a passo</p><div class="desenho"><svg viewBox="0 0 100 36" aria-hidden="true"><text x="6" y="11" font-size="8" font-weight="800" fill="currentColor" font-family="Segoe UI, Arial">1</text><text x="6" y="21" font-size="8" font-weight="800" fill="currentColor" font-family="Segoe UI, Arial">2</text><text x="6" y="31" font-size="8" font-weight="800" fill="currentColor" font-family="Segoe UI, Arial">3</text><line x1="18" y1="8" x2="84" y2="8" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><line x1="18" y1="18" x2="72" y2="18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><line x1="18" y1="28" x2="80" y2="28" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></div><p class="efeito">Etapas numeradas, na ordem de fazer.</p></div>
+  <div class="ft">Como a resposta chega para quem vai ler.</div></div></div>
+  </div>
+  <div class="numeros">
+    <div><b>2 a 5</b><span>lados na mesa; até 40 alunos no modo Turma</span></div>
+    <div><b>6 a 12 min</b><span>por partida (estimativa; vamos medir no teste)</span></div>
+    <div><b>2 min</b><span>para explicar as regras</span></div>
+    <div><b>72</b><span>cartas em 8 folhas A4</span></div>
+  </div>
+  <div class="caixa para-quem">
+    <p><b>Para quem é:</b> alunos do 6º ano do Ensino Fundamental até o Ensino Médio. Foi pensado para escolas sem internet ou com internet ruim: na mesa, os alunos só usam cartas de papel, e o aplicativo do professor funciona sem internet.</p>
+  </div>
+  <div class="capa-cols">
+    <div>
+      <h2>O que você precisa</h2>
+      <ul>
+        <li>As cartas impressas, a folha de regras e o gabarito (arquivo de cartas, 10 folhas).</li>
+        <li>O seu celular com o aplicativo do professor. <b>Os alunos não usam celular.</b></li>
+        <li>Sem celular? O gabarito impresso faz o mesmo papel.</li>
+        <li>Não precisa saber nada de inteligência artificial: este manual explica tudo.</li>
+      </ul>
+    </div>
+    <div>
+      <h2>Neste manual</h2>
+      <ol class="sumario">
+        <li>O que o jogo ensina</li>
+        <li>As cartas</li>
+        <li>Preparação e modos de jogo</li>
+        <li>A vez de cada lado, com exemplo</li>
+        <li>Conferir no aplicativo</li>
+        <li>Fim e casos especiais</li>
+        <li>Como conduzir a aula</li>
+        <li>Palavras de outras línguas</li>
+      </ol>
+    </div>
+  </div>
+  <footer class="rodape"><span>Palavra Mágica · Manual do Professor</span><span>grupo NEXUS · página 1</span></footer>
+</section><section class="page man">
+  <h2 class="secao"><span>1</span>O que o jogo ensina</h2>
+  <p class="abre">Um <b>prompt</b> é o pedido que a gente escreve para uma inteligência artificial (IA) responder. Quanto mais claro o pedido, melhor a resposta. No jogo, um prompt tem <b>4 partes</b>, e cada parte é uma carta. Quando um lado junta as 4, o prompt fica pronto:</p>
+
+  <div class="montagem">
+    <div class="montagem-cartas"><div class="mini-carta " style="zoom:0.46"><div class="card t-persona"><div class="hd"><span>PERSONA</span><span class="code">P04</span></div>
+  <div class="assunto"><span class="ico a-E">⚽</span>Esporte</div>
+  <div class="body center"><p class="big">Professor de Educação Física</p><p class="efeito">No prompt:<br>“Você é professor de Educação Física.”</p></div>
+  <div class="ft">Quem a IA vai ser ao responder.</div></div></div><div class="mini-carta " style="zoom:0.46"><div class="card t-contexto"><div class="hd"><span>CONTEXTO</span><span class="code">C07</span></div>
+  <div class="assunto"><span class="ico a-E">⚽</span>Esporte</div>
+  <div class="body"><p class="nome">Futsal da escola</p><p class="txt">“Treino o time de futsal da escola, com meninos e meninas.”</p></div>
+  <div class="ft">A situação: de onde você fala e o que está acontecendo.</div></div></div><div class="mini-carta " style="zoom:0.46"><div class="card t-missao"><div class="hd"><span>MISSÃO</span><span class="code">M04</span></div>
+  <div class="assunto"><span class="ico a-E">⚽</span>Esporte</div>
+  <div class="body"><p class="pedido">“Monte um aquecimento seguro para a aula de Educação Física.”</p>
+  <p class="pense">Pense: quem vai ler? Que formato ajuda essa pessoa?</p></div>
+  <div class="monte">Para bater: <b>contexto e persona com <span class="a-E">⚽</span> + 1 formato</b></div>
+  <div class="estrelas"><span><b>★★★</b> formato que ajuda</span><span><b>★★</b> outro formato</span></div>
+  <div class="ft">Fica aberta no meio da mesa. Qualquer lado pode fazer.</div></div></div><div class="mini-carta " style="zoom:0.46"><div class="card t-formato"><div class="hd"><span>FORMATO</span><span class="code">F02</span></div>
+  <div class="body center"><p class="big">Passo a passo</p><div class="desenho"><svg viewBox="0 0 100 36" aria-hidden="true"><text x="6" y="11" font-size="8" font-weight="800" fill="currentColor" font-family="Segoe UI, Arial">1</text><text x="6" y="21" font-size="8" font-weight="800" fill="currentColor" font-family="Segoe UI, Arial">2</text><text x="6" y="31" font-size="8" font-weight="800" fill="currentColor" font-family="Segoe UI, Arial">3</text><line x1="18" y1="8" x2="84" y2="8" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><line x1="18" y1="18" x2="72" y2="18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><line x1="18" y1="28" x2="80" y2="28" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></div><p class="efeito">Etapas numeradas, na ordem de fazer.</p></div>
+  <div class="ft">Como a resposta chega para quem vai ler.</div></div></div></div>
+    <div class="prompt-pronto">
+      <p class="t-persona"><span class="etq">Persona</span>Você é professor de Educação Física.</p><p class="t-contexto"><span class="etq">Contexto</span>Treino o time de futsal da escola, com meninos e meninas.</p><p class="t-missao"><span class="etq">Missão</span>Tarefa: monte um aquecimento seguro para a aula de Educação Física.</p><p class="t-formato"><span class="etq">Formato</span>Responda em formato de passo a passo.</p>
+    </div>
+    <div class="resposta-ia">
+      <p class="resposta-t">O aplicativo mostra uma resposta de exemplo da IA:</p>
+      <p class="resposta-txt">1. Caminhe por 2 minutos.<br>2. Gire os braços e os tornozelos devagar.<br>3. Faça 10 polichinelos.<br>4. Corra leve por 2 minutos.<br>Sentiu dor? Pare e avise o professor.</p>
+    </div>
+  </div>
+
+  <h3>O que cada carta ensina</h3>
+  <table class="tabela ensina">
+    <tr><th>Carta</th><th>A pergunta que o aluno aprende a fazer</th><th>Por que a resposta melhora</th></tr>
+    <tr class="t-missao"><td><b>Missão</b></td><td>O que eu quero?</td><td>Um pedido claro diz para a IA o que fazer. As missões são tarefas de escola, como explicar a dengue para uma criança.</td></tr>
+    <tr class="t-contexto"><td><b>Contexto</b></td><td>Onde estou e o que está acontecendo?</td><td>A IA não sabe onde você mora nem o que está acontecendo. Contar a situação deixa a resposta certa para aquele lugar.</td></tr>
+    <tr class="t-persona"><td><b>Persona</b></td><td>Quem a IA vai ser?</td><td>Pedir que a IA responda como alguém da área (uma médica, um técnico de futebol) muda as palavras e o cuidado da resposta.</td></tr>
+    <tr class="t-formato"><td><b>Formato</b></td><td>Como a resposta deve chegar para quem vai ler?</td><td>O mesmo conteúdo ajuda mais ou menos conforme a forma: passo a passo para quem vai fazer, cartaz para quem passa no corredor.</td></tr>
+  </table>
+
+  <div class="caixa estrelas-caixa">
+    <p><b>Por que as estrelas.</b> O contexto e a persona precisam ter o ícone do assunto da missão: as partes do prompt precisam combinar. O formato é a escolha que mais faz pensar: vale <b>★★★</b> quando ajuda quem vai ler e <b>★★</b> quando não ajuda tanto. Assim, a cada jogada o aluno pergunta: <i>quem vai ler essa resposta?</i></p>
+  </div>
+  <footer class="rodape"><span>Palavra Mágica · Manual do Professor</span><span>grupo NEXUS · página 2</span></footer>
+</section><section class="page man">
+  <h2 class="secao"><span>2</span>As cartas</h2>
+  <p class="abre">São 72 cartas, impressas só de um lado. O <b>código</b> no canto de cima (como M04 ou C07) é o que você digita no aplicativo. O <b>ícone</b> mostra o assunto: <span class="sem-quebra"><span class="a-S">✚</span> Saúde</span> · <span class="sem-quebra"><span class="a-E">⚽</span> Esporte</span> · <span class="sem-quebra"><span class="a-T">💻</span> Tecnologia</span> · <span class="sem-quebra"><span class="a-A">🌳</span> Meio ambiente</span>.</p>
+  <div class="cartas-explicadas">
+    <div class="carta-explicada">
+      <div class="mini-carta " style="zoom:0.6"><div class="card t-missao"><div class="hd"><span>MISSÃO</span><span class="code">M04</span></div>
+  <div class="assunto"><span class="ico a-E">⚽</span>Esporte</div>
+  <div class="body"><p class="pedido">“Monte um aquecimento seguro para a aula de Educação Física.”</p>
+  <p class="pense">Pense: quem vai ler? Que formato ajuda essa pessoa?</p></div>
+  <div class="monte">Para bater: <b>contexto e persona com <span class="a-E">⚽</span> + 1 formato</b></div>
+  <div class="estrelas"><span><b>★★★</b> formato que ajuda</span><span><b>★★</b> outro formato</span></div>
+  <div class="ft">Fica aberta no meio da mesa. Qualquer lado pode fazer.</div></div></div>
+      <div><p class="ce-nome">Missão</p><p class="ce-qtd">10 cartas</p><p>O pedido, com o ícone do assunto. Fica aberta no meio da mesa: qualquer lado pode fazer.</p><p class="ce-regra">Dá as estrelas para quem bater nela.</p></div>
+    </div><div class="carta-explicada">
+      <div class="mini-carta " style="zoom:0.6"><div class="card t-contexto"><div class="hd"><span>CONTEXTO</span><span class="code">C07</span></div>
+  <div class="assunto"><span class="ico a-E">⚽</span>Esporte</div>
+  <div class="body"><p class="nome">Futsal da escola</p><p class="txt">“Treino o time de futsal da escola, com meninos e meninas.”</p></div>
+  <div class="ft">A situação: de onde você fala e o que está acontecendo.</div></div></div>
+      <div><p class="ce-nome">Contexto</p><p class="ce-qtd">20 cartas</p><p>A situação, contada por quem pede: de onde fala e o que está acontecendo.</p><p class="ce-regra">Precisa ter o mesmo ícone da missão.</p></div>
+    </div><div class="carta-explicada">
+      <div class="mini-carta " style="zoom:0.6"><div class="card t-persona"><div class="hd"><span>PERSONA</span><span class="code">P04</span></div>
+  <div class="assunto"><span class="ico a-E">⚽</span>Esporte</div>
+  <div class="body center"><p class="big">Professor de Educação Física</p><p class="efeito">No prompt:<br>“Você é professor de Educação Física.”</p></div>
+  <div class="ft">Quem a IA vai ser ao responder.</div></div></div>
+      <div><p class="ce-nome">Persona</p><p class="ce-qtd">16 cartas</p><p>Quem a IA vai ser ao responder. A frase de baixo é como ela entra no prompt.</p><p class="ce-regra">Precisa ter o mesmo ícone da missão.</p></div>
+    </div><div class="carta-explicada">
+      <div class="mini-carta " style="zoom:0.6"><div class="card t-formato"><div class="hd"><span>FORMATO</span><span class="code">F02</span></div>
+  <div class="body center"><p class="big">Passo a passo</p><div class="desenho"><svg viewBox="0 0 100 36" aria-hidden="true"><text x="6" y="11" font-size="8" font-weight="800" fill="currentColor" font-family="Segoe UI, Arial">1</text><text x="6" y="21" font-size="8" font-weight="800" fill="currentColor" font-family="Segoe UI, Arial">2</text><text x="6" y="31" font-size="8" font-weight="800" fill="currentColor" font-family="Segoe UI, Arial">3</text><line x1="18" y1="8" x2="84" y2="8" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><line x1="18" y1="18" x2="72" y2="18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><line x1="18" y1="28" x2="80" y2="28" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></div><p class="efeito">Etapas numeradas, na ordem de fazer.</p></div>
+  <div class="ft">Como a resposta chega para quem vai ler.</div></div></div>
+      <div><p class="ce-nome">Formato</p><p class="ce-qtd">18 cartas (9 tipos, 2 de cada)</p><p>Como a resposta chega para quem vai ler. O desenho mostra a forma.</p><p class="ce-regra">Serve em qualquer missão: ★★★ ou ★★.</p></div>
+    </div><div class="carta-explicada">
+      <div class="mini-carta " style="zoom:0.6"><div class="card t-ajuda"><div class="hd"><span>RESUMO DA VEZ</span></div>
+  <div class="body passos">
+    <p><span class="n">1</span><span><b>Compre 1</b>do monte ou a de cima do lixo.</span></p>
+    <p><span class="n">2</span><span><b>Fechou um prompt? Bata!</b>Contexto e persona com o ícone de uma missão da mesa + 1 formato.</span></p>
+    <p><span class="n">3</span><span><b>Descarte 1</b>Fique sempre com 5 cartas.</span></p>
+    <p class="vale"><b>★★★</b> formato que ajuda quem vai ler<br><b>★★</b> outro formato</p>
+    <p class="depois">Bateu? Fique com a missão, ponha as 3 cartas embaixo do monte, compre 3 e vire outra missão.</p>
+  </div>
+  <div class="ft">Ganha quem chegar a <b>6 estrelas</b> primeiro.</div></div></div>
+      <div><p class="ce-nome">Resumo da vez</p><p class="ce-qtd">8 cartas, 1 por lado</p><p>Os 3 passos da vez e as estrelas. Não entra no monte.</p><p class="ce-regra">Fica na frente de cada lado, para consultar.</p></div>
+    </div>
+    <div class="carta-explicada contas">
+      <div>
+        <p class="ce-nome">Quantas de cada assunto</p>
+        <table class="tabela mini-tab">
+          <tr><th></th><th>Missões</th><th>Contextos</th><th>Personas</th></tr>
+          <tr><td class="sem-quebra"><span class="a-S">✚</span> Saúde</td><td>3</td><td>5</td><td>4</td></tr><tr><td class="sem-quebra"><span class="a-E">⚽</span> Esporte</td><td>2</td><td>5</td><td>4</td></tr><tr><td class="sem-quebra"><span class="a-T">💻</span> Tecnologia</td><td>3</td><td>5</td><td>4</td></tr><tr><td class="sem-quebra"><span class="a-A">🌳</span> Meio ambiente</td><td>2</td><td>5</td><td>4</td></tr>
+        </table>
+        <p class="ce-regra">Os formatos não têm assunto. A lista de todas as cartas está no gabarito.</p>
+      </div>
+    </div>
+  </div>
+  <div class="caixa imprimir">
+    <p><b>Como imprimir:</b> imprima as 8 folhas de cartas em A4, coloridas, de preferência em papel mais grosso (cartolina ou papel de 180 g). Corte nas linhas tracejadas: cada folha tem 9 cartas do tamanho de uma carta de baralho. A folha de regras e o gabarito podem ser em papel comum. Guarde cada jogo num envelope.</p>
+  </div>
+  <footer class="rodape"><span>Palavra Mágica · Manual do Professor</span><span>grupo NEXUS · página 3</span></footer>
+</section><section class="page man">
+  <h2 class="secao"><span>3</span>Preparação e modos de jogo</h2>
+  <div class="prep">
+    <div>
+      <ol class="passos-grandes">
+        <li><b>Divida a turma em lados.</b> Cada lado é 1 aluno, uma dupla ou um grupo (veja os modos abaixo).</li>
+        <li><b>Missões:</b> embaralhe e vire 3 para cima no meio da mesa. As outras ficam num montinho ao lado, viradas para baixo.</li>
+        <li><b>Monte:</b> embaralhe juntos os contextos, as personas e os formatos.</li>
+        <li><b>Mão:</b> dê 5 cartas do monte e 1 resumo da vez para cada lado. Cada lado esconde as suas cartas.</li>
+        <li><b>Lixo:</b> vire 1 carta do monte para cima, ao lado dele.</li>
+        <li><b>Aplicativo:</b> na página Partida, escolha o modo, cadastre os lados e toque em <b>Sortear quem começa</b>. Depois, a vez segue no sentido horário.</li>
+      </ol>
+    </div>
+    <figure class="mesa-figura">
+      <div class="feltro">
+        <div class="lugar"><span class="rot">Lado 2</span><div class="leque" style="zoom:0.3"><div class="verso"></div><div class="verso"></div><div class="verso"></div><div class="verso"></div><div class="verso"></div></div></div>
+        <div class="lugar"><span class="rot">3 missões abertas</span><div class="junto"><div class="mini-carta " style="zoom:0.32"><div class="card t-missao"><div class="hd"><span>MISSÃO</span><span class="code">M04</span></div>
+  <div class="assunto"><span class="ico a-E">⚽</span>Esporte</div>
+  <div class="body"><p class="pedido">“Monte um aquecimento seguro para a aula de Educação Física.”</p>
+  <p class="pense">Pense: quem vai ler? Que formato ajuda essa pessoa?</p></div>
+  <div class="monte">Para bater: <b>contexto e persona com <span class="a-E">⚽</span> + 1 formato</b></div>
+  <div class="estrelas"><span><b>★★★</b> formato que ajuda</span><span><b>★★</b> outro formato</span></div>
+  <div class="ft">Fica aberta no meio da mesa. Qualquer lado pode fazer.</div></div></div><div class="mini-carta " style="zoom:0.32"><div class="card t-missao"><div class="hd"><span>MISSÃO</span><span class="code">M02</span></div>
+  <div class="assunto"><span class="ico a-S">✚</span>Saúde</div>
+  <div class="body"><p class="pedido">“Crie um cardápio de lanche saudável para a semana.”</p>
+  <p class="pense">Pense: quem vai ler? Que formato ajuda essa pessoa?</p></div>
+  <div class="monte">Para bater: <b>contexto e persona com <span class="a-S">✚</span> + 1 formato</b></div>
+  <div class="estrelas"><span><b>★★★</b> formato que ajuda</span><span><b>★★</b> outro formato</span></div>
+  <div class="ft">Fica aberta no meio da mesa. Qualquer lado pode fazer.</div></div></div><div class="mini-carta " style="zoom:0.32"><div class="card t-missao"><div class="hd"><span>MISSÃO</span><span class="code">M07</span></div>
+  <div class="assunto"><span class="ico a-T">💻</span>Tecnologia</div>
+  <div class="body"><p class="pedido">“Explique para a turma como evitar golpes na internet.”</p>
+  <p class="pense">Pense: quem vai ler? Que formato ajuda essa pessoa?</p></div>
+  <div class="monte">Para bater: <b>contexto e persona com <span class="a-T">💻</span> + 1 formato</b></div>
+  <div class="estrelas"><span><b>★★★</b> formato que ajuda</span><span><b>★★</b> outro formato</span></div>
+  <div class="ft">Fica aberta no meio da mesa. Qualquer lado pode fazer.</div></div></div></div></div>
+        <div class="fila">
+          <div class="lugar"><span class="rot">outras missões</span><div class="pilha" style="zoom:0.3"><div class="verso"></div><div class="verso"></div><div class="verso"></div></div></div>
+          <div class="lugar"><span class="rot">monte</span><div class="pilha" style="zoom:0.3"><div class="verso"></div><div class="verso"></div><div class="verso"></div></div></div>
+          <div class="lugar"><span class="rot">lixo</span><div class="mini-carta " style="zoom:0.3"><div class="card t-formato"><div class="hd"><span>FORMATO</span><span class="code">F05</span></div>
+  <div class="body center"><p class="big">Tabela</p><div class="desenho"><svg viewBox="0 0 100 36" aria-hidden="true"><rect x="8" y="3" width="84" height="30" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><line x1="36" y1="3" x2="36" y2="33" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="64" y1="3" x2="64" y2="33" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="8" y1="13" x2="92" y2="13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="8" y1="23" x2="92" y2="23" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div><p class="efeito">Linhas e colunas para comparar ou organizar.</p></div>
+  <div class="ft">Como a resposta chega para quem vai ler.</div></div></div></div>
+        </div>
+        <div class="lugar"><span class="rot">Lado 1</span><div class="leque" style="zoom:0.3"><div class="verso"></div><div class="verso"></div><div class="verso"></div><div class="verso"></div><div class="verso"></div></div></div>
+      </div>
+      <figcaption>A mesa no começo de um duelo. Com mais lados, cada um senta em volta, com as suas 5 cartas.</figcaption>
+    </figure>
+  </div>
+
+  <h3>Modos de jogo</h3>
+  <table class="tabela">
+    <tr><th>Modo</th><th>Quantos alunos</th><th>Como fica</th></tr>
+    <tr><td><b>Duelo</b></td><td>2 a 4</td><td>1 contra 1, ou dupla contra dupla (cada dupla é um lado).</td></tr>
+    <tr><td><b>Mesa</b></td><td>3 a 10</td><td>3 a 5 lados, todos contra todos. Cada lado é 1 aluno ou 1 dupla.</td></tr>
+    <tr><td><b>Turma</b></td><td>até 40</td><td>Até 5 grupos, numa mesa grande ou no chão. Cada grupo decide junto, e quem segura as cartas troca a cada vez. Com uma turma grande, imprima mais de um jogo e faça várias mesas.</td></tr>
+  </table>
+  <p class="nota-pe">Dica: no modo Turma, escreva no quadro a ordem dos grupos. Os grupos que esperam a vez podem ir pensando em qual formato ajuda cada missão da mesa.</p>
+  <footer class="rodape"><span>Palavra Mágica · Manual do Professor</span><span>grupo NEXUS · página 4</span></footer>
+</section><section class="page man">
+  <h2 class="secao"><span>4</span>A vez de cada lado <small>até 30 segundos</small></h2>
+  <div class="tres-passos">
+    <div><span class="n">1</span><b>Compre 1</b>a de cima do monte ou a de cima do lixo.</div>
+    <div><span class="n">2</span><b>Fechou um prompt? Bata!</b>Contexto e persona com o ícone de uma missão da mesa + 1 formato.</div>
+    <div><span class="n">3</span><b>Descarte 1</b>no lixo. Cada lado termina a vez sempre com 5 cartas.</div>
+  </div>
+
+  <h3>Exemplo de uma vez</h3>
+  <div class="quadro-ex">
+    <p class="ex-t"><span class="n">a</span><span>Na mesa estão estas 3 missões.</span></p>
+    <div class="junto"><div class="mini-carta " style="zoom:0.4"><div class="card t-missao"><div class="hd"><span>MISSÃO</span><span class="code">M04</span></div>
+  <div class="assunto"><span class="ico a-E">⚽</span>Esporte</div>
+  <div class="body"><p class="pedido">“Monte um aquecimento seguro para a aula de Educação Física.”</p>
+  <p class="pense">Pense: quem vai ler? Que formato ajuda essa pessoa?</p></div>
+  <div class="monte">Para bater: <b>contexto e persona com <span class="a-E">⚽</span> + 1 formato</b></div>
+  <div class="estrelas"><span><b>★★★</b> formato que ajuda</span><span><b>★★</b> outro formato</span></div>
+  <div class="ft">Fica aberta no meio da mesa. Qualquer lado pode fazer.</div></div></div><div class="mini-carta " style="zoom:0.4"><div class="card t-missao"><div class="hd"><span>MISSÃO</span><span class="code">M02</span></div>
+  <div class="assunto"><span class="ico a-S">✚</span>Saúde</div>
+  <div class="body"><p class="pedido">“Crie um cardápio de lanche saudável para a semana.”</p>
+  <p class="pense">Pense: quem vai ler? Que formato ajuda essa pessoa?</p></div>
+  <div class="monte">Para bater: <b>contexto e persona com <span class="a-S">✚</span> + 1 formato</b></div>
+  <div class="estrelas"><span><b>★★★</b> formato que ajuda</span><span><b>★★</b> outro formato</span></div>
+  <div class="ft">Fica aberta no meio da mesa. Qualquer lado pode fazer.</div></div></div><div class="mini-carta " style="zoom:0.4"><div class="card t-missao"><div class="hd"><span>MISSÃO</span><span class="code">M07</span></div>
+  <div class="assunto"><span class="ico a-T">💻</span>Tecnologia</div>
+  <div class="body"><p class="pedido">“Explique para a turma como evitar golpes na internet.”</p>
+  <p class="pense">Pense: quem vai ler? Que formato ajuda essa pessoa?</p></div>
+  <div class="monte">Para bater: <b>contexto e persona com <span class="a-T">💻</span> + 1 formato</b></div>
+  <div class="estrelas"><span><b>★★★</b> formato que ajuda</span><span><b>★★</b> outro formato</span></div>
+  <div class="ft">Fica aberta no meio da mesa. Qualquer lado pode fazer.</div></div></div></div>
+  </div>
+  <div class="quadro-ex">
+    <p class="ex-t"><span class="n">b</span><span>O Lado 1 tem estas 5 cartas e compra <b>P04 Professor de Educação Física</b> do monte.</span></p>
+    <div class="junto"><div class="mini-carta " style="zoom:0.4"><div class="card t-contexto"><div class="hd"><span>CONTEXTO</span><span class="code">C07</span></div>
+  <div class="assunto"><span class="ico a-E">⚽</span>Esporte</div>
+  <div class="body"><p class="nome">Futsal da escola</p><p class="txt">“Treino o time de futsal da escola, com meninos e meninas.”</p></div>
+  <div class="ft">A situação: de onde você fala e o que está acontecendo.</div></div></div><div class="mini-carta " style="zoom:0.4"><div class="card t-formato"><div class="hd"><span>FORMATO</span><span class="code">F02</span></div>
+  <div class="body center"><p class="big">Passo a passo</p><div class="desenho"><svg viewBox="0 0 100 36" aria-hidden="true"><text x="6" y="11" font-size="8" font-weight="800" fill="currentColor" font-family="Segoe UI, Arial">1</text><text x="6" y="21" font-size="8" font-weight="800" fill="currentColor" font-family="Segoe UI, Arial">2</text><text x="6" y="31" font-size="8" font-weight="800" fill="currentColor" font-family="Segoe UI, Arial">3</text><line x1="18" y1="8" x2="84" y2="8" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><line x1="18" y1="18" x2="72" y2="18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><line x1="18" y1="28" x2="80" y2="28" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></div><p class="efeito">Etapas numeradas, na ordem de fazer.</p></div>
+  <div class="ft">Como a resposta chega para quem vai ler.</div></div></div><div class="mini-carta " style="zoom:0.4"><div class="card t-contexto"><div class="hd"><span>CONTEXTO</span><span class="code">C13</span></div>
+  <div class="assunto"><span class="ico a-T">💻</span>Tecnologia</div>
+  <div class="body"><p class="nome">Pagamento em Hangzhou</p><p class="txt">“Em Hangzhou, quase todo mundo paga as compras com o celular.”</p></div>
+  <div class="ft">A situação: de onde você fala e o que está acontecendo.</div></div></div><div class="mini-carta " style="zoom:0.4"><div class="card t-persona"><div class="hd"><span>PERSONA</span><span class="code">P07</span></div>
+  <div class="assunto"><span class="ico a-A">🌳</span>Meio ambiente</div>
+  <div class="body center"><p class="big">Bióloga</p><p class="efeito">No prompt:<br>“Você é bióloga.”</p></div>
+  <div class="ft">Quem a IA vai ser ao responder.</div></div></div><div class="mini-carta " style="zoom:0.4"><div class="card t-formato"><div class="hd"><span>FORMATO</span><span class="code">F05</span></div>
+  <div class="body center"><p class="big">Tabela</p><div class="desenho"><svg viewBox="0 0 100 36" aria-hidden="true"><rect x="8" y="3" width="84" height="30" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><line x1="36" y1="3" x2="36" y2="33" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="64" y1="3" x2="64" y2="33" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="8" y1="13" x2="92" y2="13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="8" y1="23" x2="92" y2="23" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div><p class="efeito">Linhas e colunas para comparar ou organizar.</p></div>
+  <div class="ft">Como a resposta chega para quem vai ler.</div></div></div><span class="mais">+</span><div class="mini-carta destaque" style="zoom:0.4"><div class="card t-persona"><div class="hd"><span>PERSONA</span><span class="code">P04</span></div>
+  <div class="assunto"><span class="ico a-E">⚽</span>Esporte</div>
+  <div class="body center"><p class="big">Professor de Educação Física</p><p class="efeito">No prompt:<br>“Você é professor de Educação Física.”</p></div>
+  <div class="ft">Quem a IA vai ser ao responder.</div></div></div></div>
+  </div>
+  <div class="quadro-ex">
+    <p class="ex-t"><span class="n">c</span><span>Fechou a M04 <span class="a-E">⚽</span>: contexto <span class="a-E">⚽</span> + persona <span class="a-E">⚽</span> + formato. O Lado 1 bate e mostra as 4 cartas.</span></p>
+    <div class="junto"><div class="mini-carta " style="zoom:0.4"><div class="card t-missao"><div class="hd"><span>MISSÃO</span><span class="code">M04</span></div>
+  <div class="assunto"><span class="ico a-E">⚽</span>Esporte</div>
+  <div class="body"><p class="pedido">“Monte um aquecimento seguro para a aula de Educação Física.”</p>
+  <p class="pense">Pense: quem vai ler? Que formato ajuda essa pessoa?</p></div>
+  <div class="monte">Para bater: <b>contexto e persona com <span class="a-E">⚽</span> + 1 formato</b></div>
+  <div class="estrelas"><span><b>★★★</b> formato que ajuda</span><span><b>★★</b> outro formato</span></div>
+  <div class="ft">Fica aberta no meio da mesa. Qualquer lado pode fazer.</div></div></div><span class="mais">=</span><div class="mini-carta " style="zoom:0.4"><div class="card t-contexto"><div class="hd"><span>CONTEXTO</span><span class="code">C07</span></div>
+  <div class="assunto"><span class="ico a-E">⚽</span>Esporte</div>
+  <div class="body"><p class="nome">Futsal da escola</p><p class="txt">“Treino o time de futsal da escola, com meninos e meninas.”</p></div>
+  <div class="ft">A situação: de onde você fala e o que está acontecendo.</div></div></div><div class="mini-carta " style="zoom:0.4"><div class="card t-persona"><div class="hd"><span>PERSONA</span><span class="code">P04</span></div>
+  <div class="assunto"><span class="ico a-E">⚽</span>Esporte</div>
+  <div class="body center"><p class="big">Professor de Educação Física</p><p class="efeito">No prompt:<br>“Você é professor de Educação Física.”</p></div>
+  <div class="ft">Quem a IA vai ser ao responder.</div></div></div><div class="mini-carta " style="zoom:0.4"><div class="card t-formato"><div class="hd"><span>FORMATO</span><span class="code">F02</span></div>
+  <div class="body center"><p class="big">Passo a passo</p><div class="desenho"><svg viewBox="0 0 100 36" aria-hidden="true"><text x="6" y="11" font-size="8" font-weight="800" fill="currentColor" font-family="Segoe UI, Arial">1</text><text x="6" y="21" font-size="8" font-weight="800" fill="currentColor" font-family="Segoe UI, Arial">2</text><text x="6" y="31" font-size="8" font-weight="800" fill="currentColor" font-family="Segoe UI, Arial">3</text><line x1="18" y1="8" x2="84" y2="8" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><line x1="18" y1="18" x2="72" y2="18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><line x1="18" y1="28" x2="80" y2="28" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></div><p class="efeito">Etapas numeradas, na ordem de fazer.</p></div>
+  <div class="ft">Como a resposta chega para quem vai ler.</div></div></div></div>
+  </div>
+  <div class="ex-fim">
+    <p><span class="n">d</span><span>O professor digita M04, C07, P04 e F02 no aplicativo: <b>★★★</b>, porque um passo a passo ajuda quem vai fazer o aquecimento. Com F05 Tabela, seriam <b>★★</b>.</span></p>
+    <p><span class="n">e</span><span>O Lado 1 fica com a M04, põe as 3 cartas embaixo do monte, compra 3, vira uma missão nova no lugar e descarta 1. Agora é a vez do próximo lado.</span></p>
+  </div>
+  <footer class="rodape"><span>Palavra Mágica · Manual do Professor</span><span>grupo NEXUS · página 5</span></footer>
+</section><section class="page man">
+  <h2 class="secao"><span>5</span>Conferir no aplicativo</h2>
+  <p class="abre">O aplicativo do professor marca as estrelas, o tempo da vez e confere cada prompt. Ele abre no navegador do celular, neste endereço:</p>
+  <p class="endereco">lucas-ibmec.github.io/ibmec-metodosageis-nexus-jogo/app</p>
+  <div class="telas">
+    <figure class="tela"><div class="celular"><img src="imagens/app-partida.png" alt=""></div><figcaption><b>Partida:</b> as estrelas de cada lado, de quem é a vez e o cronômetro.</figcaption></figure>
+    <figure class="tela"><div class="celular"><img src="imagens/app-missao.png" alt=""></div><figcaption><b>Missão:</b> escolha a missão e digite as 3 cartas de quem bateu.</figcaption></figure>
+    <figure class="tela"><div class="celular"><img src="imagens/app-resultado.png" alt=""></div><figcaption><b>Resultado:</b> as estrelas, o prompt que as cartas formam e uma resposta de exemplo.</figcaption></figure>
+  </div>
+  <div class="app-cols">
+    <ol class="passos-grandes">
+      <li><b>Antes da aula, com internet:</b> abra o endereço no celular. Depois da primeira vez, ele funciona sem internet. No menu do navegador, toque em <i>Adicionar à tela inicial</i> para abrir como um aplicativo.</li>
+      <li><b>Partida:</b> escolha o modo, quantos lados e os nomes. Toque em <b>Começar partida</b> e em <b>Sortear quem começa</b>.</li>
+      <li><b>Cronômetro:</b> toque em <b>Iniciar</b> no começo de cada vez. Quando a vez acabar, toque em <b>Passar a vez</b>.</li>
+    </ol>
+    <ol class="passos-grandes" start="4">
+      <li><b>Alguém bateu?</b> Abra a página <b>Missão</b>, escolha a missão e digite os códigos das 3 cartas (toque na letra e digite o número).</li>
+      <li><b>Confira o resultado</b> e toque no nome do lado para dar as estrelas. Errou? Toque em <b>Desfazer</b>.</li>
+      <li><b>Quando alguém chegar a 6 estrelas,</b> o aplicativo avisa e mostra o placar final.</li>
+    </ol>
+  </div>
+  <p class="nota-pe">As páginas <b>Cartas</b> (procurar uma carta pelo código ou pelo nome) e <b>Regras</b> (o resumo das regras) também funcionam sem internet. Sem celular, use o gabarito impresso: ele tem as mesmas respostas.</p>
+  <footer class="rodape"><span>Palavra Mágica · Manual do Professor</span><span>grupo NEXUS · página 6</span></footer>
+</section><section class="page man">
+  <h2 class="secao"><span>6</span>Fim e casos especiais</h2>
+  <div class="caixa ganha-caixa"><p><b>Ganha quem chegar a 6 estrelas primeiro</b> (2 ou 3 missões). O aplicativo avisa.</p></div>
+  <table class="tabela casos">
+    <tr><th>Se acontecer</th><th>Faça assim</th></tr>
+    <tr><td>Bateu sem o ícone certo</td><td>Não vale. As cartas voltam para a mão, o lado descarta 1 e passa a vez. Não diga se o formato servia: a missão continua na mesa.</td></tr>
+    <tr><td>Duas missões com o mesmo ícone</td><td>O lado escolhe para qual vai bater.</td></tr>
+    <tr><td>Acabou o tempo da vez</td><td>O lado descarta 1 carta e passa a vez.</td></tr>
+    <tr><td>O monte acabou</td><td>Embaralhe o lixo, menos a carta de cima, e faça um monte novo.</td></tr>
+    <tr><td>As missões acabaram (só com 5 lados)</td><td>Ganha quem tiver mais estrelas. Empate: quem fez mais missões com ★★★.</td></tr>
+  </table>
+
+  <h2 class="secao"><span>7</span>Como conduzir a aula</h2>
+  <div class="aula-cols">
+    <div class="momento"><p class="mom-t">Antes · 2 minutos</p><p>Mostre o resumo da vez e leia os 3 passos. Depois, faça uma vez de exemplo em voz alta, com as cartas na mão.</p></div>
+    <div class="momento"><p class="mom-t">Durante</p><p>Quando alguém bater, leia em voz alta o prompt que o aplicativo monta e pergunte: <i>para quem é essa resposta? Esse formato ajuda essa pessoa?</i></p><p><b>A palavra final é sua.</b> Se um lado defender bem outro formato, você pode mudar as estrelas com os botões + e − do placar.</p></div>
+    <div class="momento"><p class="mom-t">Depois · 5 minutos</p><p>Cada lado mostra uma missão que fez e diz por que escolheu aquele formato. Para fechar, cada aluno escreve no caderno um prompt com as 4 partes para um problema da escola.</p></div>
+  </div>
+  <div class="caixa etica">
+    <p class="mom-t">Para conversar com a turma: usar a IA com cuidado</p>
+    <ul>
+      <li><b>Dados pessoais:</b> não coloque no prompt nome completo, endereço, telefone ou foto de ninguém. As cartas de contexto do jogo não têm dados pessoais por isso.</li>
+      <li><b>A IA erra:</b> ela pode inventar coisas com muita certeza. Confira a resposta num livro ou numa página de confiança na internet, como as do governo.</li>
+      <li><b>Preconceito:</b> a resposta pode repetir ideias injustas sobre pessoas e lugares. Se acontecer, mude o prompt e converse sobre isso.</li>
+    </ul>
+  </div>
+  <footer class="rodape"><span>Palavra Mágica · Manual do Professor</span><span>grupo NEXUS · página 7</span></footer>
+</section><section class="page man">
+  <h2 class="secao"><span>8</span>Palavras de outras línguas</h2>
+  <p class="abre">O professor pediu que o jogo e a documentação fossem em português (Revisão da Sprint 4, em 04/11/2026). A regra que seguimos: <b>se existe palavra em português que diz o mesmo, usamos a palavra em português.</b> Por isso, o material diz <i>aplicativo</i> e não <i>app</i>, <i>partida de teste</i> e não <i>playtest</i>, e o nome do jogo é <i>Palavra Mágica</i>. Ficam em outra língua só os nomes próprios e as palavras que os alunos e o professor vão encontrar com esse nome fora da sala.</p>
+
+  <h3>No jogo e neste manual</h3>
+  <table class="tabela glossario">
+    <tr><th>Palavra</th><th>Língua</th><th>O que quer dizer</th><th>Por que fica assim</th></tr>
+    <tr><td><b>prompt</b></td><td>inglês</td><td>O pedido (o texto) que a gente escreve para uma IA responder.</td><td>É o nome usado nos aplicativos de IA, nas notícias e no trabalho. Aprender o nome certo faz parte do que o jogo ensina. Em português, seria “comando” ou “pedido”.</td></tr>
+    <tr><td><b>persona</b></td><td>latim</td><td>O papel que alguém assume. No jogo, quem a IA vai ser ao responder.</td><td>É o nome usado nos guias de como escrever prompts. A palavra vem da máscara que os atores usavam no teatro romano.</td></tr>
+    <tr><td><b>internet</b></td><td>inglês</td><td>A rede que liga computadores e celulares do mundo todo.</td><td>Todo mundo no Brasil usa essa palavra, e não há outra em português de uso comum.</td></tr>
+    <tr><td><b>nomes de lugares</b></td><td>várias</td><td>As cidades dos contextos, como Boston, Chicago, Miami, Bangalore e Hangzhou.</td><td>São nomes próprios. Usamos a forma em português quando ela existe (Nova York, Xangai, Cantão, Copenhague, Vale do Silício).</td></tr>
+    <tr><td><b>nomes de pessoas</b></td><td>inglês</td><td>James Naismith, que inventou o basquete, numa das respostas de exemplo.</td><td>É nome próprio, não se traduz.</td></tr>
+  </table>
+
+  <h3>O que trocamos por português</h3>
+  <table class="tabela trocas">
+    <tr><th>Antes</th><th>Agora</th><th>Onde</th></tr>
+    <tr><td>Magic Prompt</td><td><b>Palavra Mágica</b></td><td>nome do jogo, nas cartas, no manual e no aplicativo</td></tr><tr><td>app, companion app</td><td><b>aplicativo, aplicativo do professor</b></td><td>regras, gabarito, manual e telas do aplicativo</td></tr><tr><td>playtest</td><td><b>partida de teste</b></td><td>folha de regras e aplicativo</td></tr><tr><td>fast-food</td><td><b>hambúrguer e batata frita</b></td><td>carta C03 Lanche em Miami</td></tr><tr><td>tai chi</td><td><b>ginástica</b></td><td>carta C08 Ginástica em Xangai</td></tr><tr><td>engenheiro de software</td><td><b>engenheiro de computação</b></td><td>carta P05</td></tr><tr><td>Aedes aegypti, site, link</td><td><b>mosquito da dengue, página, endereço</b></td><td>respostas de exemplo do aplicativo</td></tr>
+  </table>
+  <footer class="rodape"><span>Palavra Mágica · Manual do Professor</span><span>grupo NEXUS · página 8</span></footer>
+</section>
+<section class="page man">
+  <h2 class="secao"><span>8</span>Palavras de outras línguas <small>continuação</small></h2>
+  <h3>Na documentação do projeto (quadro de tarefas e repositório)</h3>
+  <table class="tabela glossario">
+    <tr><th>Palavra</th><th>Língua</th><th>O que quer dizer</th><th>Por que fica assim</th></tr>
+    <tr><td><b>Scrum, Kanban e ScrumBan</b></td><td>inglês e japonês</td><td>Nomes de métodos ágeis. Kanban quer dizer “placa” ou “cartão de sinalização” em japonês; ScrumBan junta os dois.</td><td>São nomes próprios dos métodos estudados na disciplina.</td></tr>
+    <tr><td><b>Sprint</b></td><td>inglês</td><td>Corrida curta: cada ciclo de trabalho de 1 ou 2 semanas.</td><td>O Guia do Scrum em português mantém o nome em inglês.</td></tr>
+    <tr><td><b>Backlog</b></td><td>inglês</td><td>A lista de tudo o que falta fazer no produto (ou na sprint).</td><td>Idem: nome do Guia do Scrum.</td></tr>
+    <tr><td><b>Product Owner (PO), Scrum Master (SM) e Devs</b></td><td>inglês</td><td>Os papéis do time: quem decide o produto, quem cuida do método e quem desenvolve.</td><td>Idem: nomes dos papéis no Guia do Scrum.</td></tr>
+    <tr><td><b>To do, Doing, Sprint Done, Feedback, Postponed/Fixed e Due Date</b></td><td>inglês</td><td>A fazer, fazendo, pronto na sprint, esperando opinião, adiado ou fixo, e prazo.</td><td>São as colunas e os campos do quadro modelo que o professor da disciplina deu. Mantivemos para ele reconhecer o quadro.</td></tr>
+    <tr><td><b>WIP</b></td><td>inglês</td><td>“Trabalho em andamento”: o limite de tarefas na coluna Fazendo.</td><td>Termo do Kanban, usado com esse nome na aula.</td></tr>
+    <tr><td><b>Weekly, Keep / Stop / Start e Planning Poker</b></td><td>inglês</td><td>Reunião semanal; o que manter, parar e começar (na retrospectiva); estimar o tamanho das tarefas com cartas.</td><td>Nomes usados nas aulas da disciplina.</td></tr>
+    <tr><td><b>companion app</b></td><td>inglês</td><td>O aplicativo do professor que acompanha o jogo.</td><td>Foi o nome usado pelo cliente na Revisão da Sprint 1 e ficou no tema 2 do quadro. No material do jogo, dizemos “aplicativo do professor”.</td></tr>
+    <tr><td><b>playtest</b></td><td>inglês</td><td>Partida de teste do jogo com jogadores de verdade.</td><td>Aparece no nome de algumas tarefas do quadro. No material do jogo, dizemos “partida de teste”.</td></tr>
+    <tr><td><b>MVP</b></td><td>inglês</td><td>Produto mínimo viável: a menor versão do produto que já dá para testar.</td><td>Aparece no nome de uma tarefa do quadro; é a sigla usada em projetos ágeis.</td></tr>
+    <tr><td><b>Roadmap e pitch</b></td><td>inglês</td><td>O mapa das entregas ao longo das sprints; a apresentação curta do produto.</td><td>O roadmap é um cartão do quadro; pitch é como a disciplina chama a apresentação final (18/11).</td></tr>
+    <tr><td><b>NEXUS</b></td><td>latim</td><td>Ligação, conexão (em português, “nexo”).</td><td>É o nome do nosso grupo.</td></tr>
+    <tr><td><b>Notion, Miro, Figma, GitHub, HTML, CSS e JavaScript</b></td><td>inglês</td><td>Os programas e as linguagens que usamos para organizar e fazer o projeto.</td><td>São nomes próprios, sem tradução.</td></tr>
+  </table>
+  <footer class="rodape"><span>Palavra Mágica · Manual do Professor</span><span>grupo NEXUS · página 9</span></footer>
+</section></body></html>

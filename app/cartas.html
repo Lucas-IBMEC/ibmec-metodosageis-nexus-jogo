@@ -12,17 +12,17 @@
   <link rel="icon" href="icones/icone.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="icones/icone-192.png">
   <link rel="stylesheet" href="css/app.css">
-  <title>Cartas · Magic Prompt</title>
+  <title>Cartas</title>
 </head>
 <body data-pagina="cartas">
   <header class="topo">
-    <div class="topo-linha"><span class="marca">Magic Prompt</span><h1>Consultar carta</h1></div>
+    <div class="topo-linha"><span class="marca" data-dado="nomeDoJogo">Palavra Mágica</span><h1>Consultar carta</h1></div>
   </header>
 
   <main class="conteudo">
     <section class="bloco">
       <label class="rotulo" for="busca" style="margin-top: 0">Código ou nome</label>
-      <input class="campo" id="busca" type="search" placeholder="Ex.: C01, dengue, Golaço"
+      <input class="campo" id="busca" type="search" placeholder="Ex.: C01, dengue, tabela"
         autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" enterkeyhint="search">
       <div class="chips rolagem" id="filtros" role="group" aria-label="Tipo de carta"></div>
     </section>

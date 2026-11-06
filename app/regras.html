@@ -12,97 +12,93 @@
   <link rel="icon" href="icones/icone.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="icones/icone-192.png">
   <link rel="stylesheet" href="css/app.css">
-  <title>Regras · Magic Prompt</title>
+  <title>Regras</title>
 </head>
 <body data-pagina="regras">
   <header class="topo">
-    <div class="topo-linha"><span class="marca">Magic Prompt</span><h1>Regras</h1></div>
+    <div class="topo-linha"><span class="marca" data-dado="nomeDoJogo">Palavra Mágica</span><h1>Regras</h1></div>
   </header>
 
   <main class="conteudo">
-    <p class="aviso" style="margin: 0">Objetivo: montar o melhor prompt para cada missão. Cada prompt ganha de 1 a 3 estrelas, cada estrela vale 1 ponto, e vence quem tiver mais pontos no fim.</p>
+    <p class="aviso" style="margin: 0">Objetivo: montar prompts para as missões da mesa e chegar a <span data-dado="metaDeEstrelas">6</span> estrelas primeiro. Joga como o Pife: compra uma, descarta uma e bate quando fecha o jogo. Aqui, o jogo é um prompt.</p>
 
     <div class="lista regras">
       <details class="item" open>
-        <summary><span class="nome-item">Passo a passo para começar</span></summary>
+        <summary><span class="nome-item">Para explicar em 1 minuto</span></summary>
+        <div class="corpo">
+          <ol>
+            <li>No meio da mesa ficam <span data-dado="missoesNaMesa">3</span> missões abertas. Cada lado tem <span data-dado="cartasNaMao">5</span> cartas na mão.</li>
+            <li>Na sua vez: <b>compre 1</b> (do monte ou a de cima do lixo), <b>bata</b> se fechou um prompt e <b>descarte 1</b>.</li>
+            <li>Fecha um prompt quem tem um <b>contexto</b> e uma <b>persona</b> com o ícone de uma missão da mesa, mais <b>1 formato</b>.</li>
+            <li>O professor confere no aplicativo: formato que ajuda quem vai ler vale ★★★; outro formato, ★★.</li>
+            <li>Ganha quem chegar a <span data-dado="metaDeEstrelas">6</span> estrelas primeiro.</li>
+          </ol>
+        </div>
+      </details>
+
+      <details class="item">
+        <summary><span class="nome-item">Preparação</span></summary>
         <div class="corpo">
           <ol>
             <li>Escolha o modo de jogo (Duelo, Mesa ou Turma) e divida os lados.</li>
-            <li>Monte o tabuleiro. Embaralhe cada baralho e ponha no lugar dele, virado para baixo: Missões, Contexto, Persona e Formato.</li>
-            <li>Vire 3 contextos, 3 personas e 3 formatos para cima, nos espaços “aberta”.</li>
-            <li>Cada lado escolhe 1 nação e põe a carta na sua frente. Todos começam com 10 de vida e 0 ponto.</li>
+            <li>Embaralhe as missões e vire <span data-dado="missoesNaMesa">3</span> para cima no meio da mesa. As outras ficam num montinho ao lado.</li>
+            <li>Embaralhe juntos os contextos, as personas e os formatos: esse é o monte.</li>
+            <li>Dê <span data-dado="cartasNaMao">5</span> cartas e 1 resumo da vez para cada lado. Vire 1 carta do monte ao lado dele: é o lixo.</li>
             <li>Na página Partida, cadastre os lados e toque em Sortear para ver quem começa. Depois, a vez segue no sentido horário.</li>
           </ol>
         </div>
       </details>
 
       <details class="item">
-        <summary><span class="nome-item">O turno (até 60 segundos)</span></summary>
+        <summary><span class="nome-item">A sua vez (até <span data-dado="duracaoDaVez">30</span> segundos)</span></summary>
         <div class="corpo">
           <ol>
-            <li>Tire 1 missão do monte e leia em voz alta.</li>
-            <li>Pegue 1 contexto, 1 persona e 1 formato. De cada baralho, uma das 3 abertas ou, se nenhuma servir, a de cima do baralho, sem olhar antes.</li>
-            <li>O professor digita os códigos na página Missão e o app dá a nota: de 1 a 3 estrelas. Cada estrela vale 1 ponto.</li>
-            <li>Se quiser, gaste pontos nos poderes da sua nação.</li>
-            <li>A missão vai para “missões feitas”. As outras 3 cartas vão para baixo do baralho delas. Complete as abertas com as de cima.</li>
+            <li><b>Compre 1</b> carta: a de cima do monte ou a de cima do lixo.</li>
+            <li><b>Fechou um prompt? Bata</b> (veja abaixo).</li>
+            <li><b>Descarte 1</b> carta no lixo. No fim da vez, você sempre tem <span data-dado="cartasNaMao">5</span> cartas.</li>
           </ol>
-          <p class="aviso">Acabou o tempo? Vale o que já estiver na mesa: a carta que faltar não ganha estrela.</p>
+          <p class="aviso">Acabou o tempo? Descarte 1 carta e passe a vez.</p>
         </div>
       </details>
 
       <details class="item">
-        <summary><span class="nome-item">Como ganhar estrelas</span></summary>
+        <summary><span class="nome-item">Bater e ganhar estrelas</span></summary>
         <div class="corpo">
-          <p>Cada carta certa vale 1 estrela:</p>
+          <p>O prompt fecha com 3 cartas:</p>
           <ul>
-            <li><b>Contexto</b> do mesmo assunto da missão.</li>
-            <li><b>Persona</b> do mesmo assunto da missão.</li>
-            <li><b>Formato</b> que ajuda quem vai ler. A missão não diz qual: leia o pedido e pense. Se errar, o app mostra quais serviam.</li>
+            <li><b>Contexto</b> com o ícone de uma missão da mesa.</li>
+            <li><b>Persona</b> com o mesmo ícone.</li>
+            <li><b>Formato:</b> qualquer um. A missão não diz qual ajuda quem vai ler: leia o pedido e pense.</li>
           </ul>
-          <p>Assuntos: ✚ Saúde · ⚽ Esporte · 💻 Tecnologia · 🌳 Meio ambiente.</p>
+          <p>Ícones: ✚ Saúde · ⚽ Esporte · 💻 Tecnologia · 🌳 Meio ambiente.</p>
+          <p>Quem bate mostra a missão e as 3 cartas. O professor digita os códigos na página Missão:</p>
           <table>
-            <thead><tr><th>Cartas certas</th><th>Nota</th><th>Pontos</th></tr></thead>
+            <thead><tr><th>Formato</th><th>Nota</th><th>Estrelas</th></tr></thead>
             <tbody>
-              <tr><td>3</td><td>★★★</td><td>3</td></tr>
-              <tr><td>2</td><td>★★☆</td><td>2</td></tr>
-              <tr><td>0 ou 1</td><td>★☆☆</td><td>1</td></tr>
+              <tr><td>Ajuda quem vai ler</td><td>★★★</td><td>3</td></tr>
+              <tr><td>Não ajuda tanto</td><td>★★☆</td><td>2</td></tr>
             </tbody>
           </table>
-        </div>
-      </details>
-
-      <details class="item">
-        <summary><span class="nome-item">Poderes (pague com pontos)</span></summary>
-        <div class="corpo">
-          <ul>
-            <li>O número do poder é o custo em pontos: ① custa 1, ② custa 2 e ③ custa 3.</li>
-            <li>Cada poder pode ser usado 1 vez por turno, a qualquer momento da sua vez. A Índia usa o Espelho na vez dos outros, logo depois de um poder contra ela.</li>
-            <li>Na página Partida, toque no poder: o app desconta os pontos e, quando o poder é contra alguém, pergunta em quem.</li>
-            <li>Todas as nações têm <b>① Cura</b> (ganhe 3 de vida) e <b>② Ataque</b> (tire 4 de vida de um lado). O ③ muda:</li>
-          </ul>
-          <table>
-            <thead><tr><th>Nação</th><th>③ · 3 pontos</th></tr></thead>
-            <tbody id="poderes"></tbody>
-          </table>
-        </div>
-      </details>
-
-      <details class="item">
-        <summary><span class="nome-item">Vida</span></summary>
-        <div class="corpo">
-          <ul>
-            <li>Todos começam com 10 de vida. O Ataque e o Golaço tiram vida; a Cura devolve.</li>
-            <li>Vida chegou a 0: o lado perde todos os pontos e volta com 10 de vida. Na página Partida, toque em “Perder os pontos e voltar com 10”.</li>
-          </ul>
+          <p>Depois, o lado fica com a missão, põe as 3 cartas embaixo do monte, compra 3 e vira uma missão nova no lugar. Aí descarta 1, como sempre.</p>
         </div>
       </details>
 
       <details class="item">
         <summary><span class="nome-item">Fim da partida</span></summary>
         <div class="corpo">
-          <p>Todos jogam o mesmo número de turnos: com 2 lados, 5 turnos cada; com 3 lados, 3; com 4 ou 5 lados, 2. O app avisa no último turno.</p>
-          <p><b>Vence quem tiver mais pontos.</b> Empate: ganha quem tiver mais vida.</p>
-          <p>Querem jogar mais? Embaralhem as missões feitas de volta no monte e toquem em “Mais uma rodada”.</p>
+          <p><b>Ganha quem chegar a <span data-dado="metaDeEstrelas">6</span> estrelas primeiro.</b> O aplicativo avisa.</p>
+          <p>As missões acabaram antes (só acontece com 5 lados)? Ganha quem tiver mais estrelas. Empate: quem fez mais missões com ★★★.</p>
+        </div>
+      </details>
+
+      <details class="item">
+        <summary><span class="nome-item">Casos especiais</span></summary>
+        <div class="corpo">
+          <ul>
+            <li><b>Bateu sem o ícone certo:</b> não vale. As cartas voltam para a mão, o lado descarta 1 e passa a vez. O aplicativo não conta se o formato servia, porque a missão continua na mesa.</li>
+            <li><b>Duas missões com o mesmo ícone:</b> o lado escolhe para qual vai bater.</li>
+            <li><b>O monte acabou:</b> embaralhe o lixo, menos a carta de cima, e faça um monte novo.</li>
+          </ul>
         </div>
       </details>
 
@@ -111,30 +107,16 @@
         <div class="corpo">
           <p><b>Duelo</b> (2 a 4 alunos): 1 contra 1, ou dupla contra dupla.</p>
           <p><b>Mesa</b> (3 a 10 alunos): 3 a 5 lados, todos contra todos.</p>
-          <p><b>Turma</b> (até 40 alunos): até 5 grupos, um por nação. Os papéis trocam a cada turno:</p>
-          <ul>
-            <li><b>Capitão:</b> decide a jogada, gasta os pontos e fala com o professor.</li>
-            <li><b>Montador:</b> escolhe as cartas do prompt.</li>
-            <li><b>Placar:</b> marca a vida na carta da nação com um clipe.</li>
-          </ul>
+          <p><b>Turma</b> (até 40 alunos): até 5 grupos. Cada grupo decide junto, e quem segura as cartas troca a cada vez.</p>
         </div>
       </details>
     </div>
-    <p class="nota" style="margin: 0 4px">Números de teste: vida 10, Cura 3, Ataque 4, Golaço 8, Compra no mercado 3 e turno de 60 segundos. Podem mudar depois do playtest.</p>
+    <p class="nota" style="margin: 0 4px">Números de teste: <span data-dado="cartasNaMao">5</span> cartas na mão, <span data-dado="missoesNaMesa">3</span> missões na mesa, <span data-dado="metaDeEstrelas">6</span> estrelas para ganhar e <span data-dado="duracaoDaVez">30</span> segundos por vez. Podem mudar depois da partida de teste.</p>
   </main>
 
   <nav id="menu" class="menu" aria-label="Páginas"></nav>
 
   <script src="js/dados.js"></script>
   <script src="js/comum.js"></script>
-  <script>
-    // Poder ③ de cada nação, a partir das cartas (história 2.3.2)
-    document.getElementById('poderes').innerHTML = DADOS.cartas
-      .filter((c) => c.tipo === 'Nação')
-      .map((n) => {
-        const especial = n.poderes.find((p) => p.n === '③');
-        return `<tr><td><b>${MP.esc(n.nome)}</b></td><td><b>${MP.esc(especial.nome)}:</b> ${MP.esc(especial.texto)}</td></tr>`;
-      }).join('');
-  </script>
 </body>
 </html>

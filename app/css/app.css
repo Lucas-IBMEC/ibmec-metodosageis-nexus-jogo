@@ -24,7 +24,6 @@
   --c-persona: #6d3fc0;
   --c-contexto: #1f5fd1;
   --c-formato: #e06c00;
-  --c-nacao: #16274f;
 
   --raio: 16px;
   --raio-p: 10px;
@@ -52,7 +51,6 @@
     --erro-fundo: #3a1714;
     --aviso: #f0c35a;
     --aviso-fundo: #33280e;
-    --c-nacao: #8fa6e6;
     --sombra: 0 1px 2px rgba(0, 0, 0, 0.3);
   }
 }
@@ -75,7 +73,6 @@
   --erro-fundo: #3a1714;
   --aviso: #f0c35a;
   --aviso-fundo: #33280e;
-  --c-nacao: #8fa6e6;
   --sombra: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
@@ -147,7 +144,7 @@ body.com-barra .conteudo {
   bottom: 0;
   z-index: 20;
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   background: var(--superficie);
   border-top: 1px solid var(--borda);
   padding-bottom: env(safe-area-inset-bottom, 0px);
@@ -270,7 +267,6 @@ body.com-barra .conteudo {
 .t-persona { --c: var(--c-persona); }
 .t-contexto { --c: var(--c-contexto); }
 .t-formato { --c: var(--c-formato); }
-.t-nacao { --c: var(--c-nacao); }
 
 /* Entrada de código: letra do tipo + número */
 .prefixos { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 6px; margin-bottom: 8px; }
@@ -344,13 +340,17 @@ body.com-barra .conteudo {
 .lado.da-vez { border: 2px solid var(--destaque); box-shadow: 0 0 0 4px color-mix(in srgb, var(--destaque) 18%, transparent); }
 .lado-topo { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
 .lado-nome { font-size: 18px; font-weight: 800; margin: 0; }
-.nacao-tag { font-size: 13px; font-weight: 700; color: var(--c-nacao); }
-.contadores { display: grid; grid-template-columns: 1.4fr 1fr; gap: 10px; margin-top: 12px; }
+.lado-info { font-size: 13px; font-weight: 600; color: var(--texto-2); }
+.estrelas-lado { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 10px; }
+.fila-estrelas { margin: 0; font-size: 26px; line-height: 1; letter-spacing: 0.04em; color: var(--c-missao); white-space: nowrap; }
+.fila-estrelas .vazias { color: var(--texto-2); opacity: 0.35; }
+.fila-estrelas small { font-size: 15px; font-weight: 800; margin-left: 4px; }
+.estrelas-lado .contador { flex: none; gap: 6px; }
+.lado.ganhou { border: 2px solid var(--ok); background: var(--ok-fundo); }
 .contador { display: flex; align-items: center; justify-content: space-between; background: var(--superficie-2); border-radius: var(--raio-p); padding: 6px; }
 .contador .valor { text-align: center; font-variant-numeric: tabular-nums; line-height: 1; }
 .contador .valor b { display: block; font-size: 30px; font-weight: 800; }
 .contador .valor span { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--texto-2); }
-.contador.vida .valor b { font-size: 38px; }
 .mais-menos {
   width: 44px;
   height: 44px;
@@ -365,29 +365,6 @@ body.com-barra .conteudo {
 }
 .mais-menos:active { transform: scale(0.92); background: var(--superficie-2); }
 .mais-menos:disabled { opacity: 0.35; }
-/* Poderes da nação: tocar desconta os pontos (cada poder 1 vez por turno) */
-.poderes { display: grid; gap: 6px; margin-top: 10px; }
-.poder {
-  display: grid;
-  gap: 2px;
-  text-align: left;
-  font: inherit;
-  color: var(--texto);
-  background: var(--superficie-2);
-  border: 1px solid var(--borda);
-  border-radius: var(--raio-p);
-  padding: 8px 10px;
-  cursor: pointer;
-  transition: transform 100ms var(--suave);
-}
-.poder:active { transform: scale(0.98); }
-.poder:disabled { opacity: 0.45; cursor: default; transform: none; }
-.poder-nome { font-size: 14px; font-weight: 800; color: var(--c-nacao); }
-.poder-nome small { font-weight: 700; color: var(--c-missao); margin-left: 4px; }
-.poder-texto { font-size: 12.5px; color: var(--texto-2); }
-.poder.especial { border-color: color-mix(in srgb, var(--c-nacao) 45%, var(--borda)); }
-.bloqueio { margin: 10px 0 0; padding: 8px 12px; border-radius: var(--raio-p); background: var(--aviso-fundo); color: var(--aviso); font-size: 14px; font-weight: 600; }
-.alerta-lado { margin-top: 10px; padding: 10px 12px; border-radius: var(--raio-p); background: var(--erro-fundo); color: var(--erro); font-weight: 600; display: flex; gap: 8px; align-items: center; justify-content: space-between; }
 
 /* Barra do turno com o cronômetro, presa em cima do menu */
 .barra-turno {
@@ -465,7 +442,7 @@ th { font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: 
 .modo span { font-size: 12px; color: var(--texto-2); }
 .modo[aria-pressed="true"] { border-color: var(--destaque); background: color-mix(in srgb, var(--destaque) 10%, var(--superficie)); }
 .modo:active { transform: scale(0.97); }
-.lado-config { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
+.nomes-lados { display: grid; gap: 8px; }
 
 /* Aviso rápido no rodapé */
 .toast {

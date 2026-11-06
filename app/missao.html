@@ -12,23 +12,23 @@
   <link rel="icon" href="icones/icone.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="icones/icone-192.png">
   <link rel="stylesheet" href="css/app.css">
-  <title>Missão · Magic Prompt</title>
+  <title>Missão</title>
 </head>
 <body data-pagina="missao">
   <header class="topo">
-    <div class="topo-linha"><span class="marca">Magic Prompt</span><h1>Dar a nota</h1></div>
+    <div class="topo-linha"><span class="marca" data-dado="nomeDoJogo">Palavra Mágica</span><h1>Conferir o prompt</h1></div>
   </header>
 
   <main class="conteudo">
     <section class="bloco">
-      <h2><span class="passo">1</span>Qual missão o lado tirou?</h2>
+      <h2><span class="passo">1</span>Para qual missão o lado bateu?</h2>
       <select class="campo" id="missao" aria-label="Missão"></select>
       <p class="pedido-missao" id="pedido"></p>
     </section>
 
     <section class="bloco">
-      <h2><span class="passo">2</span>As 3 cartas do prompt</h2>
-      <p class="sub">Toque na letra e digite o número da carta. Depois de cada uma, o app já passa para a próxima letra.</p>
+      <h2><span class="passo">2</span>As 3 cartas de quem bateu</h2>
+      <p class="sub">Toque na letra e digite o número da carta. Depois de cada uma, o aplicativo já passa para a próxima letra.</p>
       <div id="entrada"></div>
       <ul class="trio" id="trio" aria-live="polite"></ul>
       <button type="button" class="botao secundario largo" id="limpar" style="margin-top: 12px">Limpar as cartas</button>
@@ -37,10 +37,10 @@
     <section class="bloco resultado" id="resultado" hidden aria-live="polite"></section>
 
     <section class="bloco" id="dar" hidden>
-      <h2 id="titulo-dar">Dar os pontos para</h2>
+      <h2 id="titulo-dar">Dar as estrelas para</h2>
       <p class="sub" id="sub-dar"></p>
       <div class="chips" id="lados-dar"></div>
-      <a class="botao secundario largo" id="ir-partida" href="index.html" hidden style="margin-top: 12px">Voltar para a Partida (poderes)</a>
+      <a class="botao secundario largo" id="ir-partida" href="index.html" hidden style="margin-top: 12px">Voltar para a Partida</a>
     </section>
 
     <section class="bloco" id="prompt" hidden>

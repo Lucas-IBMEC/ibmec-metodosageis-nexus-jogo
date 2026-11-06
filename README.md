@@ -1,76 +1,69 @@
-# Magic Prompt · Companion app do professor
+# Palavra Mágica · jogo de cartas e aplicativo do professor
 
-Protótipo do companion app do **Magic Prompt**, o jogo de cartas do grupo NEXUS (Métodos Ágeis, IBMEC) que ensina engenharia de prompt.
+**Palavra Mágica** é o jogo de cartas do grupo NEXUS (Métodos Ágeis, IBMEC) que ensina a escrever bons prompts, sem internet na sala de aula. Antes ele se chamava *Magic Prompt*; o professor pediu um nome em português na Revisão da Sprint 4 (04/11/2026).
 
-Esta é a **versão simplificada para o playtest de 11/11**: um tabuleiro com 4 baralhos (Missões, Contexto, Persona e Formato), nota de 1 a 3 estrelas e poderes das nações pagos com pontos.
+Esta é a **versão "Pife" para a partida de teste de 11/11**. Ela joga como o Pife: compra uma, descarta uma e bate quando fecha o jogo. Aqui, o jogo é um prompt.
 
-Só o professor usa o celular em sala. O app foi feito **primeiro para o celular**, funciona **sem internet** depois da primeira visita e pode ser **instalado na tela inicial** como um aplicativo.
+Só o professor usa o celular em sala. O aplicativo do professor foi feito **primeiro para o celular**, funciona **sem internet** depois da primeira visita e pode ser **instalado na tela inicial**.
 
-## Como abrir
+## O que tem aqui
 
-- **No celular (recomendado):** abra `https://lucas-ibmec.github.io/ibmec-metodosageis-nexus-jogo/app/`. É o GitHub Pages do repositório `Lucas-IBMEC/ibmec-metodosageis-nexus-jogo`, que agora é o repositório principal do projeto.
-- **Instalar:** no Chrome do Android, menu ⋮ → *Adicionar à tela inicial*. No iPhone, Safari → Compartilhar → *Adicionar à Tela de Início*.
-- **No computador:** abra `app/index.html` no navegador. Tudo funciona, menos o modo sem internet, que só liga quando o app vem de um servidor (GitHub Pages ou a extensão Live Server do VS Code).
+| Arquivo | O que é |
+| --- | --- |
+| `cartas/cartas.html` | Folha de regras, as 72 cartas (8 folhas A4) e o gabarito do professor, prontos para imprimir |
+| `cartas/manual.html` | Manual do Professor (9 páginas, com imagens das cartas, da mesa e das telas do aplicativo) |
+| `cartas/gerar.cjs` | Lugar único das cartas: gera os dois arquivos acima e os dados do aplicativo |
+| `cartas/manual.cjs` | Texto e desenho do Manual do Professor |
+| `cartas/imagens/` | Fotos das telas do aplicativo usadas no manual |
+| `app/` | O aplicativo do professor |
+| `app-vue/` | Versão antiga em Vue 3, ainda com as regras do pacote E |
 
 ## O jogo em 5 linhas
 
-- No seu turno, o lado tira 1 missão e escolhe 1 contexto, 1 persona e 1 formato: uma das 3 cartas abertas de cada baralho ou a de cima do baralho.
-- Cada carta certa vale 1 estrela: contexto e persona do mesmo assunto da missão (✚ Saúde, ⚽ Esporte, 💻 Tecnologia, 🌳 Meio ambiente) e um formato que ajude quem vai ler. 3 certas = ★★★, 2 = ★★, 0 ou 1 = ★.
-- Cada estrela vale 1 ponto. Os pontos pagam os poderes da nação: ① Cura, ② Ataque e o ③ de cada nação.
-- Todos começam com 10 de vida. Vida 0: o lado perde todos os pontos e volta com 10.
-- Todos jogam o mesmo número de turnos (as 10 missões divididas entre os lados). Vence quem tiver mais pontos; no empate, quem tiver mais vida.
+- No meio da mesa ficam 3 missões abertas. Cada lado tem 5 cartas na mão.
+- Na sua vez (até 30 segundos): **compre 1** (do monte ou a de cima do lixo), **bata** se fechou um prompt e **descarte 1**.
+- Fecha um prompt quem tem um **contexto** e uma **persona** com o ícone de uma missão da mesa (✚ Saúde, ⚽ Esporte, 💻 Tecnologia, 🌳 Meio ambiente), mais **1 formato**.
+- O professor confere no aplicativo: formato que ajuda quem vai ler vale ★★★; outro formato, ★★.
+- Ganha quem chegar a **6 estrelas** primeiro.
 
-As regras completas estão na página Regras do app e na primeira folha do arquivo de impressão.
+As regras completas estão na folha de regras, no Manual do Professor e na página Regras do aplicativo.
 
-## Páginas
+## Como abrir o aplicativo
+
+- **No celular:** abra `https://lucas-ibmec.github.io/ibmec-metodosageis-nexus-jogo/app/` (publicado pelo GitHub Pages deste repositório).
+- **Instalar:** no Chrome do Android, menu ⋮ → *Adicionar à tela inicial*. No iPhone, Safari → Compartilhar → *Adicionar à Tela de Início*.
+- **No computador:** abra `app/index.html` no navegador. Tudo funciona, menos o modo sem internet, que só liga quando o aplicativo vem de um servidor (como o GitHub Pages).
 
 | Arquivo | Página | O que faz | Histórias |
 | --- | --- | --- | --- |
-| `app/index.html` | Partida | Monta a partida (Duelo, Mesa ou Turma), sorteia quem começa, placar de vida e pontos, poderes das nações, cronômetro de 60 segundos por turno e fim da partida | 2.5.1 |
-| `app/missao.html` | Missão | O professor escolhe a missão e digita os códigos das 3 cartas. O app dá de 1 a 3 estrelas, explica cada acerto e erro, mostra o prompt que as cartas formam e uma resposta simulada, e passa os pontos para o lado | 2.1.1, 2.1.2, 2.2.1, 2.2.2 |
-| `app/cartas.html` | Cartas | Consulta das 52 cartas pelo código ou pelo nome (inclusive os poderes), com o gabarito do professor | 2.3.1 |
-| `app/regras.html` | Regras | Passo a passo para começar, turno, estrelas, poderes, vida, fim e modos de jogo | 2.3.2, 2.3.3 |
+| `app/index.html` | Partida | Monta a partida (Duelo, Mesa ou Turma), sorteia quem começa, mostra as estrelas de cada lado, cronômetro de 30 segundos por vez e quem ganhou | 2.5.1 |
+| `app/missao.html` | Missão | O professor escolhe a missão e digita os códigos das 3 cartas. O aplicativo diz se o prompt fecha, dá ★★★ ou ★★, mostra o prompt que as cartas formam e uma resposta de exemplo | 2.1.1, 2.1.2, 2.2.1, 2.2.2 |
+| `app/cartas.html` | Cartas | Consulta das cartas pelo código ou pelo nome, com o gabarito do professor | 2.3.1 |
+| `app/regras.html` | Regras | Resumo das regras | 2.3.2, 2.3.3 |
 
-Todas as páginas guardam o placar no próprio celular (`localStorage`), então dá para trocar de página no meio da partida sem perder nada.
+O placar fica guardado no próprio celular, então dá para trocar de página no meio da partida sem perder nada.
 
-## Pastas
+## Como mudar uma carta, um número ou o nome do jogo
 
-```
-app/
-├── index.html, missao.html, cartas.html, regras.html
-├── css/app.css          estilo (cores iguais às cartas impressas, modo claro e escuro)
-├── js/dados.js          as cartas, o gabarito das missões e os poderes (gerado por cartas/gerar.cjs)
-├── js/respostas.js      respostas simuladas para cada missão e formato
-├── js/comum.js          menu, busca de carta pelo código, avisos e funções usadas por todas as páginas
-├── js/partida.js        placar, poderes e cronômetro
-├── js/missao.js         nota da missão em estrelas
-├── js/cartas.js         consulta das cartas
-├── manifest.webmanifest nome, cores e ícones para instalar no celular
-├── sw.js                guarda os arquivos para funcionar sem internet
-└── icones/              ícone do app
-cartas/
-├── gerar.cjs            lugar único das cartas: gera o arquivo de impressão e o app/js/dados.js
-└── playtest.html        regras, tabuleiro (2 folhas), 61 cartas e gabarito, pronto para imprimir
-app-vue/                 versão em Vue 3 (ainda segue o pacote E)
-```
-
-## Como mudar uma carta
-
-Edite a carta em `cartas/gerar.cjs` (missões, contextos, personas, formatos ou nações) e rode:
+Edite `cartas/gerar.cjs` (o nome do jogo fica na constante `NOME`, no começo do arquivo) e rode:
 
 ```
 node cartas/gerar.cjs
 ```
 
-Isso atualiza de uma vez as cartas para imprimir (`cartas/playtest.html`) e o app (`app/js/dados.js`). Não edite o `dados.js` à mão: o app e as cartas impressas ficariam diferentes. As respostas simuladas ficam em `app/js/respostas.js`.
+Isso atualiza de uma vez as cartas para imprimir, o Manual do Professor e os dados do aplicativo (`app/js/dados.js` e `app/manifest.webmanifest`). Não edite esses arquivos à mão: o aplicativo e as cartas impressas ficariam diferentes. As respostas de exemplo ficam em `app/js/respostas.js`.
 
-Para imprimir: abra `cartas/playtest.html` no Chrome, Ctrl+P, *Salvar como PDF*, margens *Nenhuma*.
+Para imprimir: abra `cartas/cartas.html` ou `cartas/manual.html` no Chrome, Ctrl+P, *Salvar como PDF*, margens *Nenhuma*.
 
-Ao **criar um arquivo novo** no app, coloque o nome dele na lista `ARQUIVOS` de `app/sw.js` e aumente a `VERSAO`, para os celulares guardarem o arquivo novo.
+Ao **criar um arquivo novo** no aplicativo, coloque o nome dele na lista `ARQUIVOS` de `app/sw.js` e aumente a `VERSAO`, para os celulares guardarem o arquivo novo.
+
+## Palavras de outras línguas
+
+Seguimos a regra do professor: se existe palavra em português que diz o mesmo, usamos a palavra em português. As que ficaram (como *prompt*, *persona*, *Sprint* e *Kanban*) estão explicadas e justificadas na seção 8 do Manual do Professor. Os nomes de arquivos e o código usam os nomes técnicos das linguagens de programação (HTML, CSS e JavaScript).
 
 ## Ainda falta
 
 - Testar num celular de verdade: modo sem internet, som e vibração do cronômetro, tela que não apaga.
-- Testar com alguém que não sabe engenharia de prompt (tarefa da história 2.2.1).
-- Ajustar os números depois do playtest: vida 10, Cura 3, Ataque 4, Golaço 8, Compra no mercado 3 e turno de 60 segundos.
+- Testar com alguém que não sabe escrever prompts (tarefa da história 2.2.1).
+- Ajustar os números depois da partida de teste: 5 cartas na mão, 3 missões na mesa, 6 estrelas e 30 segundos por vez.
 - Atualizar o `app-vue` para esta versão.

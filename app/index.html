@@ -6,18 +6,18 @@
   <meta name="theme-color" media="(prefers-color-scheme: light)" content="#16274f">
   <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0b1530">
   <meta name="color-scheme" content="light dark">
-  <meta name="description" content="Companion app do professor para o jogo Magic Prompt.">
+  <meta name="description" content="Aplicativo do professor: placar, tempo da vez e conferência dos prompts do jogo.">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icones/icone.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="icones/icone-192.png">
   <link rel="stylesheet" href="css/app.css">
-  <title>Magic Prompt Companion</title>
+  <title>Partida</title>
 </head>
 <body data-pagina="partida">
   <header class="topo">
-    <div class="topo-linha"><span class="marca">Magic Prompt</span><h1>Partida</h1></div>
+    <div class="topo-linha"><span class="marca" data-dado="nomeDoJogo">Palavra Mágica</span><h1>Partida</h1></div>
   </header>
 
   <main class="conteudo">
@@ -25,7 +25,7 @@
     <section id="tela-nova" hidden>
       <div class="bloco">
         <h2>Nova partida</h2>
-        <p class="sub">Escolha o modo e a nação de cada lado. Só você usa o celular.</p>
+        <p class="sub">Escolha o modo e o nome de cada lado. Só você usa o celular.</p>
 
         <span class="rotulo">Modo de jogo</span>
         <div class="modos" id="modos">
@@ -41,18 +41,19 @@
           <div class="valor"><b id="quantos">2</b><span id="nome-quantos">lados</span></div>
           <button type="button" class="mais-menos" id="mais-lados" aria-label="Mais lados">+</button>
         </div>
-        <p class="nota" id="explica-turnos"></p>
+        <p class="nota">Ganha quem chegar a <span data-dado="metaDeEstrelas">6</span> estrelas primeiro: 2 ou 3 missões.</p>
 
-        <div id="config-lados"></div>
+        <span class="rotulo">Nomes (se quiser)</span>
+        <div class="nomes-lados" id="config-lados"></div>
         <button type="button" class="botao largo" id="comecar" style="margin-top: 16px">Começar partida</button>
       </div>
 
       <div class="bloco">
         <h2>Antes de começar</h2>
         <ol class="regras" style="margin: 0; padding-left: 20px">
-          <li>Monte o tabuleiro e ponha cada baralho embaralhado no lugar dele, virado para baixo: Missões, Contexto, Persona e Formato.</li>
-          <li>Vire 3 contextos, 3 personas e 3 formatos para cima, nos espaços “aberta”.</li>
-          <li>Cada lado pega a carta da sua nação. Todos começam com 10 de vida e 0 ponto.</li>
+          <li>Embaralhe as missões e vire <span data-dado="missoesNaMesa">3</span> para cima no meio da mesa.</li>
+          <li>Embaralhe juntos os contextos, as personas e os formatos: esse é o monte.</li>
+          <li>Dê <span data-dado="cartasNaMao">5</span> cartas e 1 resumo da vez para cada lado. Vire 1 carta do monte ao lado dele: é o lixo.</li>
         </ol>
         <p class="nota">O passo a passo completo está em <a href="regras.html">Regras</a>.</p>
       </div>
@@ -80,38 +81,28 @@
     </section>
   </main>
 
-  <!-- Cronômetro do turno, preso em cima do menu -->
+  <!-- Cronômetro da vez, preso em cima do menu -->
   <div class="barra-turno" id="barra-turno" hidden>
     <div class="barra-turno-dentro">
-      <div class="relogio" id="relogio" role="timer" aria-label="Tempo do turno">
+      <div class="relogio" id="relogio" role="timer" aria-label="Tempo da vez">
         <svg viewBox="0 0 64 64" aria-hidden="true">
           <circle class="trilho" cx="32" cy="32" r="28"></circle>
           <circle class="arco" id="arco" cx="32" cy="32" r="28"></circle>
         </svg>
-        <span class="seg" id="segundos">60</span>
+        <span class="seg" id="segundos">30</span>
       </div>
       <button type="button" class="botao secundario" id="cronometro">Iniciar</button>
-      <button type="button" class="botao" id="proximo">Próximo turno</button>
+      <button type="button" class="botao" id="proximo">Passar a vez</button>
     </div>
   </div>
 
-  <dialog id="alvo">
-    <h2 id="alvo-titulo">Em quem?</h2>
-    <p class="nota" id="alvo-texto"></p>
-    <div class="chips" id="alvo-lados" style="margin-top: 12px"></div>
-    <div class="acoes" style="margin-top: 16px">
-      <button type="button" class="botao secundario" id="alvo-cancelar">Cancelar</button>
-    </div>
-  </dialog>
-
   <dialog id="fim">
     <h2 id="fim-titulo">Fim da partida</h2>
-    <p class="nota">Vence quem tiver mais pontos. Empate: ganha quem tiver mais vida.</p>
+    <p class="nota">Ganha quem chega a <span data-dado="metaDeEstrelas">6</span> estrelas primeiro. Se a partida acabar antes, ganha quem tiver mais estrelas; empate: quem fez mais missões com ★★★.</p>
     <ol class="ranking" id="ranking"></ol>
-    <p class="nota">Para fechar a aula: cada lado lê em voz alta o prompt da missão que mais gostou de montar.</p>
+    <p class="nota">Para fechar a aula: cada lado mostra uma missão que fez e diz por que escolheu aquele formato.</p>
     <div class="acoes" style="margin-top: 12px">
       <button type="button" class="botao secundario" id="voltar-jogo">Voltar ao jogo</button>
-      <button type="button" class="botao secundario" id="mais-rodada">Mais uma rodada</button>
       <button type="button" class="botao" id="nova-do-fim">Nova partida</button>
     </div>
   </dialog>

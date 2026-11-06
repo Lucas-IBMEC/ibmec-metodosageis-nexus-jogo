@@ -1,12 +1,12 @@
-// Respostas simuladas da IA (história 2.2.2). O app não usa IA de verdade:
+// Respostas simuladas da IA (história 2.2.2). O aplicativo não usa IA de verdade:
 // são exemplos prontos para o professor mostrar à turma o efeito de cada prompt.
 
 const RESPOSTAS = {
   // Resposta boa (★★★): uma para cada formato que serve em cada missão
   boas: {
     M01: {
-      F01: '• A dengue é uma doença causada por um vírus.\n• O vírus passa pela picada do mosquito Aedes aegypti.\n• Para se proteger, não deixe água parada em vasos, pneus e garrafas.',
-      F03: 'A dengue é uma doença que o mosquito Aedes aegypti passa quando pica. Para se proteger, não deixe água parada, porque é nela que o mosquito nasce.',
+      F01: '• A dengue é uma doença causada por um vírus.\n• O vírus passa pela picada do mosquito da dengue.\n• Para se proteger, não deixe água parada em vasos, pneus e garrafas.',
+      F03: 'A dengue é uma doença que um mosquito passa quando pica. Para se proteger, não deixe água parada, porque é nela que o mosquito nasce.',
       F08: '— Mãe, o que é dengue?\n— É uma doença que o mosquito passa quando pica.\n— E como eu fujo dela?\n— Sem água parada em casa: é ali que o mosquito nasce.',
     },
     M02: {
@@ -30,12 +30,12 @@ const RESPOSTAS = {
       F08: '— Vó, sua senha é a data do seu aniversário?\n— É, assim eu não esqueço.\n— Mas fica fácil de adivinhar. Vamos juntar uma frase, um número e um símbolo: MeuGatoComePeixe#27.\n— E eu uso essa em tudo?\n— Não: uma senha diferente para cada aplicativo.',
     },
     M07: {
-      F01: '• Desconfie de prêmio que chega do nada.\n• Nunca passe senha ou código por mensagem.\n• Antes de clicar num link estranho, pergunte a um adulto.',
+      F01: '• Desconfie de prêmio que chega do nada.\n• Nunca passe senha ou código por mensagem.\n• Antes de abrir um endereço estranho que chegou por mensagem, pergunte a um adulto.',
       F04: 'Ganhei um prêmio por mensagem. É verdade?\nQuase sempre é golpe: ninguém dá prêmio do nada.\nPosso passar o código que chegou no meu celular?\nNunca. Com esse código, roubam a sua conta.',
     },
     M08: {
-      F09: 'Anos 1990: internet discada, lenta e cara.\nAnos 2000: banda larga e os primeiros sites de vídeo.\nAnos 2010: internet no celular em quase todo lugar.\nHoje: aulas, compras e conversas pelo celular.',
-      F05: 'Época | Como era a internet\nAnos 1990 | discada, lenta e só no computador\nAnos 2000 | banda larga e os primeiros sites de vídeo\nHoje | no celular, em quase todo lugar',
+      F09: 'Anos 1990: internet discada, lenta e cara.\nAnos 2000: banda larga e os primeiros vídeos na internet.\nAnos 2010: internet no celular em quase todo lugar.\nHoje: aulas, compras e conversas pelo celular.',
+      F05: 'Época | Como era a internet\nAnos 1990 | discada, lenta e só no computador\nAnos 2000 | banda larga e os primeiros vídeos na internet\nHoje | no celular, em quase todo lugar',
     },
     M09: {
       F02: '1. Coloque 3 lixeiras: papel, plástico e resto.\n2. Faça um cartaz com o que vai em cada uma.\n3. Cada turma cuida das lixeiras por uma semana.\n4. Leve o reciclável para a cooperativa do bairro.',

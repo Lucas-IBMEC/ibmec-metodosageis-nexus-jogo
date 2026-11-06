@@ -8,7 +8,6 @@ const FILTROS = [
   { nome: 'Contexto', tipos: ['Contexto'] },
   { nome: 'Persona', tipos: ['Persona'] },
   { nome: 'Formato', tipos: ['Formato'] },
-  { nome: 'Nação', tipos: ['Nação'] },
 ];
 
 let filtro = 0;
@@ -29,13 +28,11 @@ function linhasDaCarta(c) {
   if (c.tipo === 'Persona') linhas.push(['No prompt', `“${c.texto}”`]);
   if (c.tipo === 'Formato') linhas.push(['Como fica', c.texto]);
   if (c.copias > 1) linhas.push(['Cópias no baralho', `${c.copias}, com o mesmo código`]);
-  if (c.tipo === 'Contexto' || c.tipo === 'Persona') linhas.push(['Ganha estrela', `em missão de ${c.assunto}`]);
+  if (c.tipo === 'Contexto' || c.tipo === 'Persona') linhas.push(['Serve para bater', `em missão de ${c.assunto}`]);
   if (c.tipo === 'Formato') {
     const missoes = DADOS.missoes.filter((m) => m.formatos.includes(c.codigo)).map((m) => m.codigo);
-    linhas.push(['Ganha estrela', `nas missões ${missoes.join(', ')}`]);
+    linhas.push(['Dá ★★★', `nas missões ${missoes.join(', ')} (nas outras, ★★)`]);
   }
-  if (c.vida) linhas.push(['Vida inicial', String(c.vida)]);
-  if (c.poderes) c.poderes.forEach((p) => linhas.push([`${p.n} ${p.nome} (${MP.plural(p.custo, 'ponto', 'pontos')})`, p.texto]));
   return linhas;
 }
 
@@ -49,8 +46,8 @@ function htmlDaCarta(c) {
       ${linhasDaCarta(c).map(([rotulo, valor]) => `<p><b>${rotulo}:</b> ${MP.esc(valor)}</p>`).join('')}
       ${c.tipo === 'Missão' ? `<details class="gabarito">
         <summary>Gabarito do professor</summary>
-        <p><b>Contexto e persona:</b> de ${MP.esc(c.assunto)}.</p>
-        <p><b>Formatos que servem:</b> ${MP.esc(c.formatos.map((f) => `${f} ${nomeDoFormato(f)}`).join(' · '))}</p>
+        <p><b>Para bater:</b> contexto e persona de ${MP.esc(MP.comSimbolo(c.assunto))}.</p>
+        <p><b>Formatos que dão ★★★:</b> ${MP.esc(c.formatos.map((f) => `${f} ${nomeDoFormato(f)}`).join(' · '))}</p>
       </details>` : ''}
     </div>
   </details>`;
@@ -64,9 +61,7 @@ function atualizar() {
     if (tipos && !tipos.includes(c.tipo)) return false;
     if (!termo) return true;
     if (codigo && c.codigo === codigo) return true;
-    // Nas nações, procura também nos poderes ("golaço" acha o Brasil)
-    const poderes = (c.poderes || []).map((p) => `${p.nome} ${p.texto}`).join(' ');
-    return simples(`${c.codigo} ${c.nome} ${c.texto || ''} ${c.assunto || ''} ${c.lema || ''} ${poderes}`).includes(termo);
+    return simples(`${c.codigo} ${c.nome} ${c.texto || ''} ${c.assunto || ''}`).includes(termo);
   });
 
   // Código exato aparece primeiro e já aberto

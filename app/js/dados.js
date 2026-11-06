@@ -1,8 +1,9 @@
-// Dados das cartas do Magic Prompt, versão simplificada do playtest (11/11/2026): 52 códigos e 61 cartas impressas.
-// Gerado pela mesma lista das cartas impressas. Para mudar uma carta, edite a linha dela aqui.
-// Missão: "formatos" são os formatos que ganham estrela nela. Contexto e persona ganham estrela quando são do mesmo assunto da missão.
-// Formato: "copias" é quantas cartas iguais existem. Nação: "vida" é a vida inicial e "poderes" custam pontos (o número é o custo).
+// Dados das cartas do Palavra Mágica, versão "Pife" da partida de teste (11/11/2026): 55 códigos e 72 cartas impressas.
+// Gerado por cartas/gerar.cjs, a mesma lista das cartas impressas. Para mudar uma carta, edite lá e rode node cartas/gerar.cjs.
+// Missão: "formatos" são os formatos que dão 3 estrelas nela (outro formato dá 2).
+// Contexto e persona: só fecham o prompt quando são do mesmo assunto da missão. Formato: "copias" é quantas cartas iguais existem.
 const DADOS = {
+  nomeDoJogo: "Palavra Mágica",
   cartas: [
     {"codigo":"M01","tipo":"Missão","nome":"Explique a dengue para uma criança de 10 anos.","assunto":"Saúde","formatos":["F01","F03","F08"]},
     {"codigo":"M02","tipo":"Missão","nome":"Crie um cardápio de lanche saudável para a semana.","assunto":"Saúde","formatos":["F05","F07"]},
@@ -16,12 +17,12 @@ const DADOS = {
     {"codigo":"M10","tipo":"Missão","nome":"Explique o aquecimento global para os alunos da escola.","assunto":"Meio ambiente","formatos":["F07","F06","F04"]},
     {"codigo":"C01","tipo":"Contexto","nome":"Dengue em Recife","assunto":"Saúde","texto":"Moro em Recife. No verão, a cidade tem muitos casos de dengue."},
     {"codigo":"C02","tipo":"Contexto","nome":"Gripe em Nova York","assunto":"Saúde","texto":"Sou enfermeira em Nova York e atendo muitas crianças com gripe no inverno."},
-    {"codigo":"C03","tipo":"Contexto","nome":"Lanche em Miami","assunto":"Saúde","texto":"Na minha escola em Miami, muitos alunos comem fast-food todo dia."},
+    {"codigo":"C03","tipo":"Contexto","nome":"Lanche em Miami","assunto":"Saúde","texto":"Na minha escola em Miami, muitos alunos comem hambúrguer e batata frita todo dia."},
     {"codigo":"C04","tipo":"Contexto","nome":"Mãos limpas em Cantão","assunto":"Saúde","texto":"Em Cantão, a escola ensina os alunos a lavar as mãos do jeito certo."},
     {"codigo":"C05","tipo":"Contexto","nome":"Merenda em Roma","assunto":"Saúde","texto":"Sou nutricionista em Roma e monto o cardápio da merenda."},
     {"codigo":"C06","tipo":"Contexto","nome":"Basquete em Chicago","assunto":"Esporte","texto":"Sou técnico de basquete numa escola de Chicago e os alunos se cansam rápido."},
     {"codigo":"C07","tipo":"Contexto","nome":"Futsal da escola","assunto":"Esporte","texto":"Treino o time de futsal da escola, com meninos e meninas."},
-    {"codigo":"C08","tipo":"Contexto","nome":"Tai chi em Xangai","assunto":"Esporte","texto":"Em Xangai, muitos alunos fazem tai chi no parque antes da aula."},
+    {"codigo":"C08","tipo":"Contexto","nome":"Ginástica em Xangai","assunto":"Esporte","texto":"Em Xangai, muitos alunos fazem ginástica no parque antes da aula."},
     {"codigo":"C09","tipo":"Contexto","nome":"Críquete na Índia","assunto":"Esporte","texto":"Na minha cidade, na Índia, o críquete é o esporte mais jogado pelas crianças."},
     {"codigo":"C10","tipo":"Contexto","nome":"Corrida em Boston","assunto":"Esporte","texto":"Em Boston, a corrida da escola é no inverno, com muito frio."},
     {"codigo":"C11","tipo":"Contexto","nome":"Informática em Manaus","assunto":"Tecnologia","texto":"Dou aula de informática numa escola de Manaus com poucos computadores."},
@@ -38,10 +39,18 @@ const DADOS = {
     {"codigo":"P02","tipo":"Persona","nome":"Nutricionista","assunto":"Saúde","texto":"Você é nutricionista."},
     {"codigo":"P03","tipo":"Persona","nome":"Técnica de futebol","assunto":"Esporte","texto":"Você é técnica de futebol."},
     {"codigo":"P04","tipo":"Persona","nome":"Professor de Educação Física","assunto":"Esporte","texto":"Você é professor de Educação Física."},
-    {"codigo":"P05","tipo":"Persona","nome":"Engenheiro de software","assunto":"Tecnologia","texto":"Você é engenheiro de software."},
+    {"codigo":"P05","tipo":"Persona","nome":"Engenheiro de computação","assunto":"Tecnologia","texto":"Você é engenheiro de computação."},
     {"codigo":"P06","tipo":"Persona","nome":"Especialista em segurança na internet","assunto":"Tecnologia","texto":"Você é especialista em segurança na internet."},
     {"codigo":"P07","tipo":"Persona","nome":"Bióloga","assunto":"Meio ambiente","texto":"Você é bióloga."},
     {"codigo":"P08","tipo":"Persona","nome":"Engenheira ambiental","assunto":"Meio ambiente","texto":"Você é engenheira ambiental."},
+    {"codigo":"P09","tipo":"Persona","nome":"Enfermeiro","assunto":"Saúde","texto":"Você é enfermeiro."},
+    {"codigo":"P10","tipo":"Persona","nome":"Agente comunitária de saúde","assunto":"Saúde","texto":"Você é agente comunitária de saúde."},
+    {"codigo":"P11","tipo":"Persona","nome":"Atleta olímpica","assunto":"Esporte","texto":"Você é atleta olímpica."},
+    {"codigo":"P12","tipo":"Persona","nome":"Jornalista esportivo","assunto":"Esporte","texto":"Você é jornalista esportivo."},
+    {"codigo":"P13","tipo":"Persona","nome":"Professora de informática","assunto":"Tecnologia","texto":"Você é professora de informática."},
+    {"codigo":"P14","tipo":"Persona","nome":"Desenvolvedor de aplicativos","assunto":"Tecnologia","texto":"Você é desenvolvedor de aplicativos."},
+    {"codigo":"P15","tipo":"Persona","nome":"Guarda-parque","assunto":"Meio ambiente","texto":"Você é guarda-parque."},
+    {"codigo":"P16","tipo":"Persona","nome":"Meteorologista","assunto":"Meio ambiente","texto":"Você é meteorologista."},
     {"codigo":"F01","tipo":"Formato","nome":"Lista curta (3 itens)","texto":"3 tópicos curtos, um em cada linha.","copias":2},
     {"codigo":"F02","tipo":"Formato","nome":"Passo a passo","texto":"Etapas numeradas, na ordem de fazer.","copias":2},
     {"codigo":"F03","tipo":"Formato","nome":"Resumo em 2 frases","texto":"Só o mais importante, em 2 frases.","copias":2},
@@ -51,15 +60,14 @@ const DADOS = {
     {"codigo":"F07","tipo":"Formato","nome":"Cartaz (título e 3 frases)","texto":"Um título que chama atenção e 3 frases curtas.","copias":2},
     {"codigo":"F08","tipo":"Formato","nome":"Diálogo curto","texto":"Uma conversa curta entre duas pessoas.","copias":2},
     {"codigo":"F09","tipo":"Formato","nome":"Linha do tempo","texto":"Os fatos em ordem, do mais antigo ao mais novo.","copias":2},
-    {"codigo":"N1","tipo":"Nação","nome":"Brasil","lema":"Ataca forte","vida":10,"poderes":[{"n":"①","nome":"Cura","custo":1,"texto":"ganhe 3 de vida","efeito":"cura","valor":3},{"n":"②","nome":"Ataque","custo":2,"texto":"tire 4 de vida de um lado","efeito":"dano","valor":4},{"n":"③","nome":"Golaço","custo":3,"texto":"tire 8 de vida de um lado","efeito":"dano","valor":8}]},
-    {"codigo":"N2","tipo":"Nação","nome":"Índia","lema":"Devolve o golpe","vida":10,"poderes":[{"n":"①","nome":"Cura","custo":1,"texto":"ganhe 3 de vida","efeito":"cura","valor":3},{"n":"②","nome":"Ataque","custo":2,"texto":"tire 4 de vida de um lado","efeito":"dano","valor":4},{"n":"③","nome":"Espelho","custo":3,"texto":"quando alguém usar um poder contra você, cancele e devolva o efeito para quem usou","efeito":"espelho","valor":0}]},
-    {"codigo":"N3","tipo":"Nação","nome":"EUA","lema":"Compra pontos","vida":10,"poderes":[{"n":"①","nome":"Cura","custo":1,"texto":"ganhe 3 de vida","efeito":"cura","valor":3},{"n":"②","nome":"Ataque","custo":2,"texto":"tire 4 de vida de um lado","efeito":"dano","valor":4},{"n":"③","nome":"Compra no mercado","custo":3,"texto":"pegue 3 pontos de um lado","efeito":"roubo","valor":3}]},
-    {"codigo":"N4","tipo":"Nação","nome":"China","lema":"Produz mais","vida":10,"poderes":[{"n":"①","nome":"Cura","custo":1,"texto":"ganhe 3 de vida","efeito":"cura","valor":3},{"n":"②","nome":"Ataque","custo":2,"texto":"tire 4 de vida de um lado","efeito":"dano","valor":4},{"n":"③","nome":"Linha de produção","custo":3,"texto":"monte outro prompt para a mesma missão e ganhe as estrelas de novo","efeito":"manual","valor":0}]},
-    {"codigo":"N5","tipo":"Nação","nome":"União Europeia","lema":"Fiscaliza","vida":10,"poderes":[{"n":"①","nome":"Cura","custo":1,"texto":"ganhe 3 de vida","efeito":"cura","valor":3},{"n":"②","nome":"Ataque","custo":2,"texto":"tire 4 de vida de um lado","efeito":"dano","valor":4},{"n":"③","nome":"Fiscalização","custo":3,"texto":"deixe um lado sem poderes até o fim do próximo turno dele","efeito":"bloqueio","valor":0}]},
   ],
   // Símbolo de cada assunto, igual ao das cartas
   assuntos: {"Saúde":"✚","Esporte":"⚽","Tecnologia":"💻","Meio ambiente":"🌳"},
-  duracaoDoTurno: 60, // segundos
+  // Números da regra (de teste)
+  cartasNaMao: 5,
+  missoesNaMesa: 3,
+  metaDeEstrelas: 6,
+  duracaoDaVez: 30, // segundos
   totalDeMissoes: 10,
 };
 

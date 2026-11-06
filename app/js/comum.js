@@ -1,4 +1,4 @@
-// Funções usadas por todas as páginas do companion app.
+// Funções usadas por todas as páginas do aplicativo do professor.
 // Tudo fica no objeto MP para não misturar com o código de cada página.
 
 const MP = (() => {
@@ -19,9 +19,11 @@ const MP = (() => {
 
   // Classe de cor de cada tipo de carta (mesmas cores das cartas impressas)
   const CLASSE_DO_TIPO = {
-    'Missão': 't-missao', Contexto: 't-contexto', Persona: 't-persona',
-    Formato: 't-formato', 'Nação': 't-nacao',
+    'Missão': 't-missao', Contexto: 't-contexto', Persona: 't-persona', Formato: 't-formato',
   };
+
+  // Partidas salvas com outro formato (como as da versão com nações e vida) não são abertas
+  const VERSAO_DA_PARTIDA = 2;
 
   function montarMenu() {
     const atual = document.body.dataset.pagina;
@@ -40,7 +42,7 @@ const MP = (() => {
       { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   }
 
-  // Aceita "c1", "C01", "p 2", "n3" e devolve o código certo ("C01", "P02", "N3")
+  // Aceita "c1", "C01", "p 2", "m10" e devolve o código certo ("C01", "P02", "M10")
   function normalizarCodigo(texto) {
     const m = String(texto).toUpperCase().replace(/\s+/g, '').match(/^([A-Z]+)0*(\d+)$/);
     if (!m) return '';
@@ -81,7 +83,7 @@ const MP = (() => {
     try {
       localStorage.setItem(chave, JSON.stringify(valor));
     } catch (erro) {
-      // Sem espaço ou navegação privada: o app continua, só não guarda
+      // Sem espaço ou navegação privada: o aplicativo continua, só não guarda
     }
   }
 
@@ -93,31 +95,16 @@ const MP = (() => {
     }
   }
 
-  // "1 ponto", "2 pontos"
+  // "1 estrela", "2 estrelas"
   function plural(n, umNome, variosNomes) {
     return `${n} ${n === 1 ? umNome : variosNomes}`;
   }
 
-  // Quantos turnos a partida tem: cada lado joga o mesmo número, sem passar das missões do monte
-  // (2 lados: 5 turnos cada; 3 lados: 3; 4 ou 5 lados: 2)
-  function turnosDaPartida(quantosLados) {
-    return Math.max(1, Math.floor(DADOS.totalDeMissoes / quantosLados)) * quantosLados;
-  }
-
-  // Partidas salvas por versões antigas do app ganham os campos novos e perdem os que saíram
+  // A partida aberta no celular, ou null se não houver (ou se for de uma versão antiga do aplicativo)
   function lerPartida() {
     const partida = ler('mp-partida', null);
-    if (!partida || !Array.isArray(partida.lados)) return null;
-    partida.lados.forEach((lado) => {
-      if (lado.pontos === undefined) lado.pontos = lado.missoes || 0;
-      lado.poderesNoTurno = lado.poderesNoTurno || {};
-      lado.semPoderesAte = lado.semPoderesAte || 0;
-      delete lado.missoes;
-      delete lado.semAtacar;
-      delete lado.semAtacarNoTurno;
-    });
-    delete partida.persona;
-    if (!partida.totalDeTurnos) partida.totalDeTurnos = turnosDaPartida(partida.lados.length);
+    if (!partida || partida.versao !== VERSAO_DA_PARTIDA || !Array.isArray(partida.lados)) return null;
+    partida.feitas = partida.feitas || [];
     return partida;
   }
 
@@ -201,17 +188,27 @@ const MP = (() => {
         navigator.serviceWorker.register('sw.js').catch(() => {});
       }
     } catch (erro) {
-      // Alguns lugares (como uma página dentro de outra) não deixam: o app funciona igual, só precisa de internet
+      // Alguns lugares (como uma página dentro de outra) não deixam: o aplicativo funciona igual, só precisa de internet
     }
+  }
+
+  // Os números da regra e o nome do jogo vêm de DADOS (<span data-dado="metaDeEstrelas">),
+  // assim o aplicativo e as cartas impressas sempre falam o mesmo número e o mesmo nome
+  function preencherNumeros() {
+    document.querySelectorAll('[data-dado]').forEach((el) => {
+      if (DADOS[el.dataset.dado] !== undefined) el.textContent = DADOS[el.dataset.dado];
+    });
+    if (DADOS.nomeDoJogo) document.title = `${document.title} · ${DADOS.nomeDoJogo}`;
   }
 
   document.addEventListener('DOMContentLoaded', () => {
     montarMenu();
+    preencherNumeros();
     registrarOffline();
   });
 
   return {
-    esc, normalizarCodigo, buscarCarta, classeDoTipo, ler, salvar, apagar, plural, estrelas, comSimbolo,
-    turnosDaPartida, lerPartida, salvarPartida, aviso, entradaDeCodigo, chipDeCarta,
+    VERSAO_DA_PARTIDA, esc, normalizarCodigo, buscarCarta, classeDoTipo, ler, salvar, apagar, plural, estrelas,
+    comSimbolo, lerPartida, salvarPartida, aviso, entradaDeCodigo, chipDeCarta,
   };
 })();
