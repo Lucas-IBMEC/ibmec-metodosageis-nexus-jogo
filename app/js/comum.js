@@ -6,7 +6,6 @@ const MP = (() => {
   const ICONES = {
     partida: '<path d="M12 8v5l3 2"/><circle cx="12" cy="13" r="8"/><path d="M9 2h6"/>',
     missao: '<path d="M4 4h16v16H4z"/><path d="m8 12 3 3 5-6"/>',
-    denuncia: '<path d="M5 21V4"/><path d="M5 4h11l-2 4 2 4H5"/>',
     cartas: '<rect x="3" y="5" width="12" height="16" rx="2"/><path d="M9 3h10a2 2 0 0 1 2 2v12"/>',
     regras: '<path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M8 7h7M8 11h7"/>',
   };
@@ -14,17 +13,14 @@ const MP = (() => {
   const PAGINAS = [
     { id: 'partida', arquivo: 'index.html', nome: 'Partida' },
     { id: 'missao', arquivo: 'missao.html', nome: 'Missão' },
-    { id: 'denuncia', arquivo: 'denuncia.html', nome: 'Denúncia' },
     { id: 'cartas', arquivo: 'cartas.html', nome: 'Cartas' },
     { id: 'regras', arquivo: 'regras.html', nome: 'Regras' },
   ];
 
   // Classe de cor de cada tipo de carta (mesmas cores das cartas impressas)
   const CLASSE_DO_TIPO = {
-    'Missão': 't-missao', Persona: 't-persona', Contexto: 't-contexto',
-    Dor: 't-dnc', Necessidade: 't-dnc', Conceito: 't-dnc',
-    'Precisão': 't-precisao', Formato: 't-formato', Documento: 't-documento',
-    'Ética': 't-etica', 'Nação': 't-nacao',
+    'Missão': 't-missao', Contexto: 't-contexto', Persona: 't-persona',
+    Formato: 't-formato', 'Nação': 't-nacao',
   };
 
   function montarMenu() {
@@ -44,13 +40,23 @@ const MP = (() => {
       { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   }
 
-  // Aceita "c1", "C01", "dc 3", "p 12" e devolve o código certo ("C01", "DC3", "P12")
+  // Aceita "c1", "C01", "p 2", "n3" e devolve o código certo ("C01", "P02", "N3")
   function normalizarCodigo(texto) {
     const m = String(texto).toUpperCase().replace(/\s+/g, '').match(/^([A-Z]+)0*(\d+)$/);
     if (!m) return '';
     const [, letras, numero] = m;
-    const comDoisDigitos = ['M', 'C', 'D', 'P', 'F', 'E'];
+    const comDoisDigitos = ['M', 'C', 'P', 'F'];
     return letras + (comDoisDigitos.includes(letras) ? numero.padStart(2, '0') : numero);
+  }
+
+  // "★★☆" para 2 de 3 estrelas
+  function estrelas(n) {
+    return '★'.repeat(n) + '☆'.repeat(3 - n);
+  }
+
+  // Símbolo do assunto, igual ao das cartas ("✚ Saúde")
+  function comSimbolo(assunto) {
+    return `${DADOS.assuntos[assunto] || ''} ${assunto}`.trim();
   }
 
   function buscarCarta(codigo) {
@@ -92,14 +98,26 @@ const MP = (() => {
     return `${n} ${n === 1 ? umNome : variosNomes}`;
   }
 
-  // Partidas salvas antes do pacote E contavam missões; agora o placar conta pontos
+  // Quantos turnos a partida tem: cada lado joga o mesmo número, sem passar das missões do monte
+  // (2 lados: 5 turnos cada; 3 lados: 3; 4 ou 5 lados: 2)
+  function turnosDaPartida(quantosLados) {
+    return Math.max(1, Math.floor(DADOS.totalDeMissoes / quantosLados)) * quantosLados;
+  }
+
+  // Partidas salvas por versões antigas do app ganham os campos novos e perdem os que saíram
   function lerPartida() {
     const partida = ler('mp-partida', null);
-    partida?.lados.forEach((lado) => {
+    if (!partida || !Array.isArray(partida.lados)) return null;
+    partida.lados.forEach((lado) => {
       if (lado.pontos === undefined) lado.pontos = lado.missoes || 0;
-      delete lado.missoes;
       lado.poderesNoTurno = lado.poderesNoTurno || {};
+      lado.semPoderesAte = lado.semPoderesAte || 0;
+      delete lado.missoes;
+      delete lado.semAtacar;
+      delete lado.semAtacarNoTurno;
     });
+    delete partida.persona;
+    if (!partida.totalDeTurnos) partida.totalDeTurnos = turnosDaPartida(partida.lados.length);
     return partida;
   }
 
@@ -122,28 +140,32 @@ const MP = (() => {
     tempoDoAviso = setTimeout(() => toast.classList.remove('visivel'), 2400);
   }
 
-  // Campo de código: o professor toca na letra do tipo e digita só o número
-  function entradaDeCodigo(container, { prefixos, inicial, aoAdicionar, rotuloBotao = 'Adicionar' }) {
+  // Campo de código: o professor toca na letra do tipo e digita só o número.
+  // "rotulos" dá um nome a cada letra (C: 'Contexto'). Devolve escolherPrefixo(), para a página trocar a letra.
+  function entradaDeCodigo(container, { prefixos, rotulos = {}, inicial, aoAdicionar, rotuloBotao = 'Adicionar' }) {
     let prefixo = inicial || prefixos[0];
     container.innerHTML = `
       <div class="prefixos" role="group" aria-label="Tipo da carta">
         ${prefixos.map((p) => `<button type="button" class="chip" data-prefixo="${p}"
-          aria-pressed="${p === prefixo}">${p}</button>`).join('')}
+          aria-pressed="${p === prefixo}"><b>${p}</b>${rotulos[p] ? ` ${rotulos[p]}` : ''}</button>`).join('')}
       </div>
       <form class="linha" novalidate>
         <input class="campo" name="numero" inputmode="numeric" pattern="[0-9]*"
           autocomplete="off" enterkeyhint="done" aria-label="Número da carta" placeholder="Número, ex.: 1">
         <button class="botao" type="submit">${rotuloBotao}</button>
       </form>
-      <p class="dica">Também pode digitar o código inteiro, como C01 ou DC3.</p>`;
+      <p class="dica">Também pode digitar o código inteiro, como ${prefixos.map((p) => `${p}0${prefixos.indexOf(p) + 1}`).join(', ')}.</p>`;
 
     const campo = container.querySelector('input');
+    function escolherPrefixo(novo) {
+      prefixo = novo;
+      container.querySelectorAll('[data-prefixo]').forEach((b) => {
+        b.setAttribute('aria-pressed', String(b.dataset.prefixo === novo));
+      });
+    }
     container.querySelectorAll('[data-prefixo]').forEach((botao) => {
       botao.addEventListener('click', () => {
-        prefixo = botao.dataset.prefixo;
-        container.querySelectorAll('[data-prefixo]').forEach((b) => {
-          b.setAttribute('aria-pressed', String(b === botao));
-        });
+        escolherPrefixo(botao.dataset.prefixo);
         campo.focus();
       });
     });
@@ -161,6 +183,7 @@ const MP = (() => {
       campo.value = '';
       aoAdicionar(carta);
     });
+    return { escolherPrefixo };
   }
 
   function chipDeCarta(carta, { removivel } = {}) {
@@ -188,7 +211,7 @@ const MP = (() => {
   });
 
   return {
-    esc, normalizarCodigo, buscarCarta, classeDoTipo, ler, salvar, apagar, plural,
-    lerPartida, salvarPartida, aviso, entradaDeCodigo, chipDeCarta,
+    esc, normalizarCodigo, buscarCarta, classeDoTipo, ler, salvar, apagar, plural, estrelas, comSimbolo,
+    turnosDaPartida, lerPartida, salvarPartida, aviso, entradaDeCodigo, chipDeCarta,
   };
 })();

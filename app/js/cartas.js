@@ -4,14 +4,10 @@ const $ = (seletor) => document.querySelector(seletor);
 
 const FILTROS = [
   { nome: 'Todas', tipos: null },
-  { nome: 'Contexto', tipos: ['Contexto'] },
-  { nome: 'Precisão', tipos: ['Precisão'] },
   { nome: 'Missão', tipos: ['Missão'] },
-  { nome: 'Dor, necessidade e conceito', tipos: ['Dor', 'Necessidade', 'Conceito'] },
-  { nome: 'Formato', tipos: ['Formato'] },
-  { nome: 'Documento', tipos: ['Documento'] },
-  { nome: 'Ética', tipos: ['Ética'] },
+  { nome: 'Contexto', tipos: ['Contexto'] },
   { nome: 'Persona', tipos: ['Persona'] },
+  { nome: 'Formato', tipos: ['Formato'] },
   { nome: 'Nação', tipos: ['Nação'] },
 ];
 
@@ -22,23 +18,28 @@ function simples(texto) {
   return String(texto ?? '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
 }
 
+function nomeDoFormato(codigo) {
+  return DADOS.porCodigo[codigo].nome.replace(/ \(.*\)$/, '');
+}
+
 function linhasDaCarta(c) {
   const linhas = [];
-  if (c.assunto) linhas.push(['Assunto', c.assunto]);
-  if (c.nacao) linhas.push(['Nação', c.nacao]);
-  if (c.numero !== undefined) linhas.push(['Número', `${c.numero} (a precisão precisa ficar entre ${c.numero - 2} e ${c.numero + 2}; nos EUA, entre ${c.numero - 3} e ${c.numero + 3})`]);
-  if (c.pontos) linhas.push(['Vale', MP.plural(c.pontos, 'ponto', 'pontos')]);
-  if (c.ataque !== undefined) linhas.push(['Ataque e defesa', `${c.ataque} e ${c.defesa}`]);
-  if (c.estilo) linhas.push(['Estilo', c.estilo]);
+  if (c.assunto) linhas.push(['Assunto', MP.comSimbolo(c.assunto)]);
+  if (c.tipo === 'Contexto') linhas.push(['Texto da carta', `“${c.texto}”`]);
+  if (c.tipo === 'Persona') linhas.push(['No prompt', `“${c.texto}”`]);
+  if (c.tipo === 'Formato') linhas.push(['Como fica', c.texto]);
   if (c.copias > 1) linhas.push(['Cópias no baralho', `${c.copias}, com o mesmo código`]);
-  if (c.efeito && c.tipo !== 'Contexto') linhas.push([c.tipo === 'Missão' ? 'O combo precisa ter' : 'Efeito', c.efeito.replace('Combo precisa ter: ', '')]);
-  if (c.texto && c.texto !== c.nome) linhas.push(['Texto da carta', `“${c.texto}”`]);
+  if (c.tipo === 'Contexto' || c.tipo === 'Persona') linhas.push(['Ganha estrela', `em missão de ${c.assunto}`]);
+  if (c.tipo === 'Formato') {
+    const missoes = DADOS.missoes.filter((m) => m.formatos.includes(c.codigo)).map((m) => m.codigo);
+    linhas.push(['Ganha estrela', `nas missões ${missoes.join(', ')}`]);
+  }
+  if (c.vida) linhas.push(['Vida inicial', String(c.vida)]);
   if (c.poderes) c.poderes.forEach((p) => linhas.push([`${p.n} ${p.nome} (${MP.plural(p.custo, 'ponto', 'pontos')})`, p.texto]));
   return linhas;
 }
 
 function htmlDaCarta(c) {
-  const defeito = DADOS.defeitos[c.codigo];
   return `<details class="item ${MP.classeDoTipo(c.tipo)}">
     <summary>
       <span class="cod">${c.codigo}</span>
@@ -46,12 +47,10 @@ function htmlDaCarta(c) {
     </summary>
     <div class="corpo">
       ${linhasDaCarta(c).map(([rotulo, valor]) => `<p><b>${rotulo}:</b> ${MP.esc(valor)}</p>`).join('')}
-      ${defeito ? `<details class="gabarito">
+      ${c.tipo === 'Missão' ? `<details class="gabarito">
         <summary>Gabarito do professor</summary>
-        <p><b>${MP.esc(defeito.problema)}:</b> ${MP.esc(defeito.oQueTem)}</p>
-        <p>${MP.esc(defeito.porQue)}</p>
-        <p><b>Conserta com:</b> ${MP.esc(defeito.consertaCom)}</p>
-        <p><b>Consertada:</b> “${MP.esc(defeito.versaoConsertada)}”</p>
+        <p><b>Contexto e persona:</b> de ${MP.esc(c.assunto)}.</p>
+        <p><b>Formatos que servem:</b> ${MP.esc(c.formatos.map((f) => `${f} ${nomeDoFormato(f)}`).join(' · '))}</p>
       </details>` : ''}
     </div>
   </details>`;
@@ -65,7 +64,9 @@ function atualizar() {
     if (tipos && !tipos.includes(c.tipo)) return false;
     if (!termo) return true;
     if (codigo && c.codigo === codigo) return true;
-    return simples(`${c.codigo} ${c.nome} ${c.texto || ''} ${c.assunto || ''} ${c.nacao || ''} ${c.estilo || ''}`).includes(termo);
+    // Nas nações, procura também nos poderes ("golaço" acha o Brasil)
+    const poderes = (c.poderes || []).map((p) => `${p.nome} ${p.texto}`).join(' ');
+    return simples(`${c.codigo} ${c.nome} ${c.texto || ''} ${c.assunto || ''} ${c.lema || ''} ${poderes}`).includes(termo);
   });
 
   // Código exato aparece primeiro e já aberto

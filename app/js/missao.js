@@ -1,357 +1,281 @@
-// Página Missão: o professor escolhe a missão, digita as cartas do combo
-// e o app mostra o que falta. Histórias: 2.1.1, 2.1.2, 2.2.1, 2.2.2 e 2.2.3.
+// Página Missão: o professor escolhe a missão que o lado tirou, digita as 3 cartas do prompt
+// (contexto, persona e formato) e o app dá de 1 a 3 estrelas. Cada estrela vale 1 ponto.
+// Histórias: 2.1.1, 2.1.2, 2.2.1 e 2.2.2.
 
 const $ = (seletor) => document.querySelector(seletor);
 
-const PERSONAS = DADOS.cartas.filter((c) => c.tipo === 'Persona');
-const NACOES = DADOS.cartas.filter((c) => c.tipo === 'Nação');
-const DNC = ['Dor', 'Necessidade', 'Conceito'];
-const TEXTO_DNC = { DOR: 'Uma DOR', NECESSIDADE: 'Uma NECESSIDADE', CONCEITO: 'Um CONCEITO' };
-const MARGEM_DA_NACAO = { N3: 3 }; // EUA tem margem 3, as outras nações 2
+const TIPOS = ['Contexto', 'Persona', 'Formato'];
+const LETRA = { Contexto: 'C', Persona: 'P', Formato: 'F' };
 
-// Ignora códigos guardados que não existem mais (se uma carta mudar em dados.js)
-let combo = MP.ler('mp-combo', []).filter((codigo) => DADOS.porCodigo[codigo]);
+// O turno da partida aberta: quando ele muda, a página começa limpa para a próxima missão
+function turnoAtual() {
+  const partida = MP.lerPartida();
+  return partida && partida.vez !== null ? `${partida.inicio || ''}-${partida.turno}` : 'sem-partida';
+}
+
+// Estado guardado no celular: { turno, missao, cartas: { Contexto: 'C01', Persona: 'P02', Formato: 'F03' } }
+function lerEstado() {
+  const guardado = MP.ler('mp-nota', null);
+  if (!guardado || guardado.turno !== turnoAtual()) return { missao: '', cartas: {} };
+  const cartas = {};
+  TIPOS.forEach((tipo) => {
+    const carta = DADOS.porCodigo[guardado.cartas?.[tipo]];
+    if (carta && carta.tipo === tipo) cartas[tipo] = carta.codigo;
+  });
+  const missao = DADOS.porCodigo[guardado.missao]?.tipo === 'Missão' ? guardado.missao : '';
+  return { missao, cartas };
+}
+
+let { missao: missaoGuardada, cartas } = lerEstado();
+
+function salvarEstado() {
+  MP.salvar('mp-nota', { turno: turnoAtual(), missao: $('#missao').value, cartas });
+}
 
 // ---------- Montagem da tela ----------
 
-$('#missao').innerHTML = DADOS.missoes.map((m) => (
-  `<option value="${m.codigo}">${m.codigo} · ${MP.esc(m.pedido)} (${m.pontos === 2 ? '★★' : '★'})</option>`)).join('');
-const missaoGuardada = MP.ler('mp-missao', 'M01');
-$('#missao').value = DADOS.missoes.some((m) => m.codigo === missaoGuardada) ? missaoGuardada : 'M01';
+$('#missao').innerHTML = '<option value="">Escolha a missão que o lado tirou</option>'
+  + DADOS.missoes.map((m) => `<option value="${m.codigo}">${m.codigo} · ${MP.esc(m.nome)}</option>`).join('');
+$('#missao').value = missaoGuardada;
 
-$('#persona').innerHTML = '<option value="">Nenhuma</option>' + PERSONAS.map((p) => (
-  `<option value="${p.codigo}">${MP.esc(p.nome)} (${p.assunto})</option>`)).join('');
-$('#nacao').innerHTML = '<option value="">Não sei (sem bônus, margem 2)</option>' + NACOES.map((n) => (
-  `<option value="${n.codigo}">${MP.esc(n.nome)}${MARGEM_DA_NACAO[n.codigo] ? ` (margem ${MARGEM_DA_NACAO[n.codigo]})` : ''}</option>`)).join('');
-
-// Com uma partida aberta, a persona é a da mesa e a nação é a do lado da vez
-function carregarDaPartida() {
-  const partida = MP.lerPartida();
-  const emJogo = Boolean(partida && partida.vez !== null);
-  $('#persona').value = (partida ? partida.persona : MP.ler('mp-persona', '')) || '';
-  $('#nacao').value = emJogo ? partida.lados[partida.vez].nacao : MP.ler('mp-nacao', '');
-  $('#dica-partida').hidden = !emJogo;
-}
-carregarDaPartida();
-
-MP.entradaDeCodigo($('#entrada'), {
-  prefixos: ['C', 'P', 'D', 'F', 'DC', 'E'],
+const entrada = MP.entradaDeCodigo($('#entrada'), {
+  prefixos: ['C', 'P', 'F'],
+  rotulos: { C: 'Contexto', P: 'Persona', F: 'Formato' },
+  inicial: LETRA[TIPOS.find((tipo) => !cartas[tipo]) || 'Contexto'],
   aoAdicionar(carta) {
-    const permitidos = ['Contexto', 'Precisão', 'Formato', 'Documento', 'Ética', ...DNC];
-    if (!permitidos.includes(carta.tipo)) {
-      MP.aviso(`${carta.codigo} é ${carta.tipo.toLowerCase()}: não entra no combo`);
+    if (carta.tipo === 'Missão') {
+      $('#missao').value = carta.codigo;
+      atualizar();
+      MP.aviso(`Missão ${carta.codigo}`);
       return;
     }
-    if (combo.includes(carta.codigo)) {
-      MP.aviso(`${carta.codigo} já está no combo`);
+    if (!TIPOS.includes(carta.tipo)) {
+      MP.aviso(`${carta.codigo} é ${carta.tipo.toLowerCase()}: não entra no prompt`);
       return;
     }
-    combo.push(carta.codigo);
+    const antes = cartas[carta.tipo];
+    cartas[carta.tipo] = carta.codigo;
+    if (antes && antes !== carta.codigo) MP.aviso(`${carta.codigo} entrou no lugar de ${antes}`);
+    // Passa para a próxima letra que ainda falta
+    const falta = TIPOS.find((tipo) => !cartas[tipo]);
+    if (falta) entrada.escolherPrefixo(LETRA[falta]);
     atualizar();
   },
 });
 
-// ---------- Conferência ----------
-
-function nomeDoFormato(codigo) {
-  return DADOS.porCodigo[codigo].nome.replace(/ \(.*\)$/, '');
-}
-
-function tipoDoDefeito(defeito) {
-  return defeito.problema.startsWith('Viés') ? 'Viés' : 'Dado pessoal';
-}
-
-function conferir(missao, cartas) {
-  const doTipo = (...tipos) => cartas.filter((c) => tipos.includes(c.tipo));
-  const contextos = doTipo('Contexto');
-  const precisoes = doTipo('Precisão');
-  const dncs = doTipo(...DNC);
-  const formatos = doTipo('Formato');
-  const documentos = doTipo('Documento');
-  const eticas = doTipo('Ética');
-  const margem = MARGEM_DA_NACAO[$('#nacao').value] || 2;
-  const itens = [];
-  const falhas = [];
-
-  // Regras do combo (vale para qualquer missão)
-  const problemasDoCombo = [];
-  if (!contextos.length) problemasDoCombo.push('falta 1 contexto');
-  if (!precisoes.length) problemasDoCombo.push('falta 1 precisão');
-  if (precisoes.length > 1) problemasDoCombo.push('só cabe 1 precisão');
-  if (dncs.length > 1) problemasDoCombo.push('só cabe 1 dor, necessidade ou conceito');
-  if (formatos.length > 1) problemasDoCombo.push('a precisão só recebe 1 formato');
-  if (documentos.length > 1) problemasDoCombo.push('só cabe 1 documento');
-  if (cartas.length - formatos.length > 5) problemasDoCombo.push('no máximo 5 cartas (o formato não conta)');
-  itens.push({
-    ok: problemasDoCombo.length === 0,
-    titulo: 'Combo válido',
-    detalhe: problemasDoCombo.length ? problemasDoCombo.join(' · ') : 'Contexto e precisão, sem cartas sobrando.',
-  });
-  if (!contextos.length || !precisoes.length) falhas.push('combo');
-  else if (problemasDoCombo.length) falhas.push('regras');
-
-  let foraDaMargem = [];
-  if (contextos.length && precisoes.length) {
-    const n = contextos[0].numero;
-    const fora = precisoes.filter((p) => Math.abs(p.ataque - n) > margem || Math.abs(p.defesa - n) > margem);
-    foraDaMargem = fora;
-    if (fora.length) falhas.push('margem');
-    itens.push({
-      ok: fora.length === 0,
-      titulo: `A precisão combina com o contexto (entre ${n - margem} e ${n + margem})`,
-      detalhe: fora.length
-        ? `${fora.map((p) => `${p.codigo} tem ataque ${p.ataque} e defesa ${p.defesa}`).join(' · ')}. Esse combo não pode ser baixado.`
-        : `${contextos[0].codigo} tem número ${n}.`,
-    });
-  }
-
-  // O que a missão pede
-  const okContexto = contextos.some((c) => c.assunto === missao.assunto);
-  itens.push({
-    ok: okContexto,
-    titulo: `Contexto de ${missao.assunto}`,
-    detalhe: okContexto ? '' : contextos.length
-      ? `O contexto é de ${contextos.map((c) => c.assunto).join(' e ')}.`
-      : 'Nenhum contexto no combo.',
-  });
-  if (!okContexto && contextos.length) falhas.push('contexto');
-
-  // A dor, a necessidade ou o conceito precisa ser do mesmo assunto da missão
-  if (missao.precisa.dnc) {
-    const pedido = missao.precisa.dnc;
-    const okDnc = dncs.some((c) => c.tipo.toUpperCase() === pedido && c.assunto === missao.assunto);
-    const doTipoCerto = dncs.find((c) => c.tipo.toUpperCase() === pedido);
-    let detalhe = '';
-    if (!okDnc && doTipoCerto) detalhe = `${doTipoCerto.codigo} é de ${doTipoCerto.assunto}, mas a missão é de ${missao.assunto}.`;
-    else if (!okDnc && dncs.length) detalhe = `O combo tem ${dncs[0].tipo.toLowerCase()}, mas a missão pede ${pedido.toLowerCase()}.`;
-    itens.push({
-      ok: okDnc,
-      titulo: `${TEXTO_DNC[pedido]} de ${missao.assunto}${pedido === 'CONCEITO' ? '' : ' (de quem vai ler)'}`,
-      detalhe,
-    });
-    if (!okDnc) falhas.push('dnc');
-  }
-
-  const okFormato = formatos.some((f) => missao.precisa.formatos.includes(f.codigo));
-  itens.push({
-    ok: okFormato,
-    titulo: `Formato: ${missao.precisa.formatos.map(nomeDoFormato).join(' ou ')}`,
-    detalhe: okFormato ? '' : formatos.length ? `O combo tem ${nomeDoFormato(formatos[0].codigo)}.` : 'Nenhum formato na precisão.',
-  });
-  if (!okFormato) falhas.push('formato');
-
-  // Ética: carta com problema só vale se o combo tiver a ética que conserta
-  const semConserto = contextos
-    .filter((c) => DADOS.defeitos[c.codigo])
-    .filter((c) => !eticas.some((e) => e.efeito === `Conserta: ${tipoDoDefeito(DADOS.defeitos[c.codigo])}`));
-  itens.push({
-    ok: semConserto.length === 0,
-    titulo: 'Nenhuma carta com problema de ética sem conserto',
-    detalhe: semConserto.map((c) => {
-      const d = DADOS.defeitos[c.codigo];
-      return `${c.codigo} tem ${d.problema.toLowerCase()}. Conserta com ${d.consertaCom}.`;
-    }).join(' '),
-  });
-  semConserto.forEach((c) => falhas.push(c));
-
-  const cumpriu = itens.every((i) => i.ok);
-  const valido = problemasDoCombo.length === 0 && foraDaMargem.length === 0;
-  return { itens, falhas, cumpriu, valido };
-}
-
-// ---------- Força do combo ----------
-
-// Ataque e defesa da precisão com os bônus da mesa. Devolve null se não há precisão.
-function calcularForca(cartas) {
-  const precisao = cartas.find((c) => c.tipo === 'Precisão');
-  if (!precisao) return null;
-  let ataque = precisao.ataque;
-  let defesa = precisao.defesa;
-  const contas = [{ texto: `${precisao.codigo} (${precisao.assunto}): ataque ${ataque} e defesa ${defesa}` }];
-
-  const persona = DADOS.porCodigo[$('#persona').value];
-  if (persona && persona.assunto === precisao.assunto) {
-    ataque += 1;
-    contas.push({ tipo: 'mais', texto: `+1 de ataque: ${persona.nome} na mesa (${persona.assunto})` });
-  } else if (persona) {
-    contas.push({ texto: `${persona.nome} é de ${persona.assunto}: não ajuda uma precisão de ${precisao.assunto}` });
-  }
-
-  const nacao = $('#nacao').value;
-  if (nacao === 'N1') {
-    ataque += 1;
-    defesa -= 1;
-    contas.push({ tipo: 'mais', texto: '+1 de ataque e -1 de defesa: Brasil' });
-  }
-  if (nacao === 'N2') {
-    ataque -= 1;
-    contas.push({ tipo: 'menos', texto: '-1 de ataque: Índia (mas quem atacar a Índia leva 2 de dano)' });
-  }
-
-  // Estilos dos equipamentos: mudam como o ataque acerta ou como o combo se defende
-  let naoAtaca = false;
-  cartas.filter((c) => c.tipo === 'Formato' || c.tipo === 'Documento').forEach((c) => {
-    contas.push({ texto: `${c.estilo} (${c.codigo}): ${c.efeito}` });
-    if (c.estilo === 'Virar defesa') {
-      naoAtaca = true;
-      defesa += 3;
-    }
-  });
-
-  return { ataque: naoAtaca ? 0 : Math.max(0, ataque), defesa: Math.max(0, defesa), contas, naoAtaca };
-}
-
-function mostrarForca(cartas) {
-  const forca = calcularForca(cartas);
-  $('#forca').hidden = !forca;
-  if (!forca) return;
-  $('#forca-ataque').textContent = forca.naoAtaca ? '—' : forca.ataque;
-  $('#forca-defesa').textContent = forca.defesa;
-  $('#forca-contas').innerHTML = forca.contas.map((c) => (
-    `<li class="${c.tipo || ''}">${MP.esc(c.texto)}</li>`)).join('');
-}
-
-// ---------- O prompt e a resposta simulada ----------
+// ---------- Nota ----------
 
 function minuscula(texto) {
   return texto.charAt(0).toLowerCase() + texto.slice(1);
 }
 
-function montarPrompt(missao, cartas) {
-  const partes = [`Tarefa: ${missao.pedido}`];
-  const persona = DADOS.porCodigo[$('#persona').value];
-  if (persona) partes.push(`Você é ${minuscula(persona.nome)}.`);
-  const eticas = cartas.filter((c) => c.tipo === 'Ética');
-  cartas.filter((c) => c.tipo === 'Contexto').forEach((c) => {
-    const defeito = DADOS.defeitos[c.codigo];
-    const consertado = defeito && eticas.some((e) => e.efeito === `Conserta: ${tipoDoDefeito(defeito)}`);
-    partes.push(consertado ? `${defeito.versaoConsertada} (revisado com ética)` : c.texto);
-  });
-  cartas.filter((c) => DNC.includes(c.tipo)).forEach((c) => {
-    if (c.tipo === 'Dor') partes.push(`O problema é: ${minuscula(c.texto)}`);
-    else if (c.tipo === 'Conceito') partes.push(`Quero entender: ${minuscula(c.texto)}`);
-    else partes.push(c.texto);
-  });
-  cartas.filter((c) => c.tipo === 'Documento').forEach((c) => partes.push(`Use como fonte: ${minuscula(c.nome)}.`));
-  cartas.filter((c) => c.tipo === 'Precisão').forEach((c) => partes.push(c.nome));
-  cartas.filter((c) => c.tipo === 'Formato').forEach((c) => partes.push(`Responda em formato de ${minuscula(nomeDoFormato(c.codigo))}.`));
+function nomeCurto(codigo) {
+  return DADOS.porCodigo[codigo].nome.replace(/ \(.*\)$/, '');
+}
+
+function ouLista(itens) {
+  return itens.length > 1 ? `${itens.slice(0, -1).join(', ')} ou ${itens[itens.length - 1]}` : itens[0];
+}
+
+// Cada carta certa vale 1 estrela: contexto e persona do assunto da missão, formato da lista da missão.
+// 3 certas = 3 estrelas, 2 certas = 2, 0 ou 1 certa = 1.
+function conferir(missao) {
+  const doAssunto = (tipo) => {
+    const carta = DADOS.porCodigo[cartas[tipo]];
+    const ok = Boolean(carta && carta.assunto === missao.assunto);
+    let detalhe = `Faltou ${tipo === 'Persona' ? 'a persona' : 'o contexto'}.`;
+    if (carta) detalhe = ok ? `${carta.codigo} ${carta.nome}` : `${carta.codigo} ${carta.nome} é de ${carta.assunto}.`;
+    return { tipo, ok, titulo: `${tipo} de ${missao.assunto}`, detalhe };
+  };
+
+  const formato = DADOS.porCodigo[cartas.Formato];
+  const okFormato = Boolean(formato && missao.formatos.includes(formato.codigo));
+  const servem = ouLista(missao.formatos.map(nomeCurto));
+  const outros = missao.formatos.filter((c) => c !== formato?.codigo).map(nomeCurto);
+  let detalheFormato = `Faltou o formato. Serviam: ${servem}.`;
+  if (formato && okFormato) detalheFormato = `${nomeCurto(formato.codigo)} serve.${outros.length ? ` Também serviam: ${ouLista(outros)}.` : ''}`;
+  if (formato && !okFormato) detalheFormato = `${nomeCurto(formato.codigo)} não ajuda tanto aqui. Serviam: ${servem}.`;
+
+  const itens = [
+    doAssunto('Contexto'),
+    doAssunto('Persona'),
+    { tipo: 'Formato', ok: okFormato, titulo: 'Formato que ajuda quem vai ler', detalhe: detalheFormato },
+  ];
+  const certas = itens.filter((i) => i.ok).length;
+  return { itens, certas, nota: Math.max(1, certas), faltam: TIPOS.filter((tipo) => !cartas[tipo]) };
+}
+
+// ---------- O prompt e a resposta simulada ----------
+
+function montarPrompt(missao) {
+  const partes = [];
+  const persona = DADOS.porCodigo[cartas.Persona];
+  const contexto = DADOS.porCodigo[cartas.Contexto];
+  const formato = DADOS.porCodigo[cartas.Formato];
+  if (persona) partes.push(persona.texto);
+  if (contexto) partes.push(contexto.texto);
+  partes.push(`Tarefa: ${minuscula(missao.nome)}`);
+  if (formato) partes.push(`Responda em formato de ${minuscula(formato.nome)}.`);
   return partes.join('\n');
 }
 
 function htmlDaResposta(missao, resultado) {
-  if (resultado.cumpriu) {
-    return `<span class="etiqueta">Resposta boa ✓</span>
-      <p class="texto-ia">${MP.esc(RESPOSTAS.boas[missao.codigo])}</p>`;
+  if (resultado.nota === 3) {
+    const boas = RESPOSTAS.boas[missao.codigo] || {};
+    const texto = boas[cartas.Formato] || Object.values(boas)[0] || '';
+    return `<span class="etiqueta">Resposta boa ✓</span><p class="texto-ia">${MP.esc(texto)}</p>`;
   }
-  return resultado.falhas.map((falha) => {
-    if (falha === 'formato') {
-      const usado = combo.map((c) => DADOS.porCodigo[c]).find((c) => c.tipo === 'Formato');
-      const pedidos = missao.precisa.formatos.map(nomeDoFormato).join(' ou ');
-      const texto = usado
-        ? `A missão pede ${minuscula(pedidos)}, mas a resposta veio em ${minuscula(nomeDoFormato(usado.codigo))}. Para quem vai ler, isso atrapalha.`
-        : RESPOSTAS.falhas.formato.texto;
-      return `<span class="etiqueta">${RESPOSTAS.falhas.formato.titulo}</span><p class="texto-ia">${MP.esc(texto)}</p>`;
+  return resultado.itens.filter((i) => !i.ok).map((i) => {
+    const codigo = cartas[i.tipo];
+    const falha = RESPOSTAS.falhas[codigo ? i.tipo.toLowerCase() : 'falta'];
+    let texto = falha.texto;
+    if (i.tipo === 'Formato' && codigo) {
+      const pedidos = ouLista(missao.formatos.map((c) => minuscula(nomeCurto(c))));
+      texto = `A missão pedia ${pedidos}, mas a resposta veio em ${minuscula(nomeCurto(codigo))}. ${falha.texto}`;
     }
-    if (typeof falha === 'string') {
-      const f = RESPOSTAS.falhas[falha];
-      return `<span class="etiqueta">${f.titulo}</span><p class="texto-ia">${MP.esc(f.texto)}</p>`;
-    }
-    // Carta com dado pessoal ou viés: a IA repete o problema da carta
-    const f = RESPOSTAS.falhas[tipoDoDefeito(DADOS.defeitos[falha.codigo])];
-    return `<span class="etiqueta">${f.titulo} (${falha.codigo})</span>
-      <p class="texto-ia">${MP.esc(`${f.texto}"Certo! ${falha.texto} Vou responder pensando nisso..."`)}</p>`;
+    return `<span class="etiqueta">${falha.titulo} (${codigo || i.tipo.toLowerCase()})</span>
+      <p class="texto-ia">${MP.esc(texto)}</p>`;
   }).join('<div style="height: 10px"></div>');
+}
+
+// ---------- Dar os pontos ----------
+
+// A mesma nota não pode ser dada duas vezes. Muda a missão, uma carta ou o turno? Pode dar de novo
+// (a Linha de produção da China monta outro prompt no mesmo turno).
+function chaveDaNota(partida) {
+  return [partida.inicio || '', partida.turno, $('#missao').value, ...TIPOS.map((tipo) => cartas[tipo] || '-')].join('|');
+}
+
+function mostrarDar(resultado) {
+  const partida = MP.lerPartida();
+  const pontos = MP.plural(resultado.nota, 'ponto', 'pontos');
+  $('#ir-partida').hidden = true;
+  if (!partida || partida.vez === null) {
+    $('#titulo-dar').textContent = `${MP.estrelas(resultado.nota)} vale ${pontos}`;
+    $('#sub-dar').innerHTML = 'Para somar no placar, comece uma partida na página <a href="index.html">Partida</a>.';
+    $('#lados-dar').innerHTML = '';
+    return;
+  }
+  const dada = MP.ler('mp-nota-dada', null);
+  if (dada && dada.chave === chaveDaNota(partida)) {
+    $('#titulo-dar').textContent = `✓ ${MP.plural(dada.pontos, 'ponto', 'pontos')} para ${dada.nome}`;
+    $('#sub-dar').textContent = 'Agora o lado pode usar os poderes na Partida. Errou o lado? Desfaça e dê de novo.';
+    $('#lados-dar').innerHTML = '<button type="button" class="chip" data-desfazer>Desfazer</button>';
+    $('#ir-partida').hidden = false;
+    return;
+  }
+  $('#titulo-dar').textContent = `Dar ${pontos} para`;
+  $('#sub-dar').textContent = resultado.faltam.length
+    ? 'Se o tempo acabou, a carta que falta não ganha estrela.'
+    : 'O lado da vez aparece primeiro.';
+  const ordem = partida.lados.map((lado, i) => i).sort((a, b) => (b === partida.vez) - (a === partida.vez));
+  $('#lados-dar').innerHTML = ordem.map((i) => {
+    const lado = partida.lados[i];
+    return `<button type="button" class="chip" data-lado="${i}" ${i === partida.vez ? 'aria-pressed="true"' : ''}>
+      ${MP.esc(lado.nome)}${i === partida.vez ? ' (vez)' : ''} · ${MP.plural(lado.pontos, 'ponto', 'pontos')}</button>`;
+  }).join('');
+}
+
+function darPontos(i) {
+  const partida = MP.lerPartida();
+  const missao = DADOS.porCodigo[$('#missao').value];
+  if (!partida || !missao) return;
+  const { nota } = conferir(missao);
+  const lado = partida.lados[i];
+  lado.pontos += nota;
+  MP.salvarPartida(partida);
+  MP.salvar('mp-nota-dada', { chave: chaveDaNota(partida), lado: i, nome: lado.nome, pontos: nota });
+  MP.aviso(`+${MP.plural(nota, 'ponto', 'pontos')} para ${lado.nome}`);
+  atualizar();
+}
+
+function desfazer() {
+  const partida = MP.lerPartida();
+  const dada = MP.ler('mp-nota-dada', null);
+  if (!partida || !dada || dada.chave !== chaveDaNota(partida)) return;
+  const lado = partida.lados[dada.lado];
+  lado.pontos = Math.max(0, lado.pontos - dada.pontos);
+  MP.salvarPartida(partida);
+  MP.apagar('mp-nota-dada');
+  MP.aviso(`Desfeito: ${lado.nome} voltou para ${MP.plural(lado.pontos, 'ponto', 'pontos')}`);
+  atualizar();
 }
 
 // ---------- Atualiza a tela ----------
 
 function atualizar() {
-  MP.salvar('mp-combo', combo);
-  MP.salvar('mp-missao', $('#missao').value);
-  if (!MP.lerPartida()) MP.salvar('mp-nacao', $('#nacao').value);
+  salvarEstado();
+  const missao = DADOS.porCodigo[$('#missao').value];
+  $('#pedido').hidden = !missao;
+  if (missao) {
+    $('#pedido').innerHTML = `<span class="assunto-tag">${MP.esc(MP.comSimbolo(missao.assunto))}</span>“${MP.esc(missao.nome)}”`;
+  }
 
-  const missao = DADOS.missoes.find((m) => m.codigo === $('#missao').value);
-  const textoDaCarta = DADOS.porCodigo[missao.codigo].efeito.replace('Combo precisa ter: ', '').split(' · ');
-  $('#lista-missao').innerHTML = textoDaCarta.map((t) => (
-    `<li><span class="ic" style="background: var(--c-missao)">☐</span><span>${MP.esc(t)}</span></li>`)).join('')
-    + `<li><span class="ic" style="background: var(--c-missao)">★</span><span>Vale ${MP.plural(missao.pontos, 'ponto', 'pontos')}${missao.pontos === 2 ? ' (pede dor, necessidade ou conceito)' : ''}</span></li>`;
+  $('#trio').innerHTML = TIPOS.map((tipo) => {
+    const carta = DADOS.porCodigo[cartas[tipo]];
+    return `<li class="${MP.classeDoTipo(tipo)}"><span class="tipo-vaga">${tipo}</span>${carta
+      ? MP.chipDeCarta(carta, { removivel: true })
+      : `<span class="falta-vaga">Falta · toque em ${LETRA[tipo]}</span>`}</li>`;
+  }).join('');
 
-  const cartas = combo.map((codigo) => DADOS.porCodigo[codigo]);
-  $('#combo').innerHTML = cartas.length
-    ? cartas.map((c) => MP.chipDeCarta(c, { removivel: true })).join('')
-    : '<p class="nota">Nenhuma carta ainda. Ex.: toque em C e digite 1 para o C01.</p>';
+  const temCarta = TIPOS.some((tipo) => cartas[tipo]);
+  ['#resultado', '#dar', '#prompt', '#resposta'].forEach((s) => { $(s).hidden = !temCarta || !missao; });
+  if (temCarta && !missao) {
+    $('#resultado').hidden = false;
+    $('#resultado').className = 'bloco resultado';
+    $('#resultado').innerHTML = '<p class="veredito">Escolha a missão</p><p class="sub" style="margin: 0">A nota depende da missão que o lado tirou (passo 1).</p>';
+  }
+  if (!temCarta || !missao) return;
 
-  const temCombo = cartas.length > 0;
-  ['#resultado', '#prompt', '#resposta'].forEach((s) => { $(s).hidden = !temCombo; });
-  $('#dar-missao').hidden = true;
-  mostrarForca(cartas);
-  if (!temCombo) return;
-
-  const resultado = conferir(missao, cartas);
-  const resultadoEl = $('#resultado');
-  resultadoEl.className = `bloco resultado ${resultado.cumpriu ? 'ok' : 'falha'}`;
-  const faltam = resultado.itens.filter((i) => !i.ok).length;
-  resultadoEl.innerHTML = `
-    <p class="veredito">${resultado.cumpriu ? '✓ Missão cumprida' : '✗ Ainda não cumpriu'}</p>
-    <p class="sub" style="margin: 0">${resultado.cumpriu
-      ? `O lado que avisou antes de atacar lê o prompt em voz alta e pega a carta de missão (${MP.plural(missao.pontos, 'ponto', 'pontos')}). Depois do ataque, este combo vai para o descarte: o prompt foi entregue.`
-      : resultado.valido
-        ? `Falta${faltam > 1 ? 'm' : ''} ${faltam} ${faltam > 1 ? 'itens' : 'item'}. O ataque vale, mas o lado não pega a missão.`
-        : 'Esse combo não pode ser baixado na mesa. Confira as regras do combo.'}</p>
+  const resultado = conferir(missao);
+  const classe = { 3: 'ok', 2: 'meio', 1: 'falha' }[resultado.nota];
+  $('#resultado').className = `bloco resultado ${classe}`;
+  $('#resultado').innerHTML = `
+    <p class="nota-estrelas" aria-label="${resultado.nota} de 3 estrelas">${MP.estrelas(resultado.nota)}</p>
+    <p class="veredito">${MP.plural(resultado.nota, 'estrela', 'estrelas')} = ${MP.plural(resultado.nota, 'ponto', 'pontos')}</p>
+    <p class="sub" style="margin: 0">${resultado.faltam.length
+      ? `Falta${resultado.faltam.length > 1 ? 'm' : ''}: ${resultado.faltam.map((t) => t.toLowerCase()).join(', ')}.`
+      : `${resultado.certas} de 3 cartas certas.`}</p>
     <ul class="checklist">${resultado.itens.map((i) => `
       <li class="${i.ok ? 'sim' : 'nao'}"><span class="ic">${i.ok ? '✓' : '✗'}</span>
-        <span>${MP.esc(i.titulo)}${i.detalhe ? `<small>${MP.esc(i.detalhe)}</small>` : ''}</span></li>`).join('')}
+        <span>${MP.esc(i.titulo)}<small>${MP.esc(i.detalhe)}</small></span></li>`).join('')}
     </ul>`;
 
-  $('#texto-prompt').textContent = montarPrompt(missao, cartas);
+  mostrarDar(resultado);
+  $('#texto-prompt').textContent = montarPrompt(missao);
   $('#texto-resposta').innerHTML = htmlDaResposta(missao, resultado);
-
-  const partida = MP.lerPartida();
-  if (resultado.cumpriu && partida && partida.vez !== null) {
-    $('#dar-missao').hidden = false;
-    $('#lados-missao').innerHTML = partida.lados.map((lado, i) => (
-      `<button type="button" class="chip" data-lado="${i}">${MP.esc(lado.nome)} · ${MP.plural(lado.pontos, 'ponto', 'pontos')}</button>`)).join('');
-  }
 }
 
 // ---------- Ligações ----------
 
-$('#combo').addEventListener('click', (evento) => {
+$('#missao').addEventListener('change', atualizar);
+$('#trio').addEventListener('click', (evento) => {
   const botao = evento.target.closest('[data-remover]');
   if (!botao) return;
-  combo = combo.filter((codigo) => codigo !== botao.dataset.remover);
+  const tipo = DADOS.porCodigo[botao.dataset.remover].tipo;
+  delete cartas[tipo];
+  entrada.escolherPrefixo(LETRA[tipo]);
   atualizar();
 });
-['#missao', '#nacao'].forEach((s) => $(s).addEventListener('change', atualizar));
-// Trocar a persona aqui também troca a persona da mesa na Partida
-$('#persona').addEventListener('change', () => {
-  const partida = MP.lerPartida();
-  if (partida) {
-    partida.persona = $('#persona').value;
-    MP.salvarPartida(partida);
-  } else {
-    MP.salvar('mp-persona', $('#persona').value);
-  }
+$('#limpar').addEventListener('click', () => {
+  cartas = {};
+  entrada.escolherPrefixo('C');
   atualizar();
 });
-// Ao voltar de outra página, pega a persona e o lado da vez atualizados
-window.addEventListener('pageshow', (evento) => {
-  if (evento.persisted) {
-    carregarDaPartida();
-    atualizar();
+$('#lados-dar').addEventListener('click', (evento) => {
+  if (evento.target.closest('[data-desfazer]')) {
+    desfazer();
+    return;
   }
-});
-$('#limpar').addEventListener('click', () => { combo = []; atualizar(); });
-$('#lados-missao').addEventListener('click', (evento) => {
   const botao = evento.target.closest('[data-lado]');
-  if (!botao) return;
-  const partida = MP.lerPartida();
-  const lado = partida.lados[Number(botao.dataset.lado)];
-  const missao = DADOS.missoes.find((m) => m.codigo === $('#missao').value);
-  lado.pontos += missao.pontos;
-  MP.salvarPartida(partida);
-  MP.aviso(`+${MP.plural(missao.pontos, 'ponto', 'pontos')} para ${lado.nome}. Combo para o descarte e vire uma missão nova.`);
-  combo = [];
+  if (botao) darPontos(Number(botao.dataset.lado));
+});
+// Ao voltar da Partida, o turno pode ter mudado: começa limpo para a próxima missão
+window.addEventListener('pageshow', (evento) => {
+  if (!evento.persisted) return;
+  ({ missao: missaoGuardada, cartas } = lerEstado());
+  $('#missao').value = missaoGuardada;
+  entrada.escolherPrefixo(LETRA[TIPOS.find((tipo) => !cartas[tipo]) || 'Contexto']);
   atualizar();
 });
 

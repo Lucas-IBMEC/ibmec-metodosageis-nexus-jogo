@@ -1,7 +1,7 @@
 {
   "name": "Magic Prompt · Companion do professor",
   "short_name": "Magic Prompt",
-  "description": "Placar, conferência de missões, denúncias e consulta das cartas do jogo Magic Prompt. Funciona sem internet.",
+  "description": "Placar, nota das missões em estrelas e consulta das cartas do jogo Magic Prompt. Funciona sem internet.",
   "lang": "pt-BR",
   "start_url": "./index.html",
   "scope": "./",

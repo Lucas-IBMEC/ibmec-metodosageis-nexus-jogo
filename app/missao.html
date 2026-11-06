@@ -16,60 +16,43 @@
 </head>
 <body data-pagina="missao">
   <header class="topo">
-    <div class="topo-linha"><span class="marca">Magic Prompt</span><h1>Conferir missão</h1></div>
+    <div class="topo-linha"><span class="marca">Magic Prompt</span><h1>Dar a nota</h1></div>
   </header>
 
   <main class="conteudo">
     <section class="bloco">
-      <h2><span class="passo">1</span>Qual missão?</h2>
-      <p class="sub">Das 3 abertas na mesa, a que o lado avisou que vai tentar.</p>
+      <h2><span class="passo">1</span>Qual missão o lado tirou?</h2>
       <select class="campo" id="missao" aria-label="Missão"></select>
-      <ul class="checklist" id="lista-missao"></ul>
+      <p class="pedido-missao" id="pedido"></p>
     </section>
 
     <section class="bloco">
-      <h2><span class="passo">2</span>Cartas do combo</h2>
-      <p class="sub">Toque na letra do tipo e digite o número de cada carta.</p>
+      <h2><span class="passo">2</span>As 3 cartas do prompt</h2>
+      <p class="sub">Toque na letra e digite o número da carta. Depois de cada uma, o app já passa para a próxima letra.</p>
       <div id="entrada"></div>
-      <div class="chips" id="combo" style="margin-top: 12px"></div>
-
-      <label class="rotulo" for="persona">Persona na mesa</label>
-      <select class="campo" id="persona"></select>
-      <label class="rotulo" for="nacao">Nação de quem jogou</label>
-      <select class="campo" id="nacao"></select>
-      <p class="dica" id="dica-partida">Com uma partida aberta, a persona e a nação do lado da vez vêm da página Partida.</p>
-
-      <button type="button" class="botao secundario largo" id="limpar" style="margin-top: 12px">Limpar combo</button>
+      <ul class="trio" id="trio" aria-live="polite"></ul>
+      <button type="button" class="botao secundario largo" id="limpar" style="margin-top: 12px">Limpar as cartas</button>
     </section>
 
     <section class="bloco resultado" id="resultado" hidden aria-live="polite"></section>
 
-    <section class="bloco" id="forca" hidden>
-      <h2>Força do combo</h2>
-      <p class="sub">Já com a persona e a nação de quem jogou.</p>
-      <div class="forca">
-        <div><span>Ataque</span><b id="forca-ataque">0</b></div>
-        <div><span>Defesa</span><b id="forca-defesa">0</b></div>
-      </div>
-      <ul class="contas" id="forca-contas"></ul>
+    <section class="bloco" id="dar" hidden>
+      <h2 id="titulo-dar">Dar os pontos para</h2>
+      <p class="sub" id="sub-dar"></p>
+      <div class="chips" id="lados-dar"></div>
+      <a class="botao secundario largo" id="ir-partida" href="index.html" hidden style="margin-top: 12px">Voltar para a Partida (poderes)</a>
     </section>
 
     <section class="bloco" id="prompt" hidden>
-      <h2>O prompt que o combo forma</h2>
-      <p class="sub">Leia para a turma: cada carta é um pedaço do prompt.</p>
+      <h2>O prompt que as cartas formam</h2>
+      <p class="sub">Leia em voz alta para a turma: cada carta é um pedaço do prompt.</p>
       <p class="texto-ia" id="texto-prompt"></p>
     </section>
 
     <section class="bloco" id="resposta" hidden>
       <h2>Resposta simulada da IA</h2>
-      <p class="sub">Exemplo para mostrar à turma o efeito do combo. Não usa internet.</p>
+      <p class="sub">Exemplo para mostrar à turma o efeito do prompt. Não usa internet.</p>
       <div id="texto-resposta"></div>
-    </section>
-
-    <section class="bloco" id="dar-missao" hidden>
-      <h2>Dar a carta de missão para</h2>
-      <p class="sub">Soma os pontos da missão (1 ou 2) no placar da Partida.</p>
-      <div class="chips" id="lados-missao"></div>
     </section>
   </main>
 

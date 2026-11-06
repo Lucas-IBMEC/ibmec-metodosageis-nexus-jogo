@@ -1,22 +1,22 @@
-// Página Partida: monta a partida, mostra o placar e marca o tempo de cada turno.
-// Histórias: 2.5.1 (vida e efeitos de cada lado) e o cronômetro de 40 segundos.
+// Página Partida: monta a partida, sorteia quem começa, mostra o placar, aplica os poderes
+// e marca o tempo de cada turno. Histórias: 2.5.1 (vida, pontos e poderes de cada lado) e o cronômetro.
 
-const DURACAO_DO_TURNO = 40; // segundos
-
-// Vida inicial de cada nação (15; a China começa com 14)
-function vidaInicial(codigoDaNacao) {
-  return DADOS.porCodigo[codigoDaNacao]?.vida || 15;
-}
-const VIDA_DA_CURA = 4; // poder ① de todas as nações
+const DURACAO_DO_TURNO = DADOS.duracaoDoTurno || 60; // segundos
 const VOLTA_DO_RELOGIO = 2 * Math.PI * 28; // tamanho do círculo do cronômetro
 
+// Vida inicial de cada nação (a carta da nação diz quanto)
+function vidaInicial(codigoDaNacao) {
+  return DADOS.porCodigo[codigoDaNacao]?.vida || 10;
+}
+
 const NACOES = DADOS.cartas.filter((c) => c.tipo === 'Nação');
-const PERSONAS = DADOS.cartas.filter((c) => c.tipo === 'Persona');
+// Poderes que pedem para escolher um lado
+const COM_ALVO = ['dano', 'roubo', 'bloqueio'];
 
 const MODOS = {
   duelo: { min: 2, max: 2, padrao: 2, nome: 'Lado', texto: '1 contra 1, ou dupla contra dupla (cada dupla é um lado).' },
-  mesa: { min: 3, max: 5, padrao: 3, nome: 'Lado', texto: 'Cada lado é 1 aluno ou 1 dupla. Todos contra todos: no ataque, o lado escolhe quem atacar.' },
-  turma: { min: 2, max: 5, padrao: 5, nome: 'Grupo', texto: 'Cada grupo é uma nação. Os papéis (Capitão, Montador, Fiscal e Placar) trocam a cada turno.' },
+  mesa: { min: 3, max: 5, padrao: 3, nome: 'Lado', texto: 'Cada lado é 1 aluno ou 1 dupla. Todos contra todos: quem usa um poder escolhe o lado.' },
+  turma: { min: 2, max: 5, padrao: 5, nome: 'Grupo', texto: 'Cada grupo é uma nação. Os papéis (Capitão, Montador e Placar) trocam a cada turno.' },
 };
 
 const $ = (seletor) => document.querySelector(seletor);
@@ -36,6 +36,8 @@ function mostrarConfiguracao() {
   $('#rotulo-quantos').textContent = config.modo === 'turma' ? 'Quantos grupos' : 'Quantos lados';
   $('#menos-lados').disabled = config.quantos <= modo.min;
   $('#mais-lados').disabled = config.quantos >= modo.max;
+  const porLado = MP.turnosDaPartida(config.quantos) / config.quantos;
+  $('#explica-turnos').textContent = `Cada ${modo.nome.toLowerCase()} joga ${MP.plural(porLado, 'turno', 'turnos')} (${MP.plural(porLado * config.quantos, 'missão', 'missões')} no total).`;
 
   // Uma linha por lado: nome e nação (cada nação só pode ser usada uma vez)
   const anteriores = [...document.querySelectorAll('.lado-config')].map((linha) => ({
@@ -63,6 +65,7 @@ function comecarPartida() {
   }
   const nome = MODOS[config.modo].nome;
   partida = {
+    inicio: Date.now(),
     modo: config.modo,
     lados: linhas.map((linha, i) => ({
       nome: linha.querySelector('input').value.trim() || `${nome} ${i + 1}`,
@@ -70,12 +73,12 @@ function comecarPartida() {
       vida: vidaInicial(nacoes[i]),
       pontos: 0,
       poderesNoTurno: {}, // poder → turno em que foi usado (cada poder 1 vez por turno)
-      semAtacar: false,
-      semAtacarNoTurno: 0,
+      semPoderesAte: 0, // Fiscalização: sem poderes enquanto o turno for menor que este
     })),
     vez: null,
     turno: 0,
-    persona: '', // só uma persona fica na mesa e vale para todos os lados
+    totalDeTurnos: MP.turnosDaPartida(linhas.length),
+    ultimoPoder: null, // o último poder usado contra alguém (para o Espelho da Índia)
     cronometro: { fim: null, restante: DURACAO_DO_TURNO, esgotou: false },
   };
   MP.salvarPartida(partida);
@@ -84,19 +87,48 @@ function comecarPartida() {
 
 // ---------- Tela 2: placar ----------
 
+// Número do próximo turno em que o lado "i" joga
+function proximoTurnoDe(i) {
+  const n = partida.lados.length;
+  const distancia = (i - partida.vez + n) % n;
+  return partida.turno + (distancia === 0 ? n : distancia);
+}
+
+function semPoderes(lado) {
+  return partida.turno < (lado.semPoderesAte || 0);
+}
+
+// O Espelho só vale logo depois de um poder usado contra a Índia, no mesmo turno
+function espelhavel(i) {
+  const u = partida.ultimoPoder;
+  return u && u.alvo === i && u.turno === partida.turno && !u.espelhado ? u : null;
+}
+
+function estadoDoPoder(lado, i, poder) {
+  if (lado.poderesNoTurno[poder.n] === partida.turno) return { pode: false, texto: 'Já usado neste turno' };
+  if (poder.efeito === 'espelho') {
+    const u = espelhavel(i);
+    if (!u) return { pode: false, texto: 'Use logo depois que alguém usar um poder contra você.' };
+    // Pode devolver até a Fiscalização que acabou de travar os poderes
+    const travado = semPoderes(lado) && u.efeito !== 'bloqueio';
+    return { pode: !travado && lado.pontos >= poder.custo, texto: `Devolver ${u.nome} para ${partida.lados[u.de].nome}` };
+  }
+  if (i !== partida.vez) return { pode: false, texto: poder.texto };
+  if (semPoderes(lado)) return { pode: false, texto: 'Sem poderes neste turno (Fiscalização)' };
+  return { pode: lado.pontos >= poder.custo, texto: poder.texto };
+}
+
 function htmlDoLado(lado, i) {
   const nacao = DADOS.porCodigo[lado.nacao];
-  const [buff, debuff] = nacao.efeito.replace('Buff: ', '').split(' · Debuff: ');
   const daVez = i === partida.vez;
   return `<article class="lado ${daVez ? 'da-vez' : ''}" data-lado="${i}">
     <div class="lado-topo">
       <div>
         <p class="lado-nome">${MP.esc(lado.nome)}</p>
-        <span class="nacao-tag">${MP.esc(nacao.nome)}</span>
+        <span class="nacao-tag">${MP.esc(nacao.nome)}${nacao.lema ? ` · ${MP.esc(nacao.lema)}` : ''}</span>
       </div>
       ${daVez ? '<span class="cod selo-vez">VEZ</span>' : ''}
     </div>
-    <p class="buffs">▲ ${MP.esc(buff)} · ▼ ${MP.esc(debuff)}</p>
     <div class="contadores">
       <div class="contador vida">
         <button type="button" class="mais-menos" data-acao="vida" data-delta="-1" aria-label="Tirar 1 de vida de ${MP.esc(lado.nome)}">−</button>
@@ -109,23 +141,18 @@ function htmlDoLado(lado, i) {
         <button type="button" class="mais-menos" data-acao="pontos" data-delta="1" aria-label="Dar 1 ponto a ${MP.esc(lado.nome)}">+</button>
       </div>
     </div>
+    ${semPoderes(lado) ? `<p class="bloqueio">⛔ Fiscalizado: sem poderes até o fim do turno ${lado.semPoderesAte - 1}</p>` : ''}
     <div class="poderes">
       ${nacao.poderes.map((p) => {
-        const usado = lado.poderesNoTurno[p.n] === partida.turno;
-        const semPontos = lado.pontos < p.custo;
-        return `<button type="button" class="poder" data-acao="poder" data-poder="${p.n}" ${usado || semPontos ? 'disabled' : ''}>
+        const estado = estadoDoPoder(lado, i, p);
+        return `<button type="button" class="poder ${p.n === '③' ? 'especial' : ''}" data-acao="poder" data-poder="${p.n}" ${estado.pode ? '' : 'disabled'}>
           <span class="poder-nome">${p.n} ${MP.esc(p.nome)} <small>${MP.plural(p.custo, 'ponto', 'pontos')}</small></span>
-          <span class="poder-texto">${usado ? 'Já usado neste turno' : MP.esc(p.texto)}</span>
+          <span class="poder-texto">${MP.esc(estado.texto)}</span>
         </button>`;
       }).join('')}
     </div>
-    <div class="efeitos">
-      <button type="button" class="chip" data-acao="sem-atacar" aria-pressed="${lado.semAtacar}">
-        ${lado.semAtacar ? '⛔ Sem atacar no próximo turno' : 'Marcar: sem atacar no próximo turno'}
-      </button>
-    </div>
     ${lado.vida <= 0 ? `<div class="alerta-lado">Vida zerada
-      <button type="button" class="botao secundario" data-acao="zerou">Devolver missões e voltar com ${vidaInicial(lado.nacao)}</button>
+      <button type="button" class="botao secundario" data-acao="zerou">Perder os pontos e voltar com ${vidaInicial(lado.nacao)}</button>
     </div>` : ''}
   </article>`;
 }
@@ -143,67 +170,128 @@ function mostrarPlacar() {
   } else {
     const lado = partida.lados[partida.vez];
     $('#vez').innerHTML = `<div><small>Vez de</small><br><strong>${MP.esc(lado.nome)}</strong></div>
-      <small>Turno ${partida.turno}</small>`;
+      <small>Turno ${partida.turno} de ${partida.totalDeTurnos}</small>`;
     const avisos = [];
-    if (partida.turno === 1) avisos.push('1º turno: quem começa não compra cartas.');
-    if (lado.semAtacar && lado.semAtacarNoTurno < partida.turno) avisos.push(`${lado.nome} não pode atacar neste turno (denúncia).`);
+    if (partida.turno === 1) avisos.push('Tire 1 missão, escolha 1 contexto, 1 persona e 1 formato e dê a nota na página Missão.');
+    if (semPoderes(lado)) avisos.push(`${lado.nome} está sem poderes neste turno (Fiscalização).`);
+    if (partida.turno === partida.totalDeTurnos) avisos.push('Último turno da partida.');
     $('#aviso-turno').hidden = avisos.length === 0;
     $('#aviso-turno').textContent = avisos.join(' ');
+    $('#proximo').textContent = partida.turno >= partida.totalDeTurnos ? 'Ver resultado' : 'Próximo turno';
   }
-  $('#bloco-persona').hidden = escolhendo;
-  if (!escolhendo) mostrarPersona();
   $('#lados').innerHTML = partida.lados.map(htmlDoLado).join('');
   atualizarRelogio();
 }
 
-// Persona na mesa: a precisão do mesmo assunto ganha +1 de ataque, em qualquer combo
-function mostrarPersona() {
-  const atual = partida.persona || '';
-  const persona = DADOS.porCodigo[atual];
-  $('#efeito-persona').textContent = persona
-    ? `${persona.nome}: toda precisão de ${persona.assunto} ganha +1 de ataque, em qualquer combo.`
-    : 'Nenhuma persona na mesa. Quando alguém jogar uma, toque nela aqui.';
-  $('#personas').innerHTML = [{ codigo: '', nome: 'Nenhuma' }, ...PERSONAS].map((p) => (
-    `<button type="button" class="chip" data-persona="${p.codigo}" aria-pressed="${p.codigo === atual}">
-      ${p.codigo ? `<span class="cod t-persona">${p.codigo}</span>` : ''}${MP.esc(p.nome)}${p.assunto ? ` · ${p.assunto}` : ''}
-    </button>`)).join('');
-}
+// ---------- Poderes ----------
 
-function trocarPersona(codigo) {
-  partida.persona = codigo;
-  MP.salvarPartida(partida);
-  mostrarPersona();
-  MP.aviso(codigo ? `${DADOS.porCodigo[codigo].nome} na mesa` : 'Persona tirada da mesa');
-}
-
-// Usar um poder: o lado entrega cartas de missão que somam o custo (sem troco)
-function usarPoder(lado, codigoDoPoder) {
-  const poder = DADOS.porCodigo[lado.nacao].poderes.find((p) => p.n === codigoDoPoder);
-  if (lado.pontos < poder.custo || lado.poderesNoTurno[poder.n] === partida.turno) return;
+function pagar(lado, poder) {
   lado.pontos -= poder.custo;
   lado.poderesNoTurno[poder.n] = partida.turno;
-  if (poder.nome === 'Cura') lado.vida += VIDA_DA_CURA;
-  MP.aviso(`${lado.nome}: ${poder.nome}. As missões gastas voltam para o fundo do monte.`);
+}
+
+function usarPoder(i, codigoDoPoder) {
+  const lado = partida.lados[i];
+  const poder = DADOS.porCodigo[lado.nacao].poderes.find((p) => p.n === codigoDoPoder);
+  if (!estadoDoPoder(lado, i, poder).pode) return;
+  if (COM_ALVO.includes(poder.efeito)) {
+    escolherAlvo(i, poder);
+    return;
+  }
+  pagar(lado, poder);
+  if (poder.efeito === 'cura') {
+    lado.vida += poder.valor;
+    MP.aviso(`${lado.nome}: ${poder.nome}, +${poder.valor} de vida`);
+  }
+  if (poder.efeito === 'espelho') espelhar(i);
+  if (poder.efeito === 'manual') MP.aviso(`${lado.nome}: ${poder.nome}. Monte outro prompt e dê a nota na página Missão.`);
+}
+
+// Janela para escolher em qual lado o poder vai
+let pedidoDeAlvo = null;
+function escolherAlvo(i, poder) {
+  pedidoDeAlvo = { de: i, poder };
+  $('#alvo-titulo').textContent = `${poder.n} ${poder.nome}: em quem?`;
+  $('#alvo-texto').textContent = `${partida.lados[i].nome} vai pagar ${MP.plural(poder.custo, 'ponto', 'pontos')}. Efeito: ${poder.texto}.`;
+  $('#alvo-lados').innerHTML = partida.lados.map((lado, j) => (j === i ? '' : `<button type="button" class="chip" data-alvo="${j}">
+    ${MP.esc(lado.nome)} · ${lado.vida} de vida · ${MP.plural(lado.pontos, 'ponto', 'pontos')}</button>`)).join('');
+  $('#alvo').showModal();
+}
+
+function aplicarNoAlvo(alvo) {
+  const { de, poder } = pedidoDeAlvo;
+  pedidoDeAlvo = null;
+  $('#alvo').close();
+  const quem = partida.lados[de];
+  const outro = partida.lados[alvo];
+  pagar(quem, poder);
+  const registro = { de, alvo, nome: poder.nome, efeito: poder.efeito, valor: poder.valor, turno: partida.turno, espelhado: false };
+  if (poder.efeito === 'dano') {
+    registro.tirou = Math.min(outro.vida, poder.valor);
+    outro.vida -= registro.tirou;
+    MP.aviso(`${quem.nome}: ${poder.nome}! ${outro.nome} perde ${poder.valor} de vida`);
+  }
+  if (poder.efeito === 'roubo') {
+    registro.tirou = Math.min(outro.pontos, poder.valor);
+    outro.pontos -= registro.tirou;
+    quem.pontos += registro.tirou;
+    MP.aviso(`${quem.nome}: ${poder.nome}! Pegou ${MP.plural(registro.tirou, 'ponto', 'pontos')} de ${outro.nome}`);
+  }
+  if (poder.efeito === 'bloqueio') {
+    // Sem poderes desde agora até o fim do próximo turno do alvo
+    registro.antes = outro.semPoderesAte || 0;
+    outro.semPoderesAte = proximoTurnoDe(alvo) + 1;
+    MP.aviso(`${quem.nome}: ${poder.nome}! ${outro.nome} fica sem poderes até o fim do turno ${outro.semPoderesAte - 1}`);
+  }
+  partida.ultimoPoder = registro;
+  MP.salvarPartida(partida);
+  mostrarPlacar();
+}
+
+// Espelho da Índia: desfaz o último poder usado contra ela e aplica o mesmo efeito em quem usou
+function espelhar(i) {
+  const u = espelhavel(i);
+  if (!u) return;
+  const india = partida.lados[i];
+  const quem = partida.lados[u.de];
+  if (u.efeito === 'dano') {
+    india.vida += u.tirou;
+    quem.vida -= Math.min(quem.vida, u.valor);
+  }
+  if (u.efeito === 'roubo') {
+    // Devolve só o que quem usou ainda tem (pode ter gastado antes do Espelho)
+    const devolve = Math.min(quem.pontos, u.tirou);
+    india.pontos += devolve;
+    quem.pontos -= devolve;
+    const pega = Math.min(quem.pontos, u.valor);
+    quem.pontos -= pega;
+    india.pontos += pega;
+  }
+  if (u.efeito === 'bloqueio') {
+    // Quem fiscalizou fica sem poderes até o fim do próximo turno dele
+    india.semPoderesAte = u.antes;
+    quem.semPoderesAte = proximoTurnoDe(u.de) + 1;
+  }
+  u.espelhado = true;
+  MP.aviso(`${india.nome}: Espelho! ${u.nome} voltou para ${quem.nome}`);
 }
 
 function mudarLado(i, acao, delta, codigoDoPoder) {
   const lado = partida.lados[i];
   if (acao === 'vida') lado.vida = Math.max(0, lado.vida + delta);
   if (acao === 'pontos') lado.pontos = Math.max(0, lado.pontos + delta);
-  if (acao === 'poder') usarPoder(lado, codigoDoPoder);
-  if (acao === 'sem-atacar') {
-    lado.semAtacar = !lado.semAtacar;
-    lado.semAtacarNoTurno = partida.turno;
-  }
+  if (acao === 'poder') usarPoder(i, codigoDoPoder);
   if (acao === 'zerou') {
-    // Regra: vida zerada devolve as missões para o fundo do monte e volta com a vida cheia
+    // Regra: vida zerada perde todos os pontos e volta com a vida inicial
     lado.pontos = 0;
     lado.vida = vidaInicial(lado.nacao);
-    MP.aviso(`${lado.nome}: missões devolvidas ao monte, vida ${lado.vida}`);
+    MP.aviso(`${lado.nome}: perdeu os pontos e voltou com ${lado.vida} de vida`);
   }
   MP.salvarPartida(partida);
   mostrarPlacar();
 }
+
+// ---------- Turnos ----------
 
 function escolherQuemComeca(i) {
   partida.vez = i;
@@ -213,10 +301,17 @@ function escolherQuemComeca(i) {
   mostrarPlacar();
 }
 
+function sortearQuemComeca() {
+  const i = Math.floor(Math.random() * partida.lados.length);
+  escolherQuemComeca(i);
+  MP.aviso(`Sorteado: ${partida.lados[i].nome} começa`);
+}
+
 function proximoTurno() {
-  const saindo = partida.lados[partida.vez];
-  // O "sem atacar" vale por um turno inteiro daquele lado
-  if (saindo.semAtacar && saindo.semAtacarNoTurno < partida.turno) saindo.semAtacar = false;
+  if (partida.turno >= partida.totalDeTurnos) {
+    encerrar();
+    return;
+  }
   partida.vez = (partida.vez + 1) % partida.lados.length;
   partida.turno += 1;
   iniciarCronometro();
@@ -278,7 +373,7 @@ function atualizarRelogio() {
   else botao.textContent = segundos >= DURACAO_DO_TURNO ? 'Iniciar' : 'Continuar';
   if (partida.cronometro.esgotou) {
     $('#aviso-turno').hidden = false;
-    $('#aviso-turno').textContent = 'Tempo esgotado! O turno passa sem ataque. Os combos montados ficam na mesa.';
+    $('#aviso-turno').textContent = 'Tempo esgotado! Dê a nota com as cartas que o lado já escolheu: a que faltar não ganha estrela.';
   }
 }
 
@@ -322,7 +417,19 @@ function encerrar() {
   $('#ranking').innerHTML = ordem.map((lado, i) => `<li>
     <span>${i === 0 ? '🏆 ' : ''}${MP.esc(lado.nome)}</span>
     <span>${MP.plural(lado.pontos, 'ponto', 'pontos')} · ${lado.vida} de vida</span></li>`).join('');
+  const acabou = partida.turno >= partida.totalDeTurnos;
+  $('#fim-titulo').textContent = acabou ? 'Fim da partida' : 'Placar até agora';
+  // No meio da partida, "Voltar ao jogo" já continua; mais uma rodada só no fim
+  $('#mais-rodada').hidden = !acabou;
   $('#fim').showModal();
+}
+
+// Mais uma volta: cada lado joga mais 1 turno (as missões feitas voltam embaralhadas para o monte)
+function maisUmaRodada() {
+  partida.totalDeTurnos += partida.lados.length;
+  $('#fim').close();
+  proximoTurno();
+  MP.aviso('Mais uma rodada: embaralhem as missões feitas de volta no monte');
 }
 
 // Pede confirmação numa janela do próprio app (o confirm() do navegador some em alguns celulares)
@@ -364,6 +471,7 @@ $('#menos-lados').addEventListener('click', () => { config.quantos -= 1; mostrar
 $('#mais-lados').addEventListener('click', () => { config.quantos += 1; mostrarConfiguracao(); });
 $('#comecar').addEventListener('click', comecarPartida);
 
+$('#sortear').addEventListener('click', sortearQuemComeca);
 $('#opcoes-comeca').addEventListener('click', (evento) => {
   const botao = evento.target.closest('[data-comeca]');
   if (botao) escolherQuemComeca(Number(botao.dataset.comeca));
@@ -374,20 +482,22 @@ $('#lados').addEventListener('click', (evento) => {
   const i = Number(botao.closest('[data-lado]').dataset.lado);
   mudarLado(i, botao.dataset.acao, Number(botao.dataset.delta || 0), botao.dataset.poder);
 });
-$('#personas').addEventListener('click', (evento) => {
-  const botao = evento.target.closest('[data-persona]');
-  if (botao) trocarPersona(botao.dataset.persona);
+$('#alvo-lados').addEventListener('click', (evento) => {
+  const botao = evento.target.closest('[data-alvo]');
+  if (botao && pedidoDeAlvo) aplicarNoAlvo(Number(botao.dataset.alvo));
 });
+$('#alvo-cancelar').addEventListener('click', () => { pedidoDeAlvo = null; $('#alvo').close(); });
 $('#cronometro').addEventListener('click', botaoDoCronometro);
 $('#proximo').addEventListener('click', () => { prepararSom(); proximoTurno(); });
 $('#encerrar').addEventListener('click', encerrar);
 $('#nova').addEventListener('click', pedirNovaPartida);
 $('#nova-do-fim').addEventListener('click', pedirNovaPartida);
+$('#mais-rodada').addEventListener('click', maisUmaRodada);
 $('#confirmar-nova-botao').addEventListener('click', novaPartida);
 $('#cancelar-nova').addEventListener('click', () => $('#confirmar-nova').close());
 $('#voltar-jogo').addEventListener('click', () => $('#fim').close());
 
-// Outra página (Missão ou Denúncia) pode ter mudado o placar
+// A página Missão pode ter mudado o placar
 window.addEventListener('pageshow', () => { partida = MP.lerPartida(); mostrar(); });
 document.addEventListener('visibilitychange', () => {
   if (document.visibilityState === 'visible' && partida?.cronometro?.fim) manterTelaLigada();

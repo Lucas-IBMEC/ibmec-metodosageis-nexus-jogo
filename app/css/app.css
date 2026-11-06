@@ -23,11 +23,7 @@
   --c-missao: #c98a00;
   --c-persona: #6d3fc0;
   --c-contexto: #1f5fd1;
-  --c-dnc: #0f8a8a;
-  --c-precisao: #c7362f;
   --c-formato: #e06c00;
-  --c-documento: #198754;
-  --c-etica: #3d4452;
   --c-nacao: #16274f;
 
   --raio: 16px;
@@ -56,7 +52,6 @@
     --erro-fundo: #3a1714;
     --aviso: #f0c35a;
     --aviso-fundo: #33280e;
-    --c-etica: #9aa3b5;
     --c-nacao: #8fa6e6;
     --sombra: 0 1px 2px rgba(0, 0, 0, 0.3);
   }
@@ -80,7 +75,6 @@
   --erro-fundo: #3a1714;
   --aviso: #f0c35a;
   --aviso-fundo: #33280e;
-  --c-etica: #9aa3b5;
   --c-nacao: #8fa6e6;
   --sombra: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
@@ -275,25 +269,33 @@ body.com-barra .conteudo {
 .t-missao { --c: var(--c-missao); }
 .t-persona { --c: var(--c-persona); }
 .t-contexto { --c: var(--c-contexto); }
-.t-dnc { --c: var(--c-dnc); }
-.t-precisao { --c: var(--c-precisao); }
 .t-formato { --c: var(--c-formato); }
-.t-documento { --c: var(--c-documento); }
-.t-etica { --c: var(--c-etica); }
 .t-nacao { --c: var(--c-nacao); }
 
 /* Entrada de código: letra do tipo + número */
-.prefixos { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; margin-bottom: 8px; }
-.prefixos .chip { justify-content: center; padding: 6px 0; }
+.prefixos { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 6px; margin-bottom: 8px; }
+.prefixos .chip { justify-content: center; padding: 6px 4px; gap: 4px; font-size: 14px; }
 .dica { font-size: 13px; color: var(--texto-2); margin: 6px 0 0; }
 
-/* Resultado de uma conferência */
+/* Missão escolhida e as 3 vagas do prompt */
+.pedido-missao { margin: 10px 0 0; font-size: 17px; font-weight: 700; line-height: 1.35; }
+.assunto-tag { display: inline-block; margin-right: 6px; padding: 2px 10px; border-radius: 999px; background: var(--superficie-2); font-size: 13px; font-weight: 700; vertical-align: 2px; }
+.trio { list-style: none; margin: 12px 0 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.trio li { display: flex; align-items: center; gap: 10px; min-height: 48px; padding: 6px 8px 6px 12px; border-radius: var(--raio-p); border: 1px solid var(--borda); border-left: 5px solid var(--c); background: var(--superficie); }
+.tipo-vaga { flex: none; width: 70px; font-size: 12px; font-weight: 800; letter-spacing: 0.04em; text-transform: uppercase; color: var(--texto-2); }
+.trio .chip.carta { flex: 1; min-width: 0; justify-content: space-between; }
+.falta-vaga { color: var(--texto-2); font-size: 14px; font-style: italic; }
+
+/* Resultado da nota */
 .resultado { border-width: 2px; }
 .resultado.ok { border-color: var(--ok); background: var(--ok-fundo); }
+.resultado.meio { border-color: var(--aviso); background: var(--aviso-fundo); }
 .resultado.falha { border-color: var(--erro); background: var(--erro-fundo); }
 .veredito { font-size: 22px; font-weight: 800; margin: 0 0 4px; }
 .resultado.ok .veredito { color: var(--ok); }
+.resultado.meio .veredito { color: var(--aviso); }
 .resultado.falha .veredito { color: var(--erro); }
+.nota-estrelas { margin: 0; font-size: 44px; line-height: 1.1; letter-spacing: 0.08em; color: var(--c-missao); }
 
 .checklist { list-style: none; margin: 10px 0 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
 .checklist li { display: flex; gap: 10px; align-items: flex-start; background: var(--superficie); border-radius: var(--raio-p); padding: 10px 12px; border: 1px solid var(--borda); }
@@ -314,15 +316,6 @@ body.com-barra .conteudo {
   user-select: text;
 }
 .etiqueta { display: inline-block; font-size: 12px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--texto-2); }
-
-/* Força do combo: ataque e defesa com os bônus */
-.forca { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.forca div { background: var(--superficie-2); border-radius: var(--raio-p); padding: 10px; text-align: center; }
-.forca span { display: block; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--texto-2); }
-.forca b { font-size: 36px; font-weight: 800; font-variant-numeric: tabular-nums; }
-.contas { margin: 12px 0 0; padding-left: 20px; display: flex; flex-direction: column; gap: 6px; font-size: 14px; }
-.contas .mais { color: var(--ok); font-weight: 600; }
-.contas .menos { color: var(--erro); font-weight: 600; }
 
 /* ---------- Placar ---------- */
 
@@ -352,7 +345,6 @@ body.com-barra .conteudo {
 .lado-topo { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
 .lado-nome { font-size: 18px; font-weight: 800; margin: 0; }
 .nacao-tag { font-size: 13px; font-weight: 700; color: var(--c-nacao); }
-.buffs { font-size: 12.5px; color: var(--texto-2); margin: 2px 0 0; }
 .contadores { display: grid; grid-template-columns: 1.4fr 1fr; gap: 10px; margin-top: 12px; }
 .contador { display: flex; align-items: center; justify-content: space-between; background: var(--superficie-2); border-radius: var(--raio-p); padding: 6px; }
 .contador .valor { text-align: center; font-variant-numeric: tabular-nums; line-height: 1; }
@@ -373,7 +365,6 @@ body.com-barra .conteudo {
 }
 .mais-menos:active { transform: scale(0.92); background: var(--superficie-2); }
 .mais-menos:disabled { opacity: 0.35; }
-.efeitos { margin-top: 10px; }
 /* Poderes da nação: tocar desconta os pontos (cada poder 1 vez por turno) */
 .poderes { display: grid; gap: 6px; margin-top: 10px; }
 .poder {
@@ -394,6 +385,8 @@ body.com-barra .conteudo {
 .poder-nome { font-size: 14px; font-weight: 800; color: var(--c-nacao); }
 .poder-nome small { font-weight: 700; color: var(--c-missao); margin-left: 4px; }
 .poder-texto { font-size: 12.5px; color: var(--texto-2); }
+.poder.especial { border-color: color-mix(in srgb, var(--c-nacao) 45%, var(--borda)); }
+.bloqueio { margin: 10px 0 0; padding: 8px 12px; border-radius: var(--raio-p); background: var(--aviso-fundo); color: var(--aviso); font-size: 14px; font-weight: 600; }
 .alerta-lado { margin-top: 10px; padding: 10px 12px; border-radius: var(--raio-p); background: var(--erro-fundo); color: var(--erro); font-weight: 600; display: flex; gap: 8px; align-items: center; justify-content: space-between; }
 
 /* Barra do turno com o cronômetro, presa em cima do menu */

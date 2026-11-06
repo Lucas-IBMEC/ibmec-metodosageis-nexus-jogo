@@ -41,6 +41,7 @@
           <div class="valor"><b id="quantos">2</b><span id="nome-quantos">lados</span></div>
           <button type="button" class="mais-menos" id="mais-lados" aria-label="Mais lados">+</button>
         </div>
+        <p class="nota" id="explica-turnos"></p>
 
         <div id="config-lados"></div>
         <button type="button" class="botao largo" id="comecar" style="margin-top: 16px">Começar partida</button>
@@ -49,10 +50,9 @@
       <div class="bloco">
         <h2>Antes de começar</h2>
         <ol class="regras" style="margin: 0; padding-left: 20px">
-          <li>Separe 4 montes embaralhados: Missões, Contextos, Precisões e Geral.</li>
-          <li>Vire 3 missões para cima e 4 cartas do Geral ao lado dele (o mercado).</li>
-          <li>Cada lado compra 6 cartas: 2 contextos, 2 precisões e 2 do Geral.</li>
-          <li>Marque a vida inicial na carta da nação (15; a China começa com 14).</li>
+          <li>Monte o tabuleiro e ponha cada baralho embaralhado no lugar dele, virado para baixo: Missões, Contexto, Persona e Formato.</li>
+          <li>Vire 3 contextos, 3 personas e 3 formatos para cima, nos espaços “aberta”.</li>
+          <li>Cada lado pega a carta da sua nação. Todos começam com 10 de vida e 0 ponto.</li>
         </ol>
         <p class="nota">O passo a passo completo está em <a href="regras.html">Regras</a>.</p>
       </div>
@@ -62,19 +62,14 @@
     <section id="tela-placar" hidden>
       <div id="quem-comeca" class="bloco" hidden>
         <h2>Quem começa?</h2>
-        <p class="sub">Cada lado compra 1 carta de contexto. Quem tirar o maior número começa.
-          Empate: só os empatados compram de novo. Depois, as cartas voltam para o monte.</p>
+        <p class="sub">Sorteie ou escolha. Depois, a vez segue no sentido horário.</p>
+        <button type="button" class="botao largo" id="sortear">Sortear quem começa</button>
+        <p class="rotulo">Ou toque em quem começa</p>
         <div class="chips" id="opcoes-comeca"></div>
       </div>
 
       <div id="vez" class="vez" hidden></div>
       <p class="aviso" id="aviso-turno" hidden></p>
-
-      <div class="bloco" id="bloco-persona" hidden>
-        <h2>Persona na mesa</h2>
-        <p class="sub" id="efeito-persona"></p>
-        <div class="chips rolagem" id="personas" role="group" aria-label="Persona na mesa"></div>
-      </div>
 
       <div class="lados" id="lados"></div>
 
@@ -93,20 +88,30 @@
           <circle class="trilho" cx="32" cy="32" r="28"></circle>
           <circle class="arco" id="arco" cx="32" cy="32" r="28"></circle>
         </svg>
-        <span class="seg" id="segundos">40</span>
+        <span class="seg" id="segundos">60</span>
       </div>
       <button type="button" class="botao secundario" id="cronometro">Iniciar</button>
       <button type="button" class="botao" id="proximo">Próximo turno</button>
     </div>
   </div>
 
+  <dialog id="alvo">
+    <h2 id="alvo-titulo">Em quem?</h2>
+    <p class="nota" id="alvo-texto"></p>
+    <div class="chips" id="alvo-lados" style="margin-top: 12px"></div>
+    <div class="acoes" style="margin-top: 16px">
+      <button type="button" class="botao secundario" id="alvo-cancelar">Cancelar</button>
+    </div>
+  </dialog>
+
   <dialog id="fim">
-    <h2>Fim da partida</h2>
-    <p class="nota">Vence quem tiver mais pontos de missão. Empate: ganha quem tiver mais vida.</p>
+    <h2 id="fim-titulo">Fim da partida</h2>
+    <p class="nota">Vence quem tiver mais pontos. Empate: ganha quem tiver mais vida.</p>
     <ol class="ranking" id="ranking"></ol>
-    <p class="nota">Para fechar a aula: cada lado lê em voz alta o combo da última missão, como se fosse o prompt que montou.</p>
+    <p class="nota">Para fechar a aula: cada lado lê em voz alta o prompt da missão que mais gostou de montar.</p>
     <div class="acoes" style="margin-top: 12px">
       <button type="button" class="botao secundario" id="voltar-jogo">Voltar ao jogo</button>
+      <button type="button" class="botao secundario" id="mais-rodada">Mais uma rodada</button>
       <button type="button" class="botao" id="nova-do-fim">Nova partida</button>
     </div>
   </dialog>
