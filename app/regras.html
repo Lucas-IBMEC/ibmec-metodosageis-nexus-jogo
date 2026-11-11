@@ -20,19 +20,32 @@
   </header>
 
   <main class="conteudo">
-    <p class="aviso" style="margin: 0">Objetivo: montar prompts para as missões da mesa e chegar a <span data-dado="metaDeEstrelas">6</span> estrelas primeiro. Joga como o Pife: compra uma, descarta uma e bate quando fecha o jogo. Aqui, o jogo é um prompt.</p>
+    <p class="aviso" style="margin: 0">Objetivo: em cada rodada, montar o prompt que mais combina com a missão, com 1 contexto, 1 persona e 1 formato. O melhor prompt da rodada ganha 1 ponto. Depois de <span data-dado="rodadas">5</span> rodadas, ganha quem tiver mais pontos.</p>
 
     <div class="lista regras">
       <details class="item" open>
         <summary><span class="nome-item">Para explicar em 1 minuto</span></summary>
         <div class="corpo">
           <ol>
-            <li>No meio da mesa ficam <span data-dado="missoesNaMesa">3</span> missões abertas. Cada lado tem <span data-dado="cartasNaMao">5</span> cartas na mão.</li>
-            <li>Na sua vez: <b>compre 1</b> (do monte ou a de cima do lixo), <b>bata</b> se fechou um prompt e <b>descarte 1</b>.</li>
-            <li>Fecha um prompt quem tem um <b>contexto</b> e uma <b>persona</b> com o ícone de uma missão da mesa, mais <b>1 formato</b>.</li>
-            <li>O professor confere no aplicativo: formato que ajuda quem vai ler vale ★★★; outro formato, ★★.</li>
-            <li>Ganha quem chegar a <span data-dado="metaDeEstrelas">6</span> estrelas primeiro.</li>
+            <li>Vire 1 missão. Ela tem <b>3 assuntos</b>: ✚ Saúde, ⚽ Esporte, 💻 Tecnologia ou 🌳 Meio ambiente.</li>
+            <li>Na sua vez (até 1 minuto): <b>compre <span data-dado="cartasCompradas">3</span> de cada baralho</b>, fique com 1 de cada e devolva as outras 6.</li>
+            <li>Todos escolheram? <b>Virem as cartas.</b> O professor digita na página Rodada.</li>
+            <li>O aplicativo dá a <b>nota de cada prompt</b>, de 1 a 4, e diz por que perdeu pontos. O melhor ganha 1 ponto.</li>
+            <li>Depois de <span data-dado="rodadas">5</span> rodadas, ganha quem tiver mais pontos. No fim, o <b>desafio final</b>: conferir se aprendeu.</li>
           </ol>
+        </div>
+      </details>
+
+      <details class="item">
+        <summary><span class="nome-item">As 4 partes do prompt</span></summary>
+        <div class="corpo">
+          <ul class="quatro-partes">
+            <li class="t-persona"><b>Persona</b> Quem a IA vai ser? Vem da carta de persona.</li>
+            <li class="t-contexto"><b>Contexto</b> Onde é e o que está acontecendo? Vem da carta de contexto.</li>
+            <li class="t-missao"><b>Tarefa</b> O que você quer que ela faça? É a missão, igual para todos os lados.</li>
+            <li class="t-formato"><b>Formato</b> Como a resposta deve chegar? Vem da carta de formato.</li>
+          </ul>
+          <p>Por isso cada lado escolhe só 3 cartas: a tarefa já vem na missão. No desafio final, sem cartas, cada lado escreve as 4 partes.</p>
         </div>
       </details>
 
@@ -40,54 +53,66 @@
         <summary><span class="nome-item">Preparação</span></summary>
         <div class="corpo">
           <ol>
-            <li>Escolha o modo de jogo (Duelo, Mesa ou Turma) e divida os lados.</li>
-            <li>Embaralhe as missões e vire <span data-dado="missoesNaMesa">3</span> para cima no meio da mesa. As outras ficam num montinho ao lado.</li>
-            <li>Embaralhe juntos os contextos, as personas e os formatos: esse é o monte.</li>
-            <li>Dê <span data-dado="cartasNaMao">5</span> cartas e 1 resumo da vez para cada lado. Vire 1 carta do monte ao lado dele: é o lixo.</li>
-            <li>Na página Partida, cadastre os lados e toque em Sortear para ver quem começa. Depois, a vez segue no sentido horário.</li>
+            <li>Divida a turma em 2 a <span data-dado="maximoDeLados">5</span> lados: cada lado é 1 aluno, uma dupla ou um grupo.</li>
+            <li>Embaralhe cada baralho separado (contexto, persona e formato) e ponha os 3 montes virados para baixo no meio da mesa. O verso mostra qual é qual.</li>
+            <li>Embaralhe as missões e deixe o montinho ao lado.</li>
+            <li>Na página Partida, cadastre os lados e toque em Sortear para ver quem começa.</li>
           </ol>
         </div>
       </details>
 
       <details class="item">
-        <summary><span class="nome-item">A sua vez (até <span data-dado="duracaoDaVez">30</span> segundos)</span></summary>
+        <summary><span class="nome-item">Uma rodada</span></summary>
         <div class="corpo">
           <ol>
-            <li><b>Compre 1</b> carta: a de cima do monte ou a de cima do lixo.</li>
-            <li><b>Fechou um prompt? Bata</b> (veja abaixo).</li>
-            <li><b>Descarte 1</b> carta no lixo. No fim da vez, você sempre tem <span data-dado="cartasNaMao">5</span> cartas.</li>
+            <li>Vire 1 missão no meio da mesa. Leiam juntos o pedido e os 3 assuntos.</li>
+            <li>Na vez do seu lado (até <span data-dado="duracaoDaVez">60</span> segundos): compre <span data-dado="cartasCompradas">3</span> contextos, <span data-dado="cartasCompradas">3</span> personas e <span data-dado="cartasCompradas">3</span> formatos.</li>
+            <li>Escolha 1 de cada, as que mais combinam com os 3 assuntos, e deixe viradas para baixo na sua frente.</li>
+            <li>Devolva as outras 6, cada uma no seu monte, e embaralhe. O professor toca em Próximo lado.</li>
+            <li>Todos escolheram? Virem as cartas. O professor digita a missão e as cartas de cada lado na página Rodada.</li>
+            <li>O professor lê a nota e o porquê de cada prompt e toca em Dar o ponto.</li>
+            <li>As cartas voltam para os seus montes (embaralhe) e a missão sai do jogo. Na rodada seguinte, começa o próximo lado.</li>
           </ol>
-          <p class="aviso">Acabou o tempo? Descarte 1 carta e passe a vez.</p>
         </div>
       </details>
 
       <details class="item">
-        <summary><span class="nome-item">Bater e ganhar estrelas</span></summary>
+        <summary><span class="nome-item">A nota do prompt</span></summary>
         <div class="corpo">
-          <p>O prompt fecha com 3 cartas:</p>
-          <ul>
-            <li><b>Contexto</b> com o ícone de uma missão da mesa.</li>
-            <li><b>Persona</b> com o mesmo ícone.</li>
-            <li><b>Formato:</b> qualquer um. A missão não diz qual ajuda quem vai ler: leia o pedido e pense.</li>
-          </ul>
-          <p>Ícones: ✚ Saúde · ⚽ Esporte · 💻 Tecnologia · 🌳 Meio ambiente.</p>
-          <p>Quem bate mostra a missão e as 3 cartas. O professor digita os códigos na página Missão:</p>
+          <p>Cada carta combina mais ou menos com cada assunto, de 1 (não combina) a 4 (combina muito). Os números ficam escondidos: os alunos leem as cartas e pensam.</p>
+          <p><b>Nota da carta:</b> a média dos 3 assuntos da missão. <b>Nota do prompt:</b> a média das 3 cartas, de 1 a 4.</p>
           <table>
-            <thead><tr><th>Formato</th><th>Nota</th><th>Estrelas</th></tr></thead>
+            <thead><tr><th>Nota</th><th>Nível</th></tr></thead>
             <tbody>
-              <tr><td>Ajuda quem vai ler</td><td>★★★</td><td>3</td></tr>
-              <tr><td>Não ajuda tanto</td><td>★★☆</td><td>2</td></tr>
+              <tr><td>3,5 a 4</td><td>Ótimo</td></tr>
+              <tr><td>3 a 3,4</td><td>Bom</td></tr>
+              <tr><td>2,5 a 2,9</td><td>Médio</td></tr>
+              <tr><td>abaixo de 2,5</td><td>Fraco</td></tr>
             </tbody>
           </table>
-          <p>Depois, o lado fica com a missão, põe as 3 cartas embaixo do monte, compra 3 e vira uma missão nova no lugar. Aí descarta 1, como sempre.</p>
+          <p>Por que perdeu pontos: o aplicativo mostra as cartas que têm 1 ou 2 num assunto da missão, como “a persona P02 não entende de tecnologia”.</p>
+          <p class="nota">Os números de cada carta estão no gabarito, na página Cartas.</p>
         </div>
       </details>
 
       <details class="item">
         <summary><span class="nome-item">Fim da partida</span></summary>
         <div class="corpo">
-          <p><b>Ganha quem chegar a <span data-dado="metaDeEstrelas">6</span> estrelas primeiro.</b> O aplicativo avisa.</p>
-          <p>As missões acabaram antes (só acontece com 5 lados)? Ganha quem tiver mais estrelas. Empate: quem fez mais missões com ★★★.</p>
+          <p><b>Depois de <span data-dado="rodadas">5</span> rodadas, ganha quem tiver mais pontos.</b> O aplicativo avisa.</p>
+          <p>Empate nos pontos: ganha quem somou as maiores notas nas rodadas.</p>
+        </div>
+      </details>
+
+      <details class="item">
+        <summary><span class="nome-item">Desafio final: conferir se aprendeu</span></summary>
+        <div class="corpo">
+          <ol>
+            <li>Na página <a href="aprendeu.html">Desafio</a>, sorteie um problema da escola.</li>
+            <li>Sem cartas, cada lado escreve um prompt com as 4 partes. Vocês têm 3 minutos.</li>
+            <li>Cada lado lê o seu prompt em voz alta. Para cada uma das 4 perguntas, o professor toca em Sim ou Não. Se a turma tiver dúvida, toque em Ver exemplo.</li>
+            <li>Sim nas 4 perguntas: o lado aprendeu e ganha o prêmio que o professor escolher.</li>
+          </ol>
+          <p class="nota">As 4 perguntas: tem as 4 partes? A persona entende do assunto? O contexto diz onde é e o que está acontecendo? O formato ajuda quem vai ler?</p>
         </div>
       </details>
 
@@ -95,9 +120,11 @@
         <summary><span class="nome-item">Casos especiais</span></summary>
         <div class="corpo">
           <ul>
-            <li><b>Bateu sem o ícone certo:</b> não vale. As cartas voltam para a mão, o lado descarta 1 e passa a vez. O aplicativo não conta se o formato servia, porque a missão continua na mesa.</li>
-            <li><b>Duas missões com o mesmo ícone:</b> o lado escolhe para qual vai bater.</li>
-            <li><b>O monte acabou:</b> embaralhe o lixo, menos a carta de cima, e faça um monte novo.</li>
+            <li><b>Acabou o tempo da vez:</b> escolha agora as 3 cartas e devolva as outras.</li>
+            <li><b>Mostrou as cartas antes da hora:</b> tudo bem, mas o melhor é guardar segredo até todos escolherem.</li>
+            <li><b>A mesma carta em dois prompts:</b> só existe uma de cada. Alguém digitou o número errado: confira.</li>
+            <li><b>Deu o ponto errado:</b> na página Rodada, toque em Desfazer.</li>
+            <li><b>Sem celular:</b> o gabarito do professor impresso tem os números e a conta.</li>
           </ul>
         </div>
       </details>
@@ -106,17 +133,18 @@
         <summary><span class="nome-item">Modos de jogo</span></summary>
         <div class="corpo">
           <p><b>Duelo</b> (2 a 4 alunos): 1 contra 1, ou dupla contra dupla.</p>
-          <p><b>Mesa</b> (3 a 10 alunos): 3 a 5 lados, todos contra todos.</p>
-          <p><b>Turma</b> (até 40 alunos): até 5 grupos. Cada grupo decide junto, e quem segura as cartas troca a cada vez.</p>
+          <p><b>Mesa</b> (3 a 10 alunos): 3 a <span data-dado="maximoDeLados">5</span> lados, todos contra todos.</p>
+          <p><b>Turma</b> (até 40 alunos): até <span data-dado="maximoDeLados">5</span> grupos. Cada grupo decide junto, e quem compra as cartas troca a cada rodada.</p>
         </div>
       </details>
     </div>
-    <p class="nota" style="margin: 0 4px">Números de teste: <span data-dado="cartasNaMao">5</span> cartas na mão, <span data-dado="missoesNaMesa">3</span> missões na mesa, <span data-dado="metaDeEstrelas">6</span> estrelas para ganhar e <span data-dado="duracaoDaVez">30</span> segundos por vez. Podem mudar depois da partida de teste.</p>
+    <p class="nota" style="margin: 0 4px">Números de teste: <span data-dado="rodadas">5</span> rodadas, <span data-dado="cartasCompradas">3</span> cartas de cada baralho e <span data-dado="duracaoDaVez">60</span> segundos por vez. Podem mudar depois da partida de teste.</p>
   </main>
 
   <nav id="menu" class="menu" aria-label="Páginas"></nav>
 
   <script src="js/dados.js"></script>
+  <script src="js/nota.js"></script>
   <script src="js/comum.js"></script>
 </body>
 </html>

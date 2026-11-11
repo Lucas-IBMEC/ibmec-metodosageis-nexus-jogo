@@ -1,4 +1,4 @@
-<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><title>Palavra Mágica · cartas, regras e gabarito</title><style>
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><title>Palavra Mágica · cartas (frente e verso)</title><style>
 @page { size: A4 portrait; margin: 0; }
 * { box-sizing: border-box; }
 body { margin: 0; font-family: 'Segoe UI', Arial, sans-serif; color: #1b1f2a; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
@@ -7,63 +7,63 @@ body { margin: 0; font-family: 'Segoe UI', Arial, sans-serif; color: #1b1f2a; -w
 
 .t-missao { --c: #c98a00; --claro: #fff6dc; } .t-persona { --c: #6d3fc0; --claro: #f1ebfb; }
 .t-contexto { --c: #1f5fd1; --claro: #e8f0fd; } .t-formato { --c: #e06c00; --claro: #fff0e2; }
-.t-ajuda { --c: #16274f; --claro: #e9edf6; }
 .a-S { color: #c62828; }
 
 .card { width: 63mm; height: 88mm; border: 0.3mm dashed #9aa3b5; padding: 3mm; display: flex; flex-direction: column; gap: 1.6mm; position: relative; }
 .card::before { content: ''; position: absolute; inset: 1.6mm; border: 0.6mm solid var(--c); border-radius: 3mm; pointer-events: none; }
 .hd { background: var(--c); color: #fff; border-radius: 2mm; padding: 1.2mm 2.4mm; display: flex; justify-content: space-between; font-weight: 800; font-size: 8.5pt; letter-spacing: .06em; position: relative; }
 .code { font-weight: 700; background: rgba(255,255,255,.25); border-radius: 1mm; padding: 0 1.4mm; }
-.assunto { display: flex; align-items: center; gap: 1.6mm; margin: 0 1mm; padding: .8mm 2mm .8mm .8mm; background: var(--claro); border-radius: 5mm; font-size: 9pt; font-weight: 800; align-self: flex-start; }
-.assunto .ico { width: 6.4mm; height: 6.4mm; border-radius: 50%; background: #fff; display: inline-flex; align-items: center; justify-content: center; font-size: 10pt; line-height: 1; }
+.assuntos-missao { display: flex; flex-wrap: wrap; gap: 1mm; margin: 0 1mm; }
+.chip-assunto { display: inline-flex; align-items: center; gap: 1mm; padding: .5mm 1.8mm .5mm .5mm; background: var(--claro); border-radius: 5mm; font-size: 7.8pt; font-weight: 800; }
+.chip-assunto .ico { width: 5.4mm; height: 5.4mm; border-radius: 50%; background: #fff; display: inline-flex; align-items: center; justify-content: center; font-size: 8.6pt; line-height: 1; }
 .body { flex: 1; padding: 0 1.5mm; display: flex; flex-direction: column; justify-content: flex-start; gap: 1.4mm; }
 .body.center { justify-content: center; text-align: center; }
-.pedido { font-size: 13pt; font-weight: 800; line-height: 1.28; margin: .5mm 0 0; }
-.pense { font-size: 7.6pt; color: #4a5368; font-style: italic; margin: 0; }
-.monte { margin: 0 1.5mm; background: var(--claro); border-radius: 2mm; padding: 1.2mm 2mm; font-size: 7.4pt; line-height: 1.3; text-align: center; }
-.monte b { font-size: 8.2pt; }
-.estrelas { display: flex; justify-content: space-between; margin: 0 1.5mm; font-size: 7pt; }
-.estrelas b { color: var(--c); font-size: 8.4pt; }
-.txt { font-size: 11pt; line-height: 1.32; margin: 0; }
-.nome { font-size: 12pt; font-weight: 800; margin: 1mm 0 0; line-height: 1.2; }
+.pedido { font-size: 12.4pt; font-weight: 800; line-height: 1.28; margin: .5mm 0 0; }
+.pense { font-size: 7.4pt; color: #4a5368; font-style: italic; margin: 0 1.5mm; line-height: 1.3; }
+.txt { font-size: 10.6pt; line-height: 1.32; margin: 0; }
 .big { font-size: 12pt; font-weight: 800; margin: 0; line-height: 1.2; }
+.emblema { width: 11mm; height: 11mm; padding: 2mm; margin: 0 auto 1mm; border-radius: 50%; background: var(--claro); color: var(--c); flex: none; }
+.faz { font-size: 9pt; line-height: 1.32; margin: 0; }
 .efeito { font-size: 8.2pt; margin: 0; line-height: 1.35; color: #2b3245; }
+.t-persona .efeito { background: var(--claro); border-radius: 2mm; padding: 1.2mm 1.6mm; }
 .desenho { color: var(--c); margin: 1mm auto; width: 40mm; }
 .desenho svg { width: 100%; height: auto; display: block; }
 .ft { font-size: 6.3pt; line-height: 1.3; color: #4a5368; border-top: 0.3mm solid #d6dbe6; padding: 1mm 1.5mm 0; margin: 0 .5mm .5mm; }
 .ft b { color: var(--c); }
 
-/* Resumo da vez */
-.passos { justify-content: center; gap: 2.4mm; }
-.passos p { margin: 0; display: flex; gap: 2mm; align-items: flex-start; font-size: 8.4pt; line-height: 1.3; }
-.passos p b { display: block; font-size: 10.6pt; color: var(--c); }
-.passos .n { flex: none; width: 6mm; height: 6mm; border-radius: 50%; background: var(--c); color: #fff; font-weight: 800; font-size: 9.6pt; display: inline-flex; align-items: center; justify-content: center; }
-.passos .vale { display: block; background: var(--claro); border-radius: 2mm; padding: 1.4mm 2mm; font-size: 8pt; }
-.passos .vale b { display: inline; color: #c98a00; font-size: 9.2pt; }
-.passos .depois { display: block; font-size: 7.2pt; color: #4a5368; }
+/* Verso: o nome do baralho, com listras claras (gasta pouca tinta) */
+.verso-carta::before { display: none; }
+.verso-miolo { flex: 1; border: 1mm solid var(--c); border-radius: 3mm; color: var(--c); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.6mm; text-align: center;
+  background: repeating-linear-gradient(45deg, var(--claro) 0 2.6mm, #fff 2.6mm 5.2mm); }
+.verso-ico { width: 20mm; height: 20mm; background: #fff; border-radius: 50%; padding: 3mm; border: .6mm solid var(--c); }
+.verso-nome { margin: 1mm 0 0; font-size: 17pt; font-weight: 900; letter-spacing: .08em; background: #fff; padding: 0 2.4mm; border-radius: 1.4mm; }
+.verso-sub { margin: 0; font-size: 9pt; font-weight: 700; background: #fff; padding: 0 2mm; border-radius: 1.4mm; color: #2b3245; }
+.verso-jogo { margin: 3mm 0 0; font-size: 8pt; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; background: var(--c); color: #fff; padding: .6mm 2.4mm; border-radius: 1.4mm; }
+.vaga { width: 63mm; height: 88mm; }
+.rotulo-folha { position: absolute; top: 6mm; left: 0; right: 0; margin: 0; text-align: center; font-size: 8pt; color: #6b7489; }
+.rotulo-folha b { color: #1b1f2a; }
 
 /* Folhas de texto */
 .doc { padding: 10mm 12mm; font-size: 9.2pt; line-height: 1.34; }
-.regras { font-size: 10.4pt; line-height: 1.38; }
+.regras { font-size: 10.2pt; line-height: 1.36; }
 .doc h1 { font-size: 18pt; margin: 0 0 2.5mm; } .doc h1 small { display: block; font-size: 9pt; font-weight: 500; color: #4a5368; }
-.doc h2 { font-size: 11.5pt; margin: 3.4mm 0 1.2mm; color: #1f5fd1; }
+.doc h2 { font-size: 11.5pt; margin: 3.2mm 0 1.2mm; color: #1f5fd1; }
 .doc p { margin: 0 0 1.4mm; }
 .doc ul, .doc ol { margin: 0 0 1mm; padding-left: 5mm; } .doc li { margin-bottom: 1mm; }
 .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 7mm; }
 .objetivo { background: #fff6dc; border: 0.4mm solid #e0b84a; border-radius: 2mm; padding: 2.4mm 3mm; font-size: 10.6pt; }
-.vez-passos { font-size: 11pt; } .vez-passos li { margin-bottom: 1.4mm; }
-.formula { display: flex; align-items: stretch; gap: 1.4mm; margin: 1mm 0 1.4mm; }
+.vez-passos { font-size: 10.4pt; } .vez-passos li { margin-bottom: 1.3mm; }
+.formula { display: flex; align-items: stretch; gap: 1.4mm; margin: 1mm 0 1.6mm; }
 .formula i { font-style: normal; font-weight: 800; font-size: 13pt; align-self: center; }
 .peca { flex: 1; border: 0.5mm solid var(--c); background: var(--claro); border-radius: 2mm; padding: 1.4mm 1.6mm; font-size: 7.6pt; line-height: 1.25; text-align: center; }
 .peca b { display: block; color: var(--c); font-size: 9.4pt; }
-.assuntos { font-weight: 700; font-size: 9pt; }
 .sem-quebra { white-space: nowrap; }
 .exemplo { margin-top: 3mm; border-left: 1.2mm solid #c98a00; background: #fff6dc; border-radius: 0 2mm 2mm 0; padding: 2.2mm 3mm; font-size: 9.2pt; line-height: 1.35; }
 .exemplo p { margin: 0 0 1.2mm; } .exemplo p:last-child { margin: 0; }
 .exemplo-t { font-weight: 800; font-size: 9pt; letter-spacing: .06em; text-transform: uppercase; color: #8a5a00; }
 .exemplo-missao { font-style: italic; }
 .nota-tab { width: 100%; border-collapse: collapse; margin: 1mm 0 1.6mm; } .nota-tab td { border: 0.3mm solid #e0c27a; padding: 1.2mm 2mm; font-size: 9.6pt; } .nota-tab td:last-child { text-align: right; font-weight: 700; white-space: nowrap; }
-.nota-tab b { color: #c98a00; }
+.nota-tab b { color: #8a5a00; }
 .ganha { background: #e3f4ea; border: 0.4mm solid #7cc49c; border-radius: 2mm; padding: 1.8mm 2.6mm; }
 .pequeno { font-size: 9pt; }
 .mesa { margin-top: 3mm; border: 0.4mm dashed #9aa3b5; border-radius: 3mm; padding: 2.4mm 3mm 2.6mm; background: #f6f8fc; text-align: center; }
@@ -71,363 +71,351 @@ body { margin: 0; font-family: 'Segoe UI', Arial, sans-serif; color: #1b1f2a; -w
 .mesa-fila { display: flex; justify-content: center; gap: 3mm; margin: 1.6mm 0; }
 .mini { width: 19mm; height: 26mm; border-radius: 1.6mm; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .6mm; font-size: 8pt; font-weight: 800; color: #fff; }
 .mini small { font-size: 6pt; font-weight: 600; line-height: 1.2; padding: 0 1mm; }
-.mini.m { background: #c98a00; }
-.mini.monte { background: #16274f; }
-.mini.lixo { background: #fff; color: #1b1f2a; border: 0.5mm solid #9aa3b5; }
+.mini.m { background: #c98a00; } .mini.c { background: #1f5fd1; } .mini.p { background: #6d3fc0; } .mini.f { background: #e06c00; }
 .mesa-mao { margin: 1.4mm 0 0 !important; font-size: 8.6pt; font-weight: 700; }
 .aviso { background: #eef2f8; border-radius: 2mm; padding: 2mm 3mm; font-size: 8.4pt; color: #4a5368; margin-top: 3mm; }
 .gab-pag { font-size: 9pt; }
-table.gab { width: 100%; border-collapse: collapse; } .gab th, .gab td { border: 0.3mm solid #c9cfdb; padding: 1.3mm 2mm; text-align: left; vertical-align: top; font-size: 8.6pt; } .gab th { background: #eef2f8; }
+table.gab { width: 100%; border-collapse: collapse; margin-bottom: 1.6mm; } .gab th, .gab td { border: 0.3mm solid #c9cfdb; padding: 1mm 1.8mm; text-align: left; vertical-align: top; font-size: 8.4pt; } .gab th { background: #eef2f8; }
+.gab.num td, .gab.num th { padding: .8mm 1.4mm; font-size: 8.2pt; vertical-align: middle; }
+.gab .n { width: 7mm; text-align: center; font-variant-numeric: tabular-nums; }
+.gab .v4 { font-weight: 800; background: #e3f4ea; } .gab .v1 { color: #b42318; background: #fde8e7; }
+.duas-tabelas { display: grid; grid-template-columns: 1fr 1fr; gap: 5mm; align-items: start; }
+.legenda { font-size: 8.4pt; color: #4a5368; }
 .small2 { font-size: 8.6pt; line-height: 1.45; }
-</style></head><body><section class="page doc regras">
-<h1>Palavra Mágica · Como jogar <small>versão de teste · grupo NEXUS · 2 a 5 lados · cerca de 10 minutos</small></h1>
-<p class="objetivo"><b>Objetivo:</b> montar prompts para as missões da mesa e chegar a <b>6 estrelas</b> primeiro. Joga como o <b>Pife</b>: compra uma, descarta uma e bate quando fecha o jogo. Aqui, o jogo é um prompt.</p>
-
-<div class="cols">
-<div>
-<h2>No jogo</h2>
-<p>10 missões · 20 contextos · 16 personas · 18 formatos (9 tipos, 2 de cada) · 8 cartas de resumo da vez · o celular do professor com o aplicativo.</p>
-
-<h2>Preparação</h2>
-<ol>
-<li>Embaralhe as <b>missões</b> e vire <b>3</b> para cima no meio da mesa. As outras ficam num montinho ao lado.</li>
-<li>Embaralhe <b>juntos</b> os contextos, as personas e os formatos: esse é o <b>monte</b>.</li>
-<li>Dê <b>5 cartas</b> e 1 resumo da vez para cada lado (1 aluno, uma dupla ou um grupo).</li>
-<li>Vire 1 carta do monte ao lado dele: é o <b>lixo</b>.</li>
-<li>O professor abre a página Partida no aplicativo, cadastra os lados e toca em <b>Sortear</b>. Depois, a vez segue no sentido horário.</li>
-</ol>
-
-<div class="mesa">
-  <p class="mesa-t">A mesa</p>
-  <div class="mesa-fila"><span class="mini m">Missão<small>aberta</small></span><span class="mini m">Missão<small>aberta</small></span><span class="mini m">Missão<small>aberta</small></span></div>
-  <div class="mesa-fila"><span class="mini monte">Monte<small>virado para baixo</small></span><span class="mini lixo">Lixo<small>virado para cima</small></span></div>
-  <p class="mesa-mao">Na mão de cada lado: 5 cartas</p>
-</div>
-
-<div class="exemplo">
-  <p class="exemplo-t">Exemplo de uma vez</p>
-  <p class="exemplo-missao">Na mesa está a missão <b>M04</b> <span class="a-E">⚽</span>: “Monte um aquecimento seguro para a aula de Educação Física.”</p>
-  <p>Você compra <b>P04 Professor de Educação Física</b> <span class="a-E">⚽</span>. Agora tem também <b>C07 Futsal da escola</b> <span class="a-E">⚽</span> e <b>F02 Passo a passo</b>: fechou, bata!</p>
-  <p>O professor digita M04, C07, P04 e F02, e o aplicativo dá <b>★★★</b>, porque um passo a passo ajuda quem vai fazer o aquecimento. Com F05 Tabela, seriam <b>★★</b>.</p>
-</div>
-</div>
-
-<div>
-<h2>A sua vez · até 30 segundos</h2>
-<ol class="vez-passos">
-  <li><b>Compre 1</b> carta: a de cima do monte ou a de cima do lixo.</li>
-  <li><b>Fechou um prompt? Bata!</b></li>
-  <li><b>Descarte 1</b> carta no lixo. Você sempre termina a vez com 5 cartas.</li></ol>
-
-<h2>Fechar um prompt</h2>
-<div class="formula">
-  <span class="peca t-contexto"><b>Contexto</b>com o ícone de uma missão da mesa</span><i>+</i>
-  <span class="peca t-persona"><b>Persona</b>com o mesmo ícone</span><i>+</i>
-  <span class="peca t-formato"><b>Formato</b>qualquer um</span>
-</div>
-<p class="assuntos">Ícones: <span class="sem-quebra"><span class="a-S">✚</span> Saúde</span> · <span class="sem-quebra"><span class="a-E">⚽</span> Esporte</span> · <span class="sem-quebra"><span class="a-T">💻</span> Tecnologia</span> · <span class="sem-quebra"><span class="a-A">🌳</span> Meio ambiente</span></p>
-
-<h2>Bater</h2>
-<p>Mostre a missão e as 3 cartas. O professor digita os 4 códigos no aplicativo:</p>
-<table class="nota-tab"><tr><td><b>★★★</b> formato que ajuda quem vai ler</td><td>3 estrelas</td></tr><tr><td><b>★★</b> formato que não ajuda tanto</td><td>2 estrelas</td></tr></table>
-<p>Fique com a missão, ponha as 3 cartas embaixo do monte, compre 3 e vire uma missão nova no lugar. Depois, descarte 1, como sempre.</p>
-<p class="ganha"><b>Ganha quem chegar a 6 estrelas primeiro.</b> O aplicativo avisa.</p>
-
-<h2>Casos especiais</h2>
-<ul class="pequeno">
-<li>Bateu sem o ícone certo: não vale. As cartas voltam para a mão; descarte 1 e passe a vez.</li>
-<li>Acabou o tempo: descarte 1 e passe a vez.</li>
-<li>O monte acabou: embaralhe o lixo, menos a carta de cima, e faça um monte novo.</li>
-<li>As missões acabaram: ganha quem tiver mais estrelas. Empate: quem fez mais missões com ★★★.</li>
-</ul>
-</div>
-</div>
-<p class="aviso">Números de teste: 5 cartas na mão, 3 missões na mesa, 6 estrelas para ganhar e 30 segundos por vez. Anotem o que ficou fácil ou difícil demais para ajustar depois da partida de teste.</p>
-</section><section class="page grid"><div class="card t-missao"><div class="hd"><span>MISSÃO</span><span class="code">M01</span></div>
-  <div class="assunto"><span class="ico a-S">✚</span>Saúde</div>
-  <div class="body"><p class="pedido">“Explique a dengue para uma criança de 10 anos.”</p>
-  <p class="pense">Pense: quem vai ler? Que formato ajuda essa pessoa?</p></div>
-  <div class="monte">Para bater: <b>contexto e persona com <span class="a-S">✚</span> + 1 formato</b></div>
-  <div class="estrelas"><span><b>★★★</b> formato que ajuda</span><span><b>★★</b> outro formato</span></div>
-  <div class="ft">Fica aberta no meio da mesa. Qualquer lado pode fazer.</div></div><div class="card t-missao"><div class="hd"><span>MISSÃO</span><span class="code">M02</span></div>
-  <div class="assunto"><span class="ico a-S">✚</span>Saúde</div>
-  <div class="body"><p class="pedido">“Crie um cardápio de lanche saudável para a semana.”</p>
-  <p class="pense">Pense: quem vai ler? Que formato ajuda essa pessoa?</p></div>
-  <div class="monte">Para bater: <b>contexto e persona com <span class="a-S">✚</span> + 1 formato</b></div>
-  <div class="estrelas"><span><b>★★★</b> formato que ajuda</span><span><b>★★</b> outro formato</span></div>
-  <div class="ft">Fica aberta no meio da mesa. Qualquer lado pode fazer.</div></div><div class="card t-missao"><div class="hd"><span>MISSÃO</span><span class="code">M03</span></div>
-  <div class="assunto"><span class="ico a-S">✚</span>Saúde</div>
-  <div class="body"><p class="pedido">“Faça um aviso para os alunos beberem mais água.”</p>
-  <p class="pense">Pense: quem vai ler? Que formato ajuda essa pessoa?</p></div>
-  <div class="monte">Para bater: <b>contexto e persona com <span class="a-S">✚</span> + 1 formato</b></div>
-  <div class="estrelas"><span><b>★★★</b> formato que ajuda</span><span><b>★★</b> outro formato</span></div>
-  <div class="ft">Fica aberta no meio da mesa. Qualquer lado pode fazer.</div></div><div class="card t-missao"><div class="hd"><span>MISSÃO</span><span class="code">M04</span></div>
-  <div class="assunto"><span class="ico a-E">⚽</span>Esporte</div>
-  <div class="body"><p class="pedido">“Monte um aquecimento seguro para a aula de Educação Física.”</p>
-  <p class="pense">Pense: quem vai ler? Que formato ajuda essa pessoa?</p></div>
-  <div class="monte">Para bater: <b>contexto e persona com <span class="a-E">⚽</span> + 1 formato</b></div>
-  <div class="estrelas"><span><b>★★★</b> formato que ajuda</span><span><b>★★</b> outro formato</span></div>
-  <div class="ft">Fica aberta no meio da mesa. Qualquer lado pode fazer.</div></div><div class="card t-missao"><div class="hd"><span>MISSÃO</span><span class="code">M05</span></div>
-  <div class="assunto"><span class="ico a-E">⚽</span>Esporte</div>
-  <div class="body"><p class="pedido">“Conte a história de um esporte, do começo até hoje.”</p>
-  <p class="pense">Pense: quem vai ler? Que formato ajuda essa pessoa?</p></div>
-  <div class="monte">Para bater: <b>contexto e persona com <span class="a-E">⚽</span> + 1 formato</b></div>
-  <div class="estrelas"><span><b>★★★</b> formato que ajuda</span><span><b>★★</b> outro formato</span></div>
-  <div class="ft">Fica aberta no meio da mesa. Qualquer lado pode fazer.</div></div><div class="card t-missao"><div class="hd"><span>MISSÃO</span><span class="code">M06</span></div>
-  <div class="assunto"><span class="ico a-T">💻</span>Tecnologia</div>
-  <div class="body"><p class="pedido">“Ensine os avós a criar uma senha forte.”</p>
-  <p class="pense">Pense: quem vai ler? Que formato ajuda essa pessoa?</p></div>
-  <div class="monte">Para bater: <b>contexto e persona com <span class="a-T">💻</span> + 1 formato</b></div>
-  <div class="estrelas"><span><b>★★★</b> formato que ajuda</span><span><b>★★</b> outro formato</span></div>
-  <div class="ft">Fica aberta no meio da mesa. Qualquer lado pode fazer.</div></div><div class="card t-missao"><div class="hd"><span>MISSÃO</span><span class="code">M07</span></div>
-  <div class="assunto"><span class="ico a-T">💻</span>Tecnologia</div>
-  <div class="body"><p class="pedido">“Explique para a turma como evitar golpes na internet.”</p>
-  <p class="pense">Pense: quem vai ler? Que formato ajuda essa pessoa?</p></div>
-  <div class="monte">Para bater: <b>contexto e persona com <span class="a-T">💻</span> + 1 formato</b></div>
-  <div class="estrelas"><span><b>★★★</b> formato que ajuda</span><span><b>★★</b> outro formato</span></div>
-  <div class="ft">Fica aberta no meio da mesa. Qualquer lado pode fazer.</div></div><div class="card t-missao"><div class="hd"><span>MISSÃO</span><span class="code">M08</span></div>
-  <div class="assunto"><span class="ico a-T">💻</span>Tecnologia</div>
-  <div class="body"><p class="pedido">“Mostre como a internet mudou desde que seus pais eram crianças.”</p>
-  <p class="pense">Pense: quem vai ler? Que formato ajuda essa pessoa?</p></div>
-  <div class="monte">Para bater: <b>contexto e persona com <span class="a-T">💻</span> + 1 formato</b></div>
-  <div class="estrelas"><span><b>★★★</b> formato que ajuda</span><span><b>★★</b> outro formato</span></div>
-  <div class="ft">Fica aberta no meio da mesa. Qualquer lado pode fazer.</div></div><div class="card t-missao"><div class="hd"><span>MISSÃO</span><span class="code">M09</span></div>
-  <div class="assunto"><span class="ico a-A">🌳</span>Meio ambiente</div>
-  <div class="body"><p class="pedido">“Crie um plano para a escola separar o lixo.”</p>
-  <p class="pense">Pense: quem vai ler? Que formato ajuda essa pessoa?</p></div>
-  <div class="monte">Para bater: <b>contexto e persona com <span class="a-A">🌳</span> + 1 formato</b></div>
-  <div class="estrelas"><span><b>★★★</b> formato que ajuda</span><span><b>★★</b> outro formato</span></div>
-  <div class="ft">Fica aberta no meio da mesa. Qualquer lado pode fazer.</div></div></section><section class="page grid"><div class="card t-missao"><div class="hd"><span>MISSÃO</span><span class="code">M10</span></div>
-  <div class="assunto"><span class="ico a-A">🌳</span>Meio ambiente</div>
-  <div class="body"><p class="pedido">“Explique o aquecimento global para os alunos da escola.”</p>
-  <p class="pense">Pense: quem vai ler? Que formato ajuda essa pessoa?</p></div>
-  <div class="monte">Para bater: <b>contexto e persona com <span class="a-A">🌳</span> + 1 formato</b></div>
-  <div class="estrelas"><span><b>★★★</b> formato que ajuda</span><span><b>★★</b> outro formato</span></div>
-  <div class="ft">Fica aberta no meio da mesa. Qualquer lado pode fazer.</div></div><div class="card t-contexto"><div class="hd"><span>CONTEXTO</span><span class="code">C01</span></div>
-  <div class="assunto"><span class="ico a-S">✚</span>Saúde</div>
-  <div class="body"><p class="nome">Dengue em Recife</p><p class="txt">“Moro em Recife. No verão, a cidade tem muitos casos de dengue.”</p></div>
-  <div class="ft">A situação: de onde você fala e o que está acontecendo.</div></div><div class="card t-contexto"><div class="hd"><span>CONTEXTO</span><span class="code">C02</span></div>
-  <div class="assunto"><span class="ico a-S">✚</span>Saúde</div>
-  <div class="body"><p class="nome">Gripe em Nova York</p><p class="txt">“Sou enfermeira em Nova York e atendo muitas crianças com gripe no inverno.”</p></div>
-  <div class="ft">A situação: de onde você fala e o que está acontecendo.</div></div><div class="card t-contexto"><div class="hd"><span>CONTEXTO</span><span class="code">C03</span></div>
-  <div class="assunto"><span class="ico a-S">✚</span>Saúde</div>
-  <div class="body"><p class="nome">Lanche em Miami</p><p class="txt">“Na minha escola em Miami, muitos alunos comem hambúrguer e batata frita todo dia.”</p></div>
-  <div class="ft">A situação: de onde você fala e o que está acontecendo.</div></div><div class="card t-contexto"><div class="hd"><span>CONTEXTO</span><span class="code">C04</span></div>
-  <div class="assunto"><span class="ico a-S">✚</span>Saúde</div>
-  <div class="body"><p class="nome">Mãos limpas em Cantão</p><p class="txt">“Em Cantão, a escola ensina os alunos a lavar as mãos do jeito certo.”</p></div>
-  <div class="ft">A situação: de onde você fala e o que está acontecendo.</div></div><div class="card t-contexto"><div class="hd"><span>CONTEXTO</span><span class="code">C05</span></div>
-  <div class="assunto"><span class="ico a-S">✚</span>Saúde</div>
-  <div class="body"><p class="nome">Merenda em Roma</p><p class="txt">“Sou nutricionista em Roma e monto o cardápio da merenda.”</p></div>
-  <div class="ft">A situação: de onde você fala e o que está acontecendo.</div></div><div class="card t-contexto"><div class="hd"><span>CONTEXTO</span><span class="code">C06</span></div>
-  <div class="assunto"><span class="ico a-E">⚽</span>Esporte</div>
-  <div class="body"><p class="nome">Basquete em Chicago</p><p class="txt">“Sou técnico de basquete numa escola de Chicago e os alunos se cansam rápido.”</p></div>
-  <div class="ft">A situação: de onde você fala e o que está acontecendo.</div></div><div class="card t-contexto"><div class="hd"><span>CONTEXTO</span><span class="code">C07</span></div>
-  <div class="assunto"><span class="ico a-E">⚽</span>Esporte</div>
-  <div class="body"><p class="nome">Futsal da escola</p><p class="txt">“Treino o time de futsal da escola, com meninos e meninas.”</p></div>
-  <div class="ft">A situação: de onde você fala e o que está acontecendo.</div></div><div class="card t-contexto"><div class="hd"><span>CONTEXTO</span><span class="code">C08</span></div>
-  <div class="assunto"><span class="ico a-E">⚽</span>Esporte</div>
-  <div class="body"><p class="nome">Ginástica em Xangai</p><p class="txt">“Em Xangai, muitos alunos fazem ginástica no parque antes da aula.”</p></div>
-  <div class="ft">A situação: de onde você fala e o que está acontecendo.</div></div></section><section class="page grid"><div class="card t-contexto"><div class="hd"><span>CONTEXTO</span><span class="code">C09</span></div>
-  <div class="assunto"><span class="ico a-E">⚽</span>Esporte</div>
-  <div class="body"><p class="nome">Críquete na Índia</p><p class="txt">“Na minha cidade, na Índia, o críquete é o esporte mais jogado pelas crianças.”</p></div>
-  <div class="ft">A situação: de onde você fala e o que está acontecendo.</div></div><div class="card t-contexto"><div class="hd"><span>CONTEXTO</span><span class="code">C10</span></div>
-  <div class="assunto"><span class="ico a-E">⚽</span>Esporte</div>
-  <div class="body"><p class="nome">Corrida em Boston</p><p class="txt">“Em Boston, a corrida da escola é no inverno, com muito frio.”</p></div>
-  <div class="ft">A situação: de onde você fala e o que está acontecendo.</div></div><div class="card t-contexto"><div class="hd"><span>CONTEXTO</span><span class="code">C11</span></div>
-  <div class="assunto"><span class="ico a-T">💻</span>Tecnologia</div>
-  <div class="body"><p class="nome">Informática em Manaus</p><p class="txt">“Dou aula de informática numa escola de Manaus com poucos computadores.”</p></div>
-  <div class="ft">A situação: de onde você fala e o que está acontecendo.</div></div><div class="card t-contexto"><div class="hd"><span>CONTEXTO</span><span class="code">C12</span></div>
-  <div class="assunto"><span class="ico a-T">💻</span>Tecnologia</div>
-  <div class="body"><p class="nome">Tecnologia em Bangalore</p><p class="txt">“Em Bangalore, muitas pessoas mais velhas estão aprendendo a usar tecnologia.”</p></div>
-  <div class="ft">A situação: de onde você fala e o que está acontecendo.</div></div><div class="card t-contexto"><div class="hd"><span>CONTEXTO</span><span class="code">C13</span></div>
-  <div class="assunto"><span class="ico a-T">💻</span>Tecnologia</div>
-  <div class="body"><p class="nome">Pagamento em Hangzhou</p><p class="txt">“Em Hangzhou, quase todo mundo paga as compras com o celular.”</p></div>
-  <div class="ft">A situação: de onde você fala e o que está acontecendo.</div></div><div class="card t-contexto"><div class="hd"><span>CONTEXTO</span><span class="code">C14</span></div>
-  <div class="assunto"><span class="ico a-T">💻</span>Tecnologia</div>
-  <div class="body"><p class="nome">Escola digital na Estônia</p><p class="txt">“Na Estônia, as escolas usam o computador em quase todas as aulas.”</p></div>
-  <div class="ft">A situação: de onde você fala e o que está acontecendo.</div></div><div class="card t-contexto"><div class="hd"><span>CONTEXTO</span><span class="code">C15</span></div>
-  <div class="assunto"><span class="ico a-T">💻</span>Tecnologia</div>
-  <div class="body"><p class="nome">Vale do Silício</p><p class="txt">“No Vale do Silício, as empresas criam aplicativos usados no mundo todo.”</p></div>
-  <div class="ft">A situação: de onde você fala e o que está acontecendo.</div></div><div class="card t-contexto"><div class="hd"><span>CONTEXTO</span><span class="code">C16</span></div>
-  <div class="assunto"><span class="ico a-A">🌳</span>Meio ambiente</div>
-  <div class="body"><p class="nome">Queimadas na Amazônia</p><p class="txt">“Moro perto da Amazônia e vejo a fumaça das queimadas.”</p></div>
-  <div class="ft">A situação: de onde você fala e o que está acontecendo.</div></div><div class="card t-contexto"><div class="hd"><span>CONTEXTO</span><span class="code">C17</span></div>
-  <div class="assunto"><span class="ico a-A">🌳</span>Meio ambiente</div>
-  <div class="body"><p class="nome">Incêndios na Califórnia</p><p class="txt">“Na Califórnia, os verões estão mais secos e há incêndios nas florestas.”</p></div>
-  <div class="ft">A situação: de onde você fala e o que está acontecendo.</div></div></section><section class="page grid"><div class="card t-contexto"><div class="hd"><span>CONTEXTO</span><span class="code">C18</span></div>
-  <div class="assunto"><span class="ico a-A">🌳</span>Meio ambiente</div>
-  <div class="body"><p class="nome">Troca verde em Curitiba</p><p class="txt">“Em Curitiba, a prefeitura troca lixo reciclável por comida.”</p></div>
-  <div class="ft">A situação: de onde você fala e o que está acontecendo.</div></div><div class="card t-contexto"><div class="hd"><span>CONTEXTO</span><span class="code">C19</span></div>
-  <div class="assunto"><span class="ico a-A">🌳</span>Meio ambiente</div>
-  <div class="body"><p class="nome">Energia solar em Copenhague</p><p class="txt">“Em Copenhague, a escola tem painéis solares no telhado.”</p></div>
-  <div class="ft">A situação: de onde você fala e o que está acontecendo.</div></div><div class="card t-contexto"><div class="hd"><span>CONTEXTO</span><span class="code">C20</span></div>
-  <div class="assunto"><span class="ico a-A">🌳</span>Meio ambiente</div>
-  <div class="body"><p class="nome">Lixo na calçada</p><p class="txt">“Um morador do bairro reclama do lixo na calçada.”</p></div>
-  <div class="ft">A situação: de onde você fala e o que está acontecendo.</div></div><div class="card t-persona"><div class="hd"><span>PERSONA</span><span class="code">P01</span></div>
-  <div class="assunto"><span class="ico a-S">✚</span>Saúde</div>
-  <div class="body center"><p class="big">Médica de posto de saúde</p><p class="efeito">No prompt:<br>“Você é médica de posto de saúde.”</p></div>
+.conversao { font-size: 8.8pt; line-height: 1.7; display: flex; flex-wrap: wrap; gap: 0 3mm; }
+.trio-gab { border-top: 0.3mm solid #d6dbe6; padding-top: 1.2mm; }
+</style></head><body><section class="page grid"><p class="rotulo-folha"><b>Folha 1 de 7 · missões · frente</b> · corte nas linhas tracejadas</p><div class="card t-missao"><div class="hd"><span>MISSÃO</span><span class="code">M01</span></div>
+  <div class="assuntos-missao"><span class="chip-assunto"><span class="ico a-S">✚</span>Saúde</span><span class="chip-assunto"><span class="ico a-E">⚽</span>Esporte</span><span class="chip-assunto"><span class="ico a-T">💻</span>Tecnologia</span></div>
+  <div class="body"><p class="pedido">“Crie um aviso no celular para o time de futsal beber água no treino.”</p></div>
+  <p class="pense">Pense: quem entende destes 3 assuntos? Que situação junta os 3? Que formato ajuda quem vai ler?</p>
+  <div class="ft">Fica no meio da mesa durante a rodada. Vale para todos os lados.</div></div><div class="card t-missao"><div class="hd"><span>MISSÃO</span><span class="code">M02</span></div>
+  <div class="assuntos-missao"><span class="chip-assunto"><span class="ico a-S">✚</span>Saúde</span><span class="chip-assunto"><span class="ico a-E">⚽</span>Esporte</span><span class="chip-assunto"><span class="ico a-T">💻</span>Tecnologia</span></div>
+  <div class="body"><p class="pedido">“Ensine os avós a usar um aplicativo que conta os passos da caminhada.”</p></div>
+  <p class="pense">Pense: quem entende destes 3 assuntos? Que situação junta os 3? Que formato ajuda quem vai ler?</p>
+  <div class="ft">Fica no meio da mesa durante a rodada. Vale para todos os lados.</div></div><div class="card t-missao"><div class="hd"><span>MISSÃO</span><span class="code">M03</span></div>
+  <div class="assuntos-missao"><span class="chip-assunto"><span class="ico a-S">✚</span>Saúde</span><span class="chip-assunto"><span class="ico a-E">⚽</span>Esporte</span><span class="chip-assunto"><span class="ico a-T">💻</span>Tecnologia</span></div>
+  <div class="body"><p class="pedido">“Explique como um relógio que mede o coração ajuda um atleta a treinar sem se machucar.”</p></div>
+  <p class="pense">Pense: quem entende destes 3 assuntos? Que situação junta os 3? Que formato ajuda quem vai ler?</p>
+  <div class="ft">Fica no meio da mesa durante a rodada. Vale para todos os lados.</div></div><div class="card t-missao"><div class="hd"><span>MISSÃO</span><span class="code">M04</span></div>
+  <div class="assuntos-missao"><span class="chip-assunto"><span class="ico a-S">✚</span>Saúde</span><span class="chip-assunto"><span class="ico a-E">⚽</span>Esporte</span><span class="chip-assunto"><span class="ico a-A">🌳</span>Meio ambiente</span></div>
+  <div class="body"><p class="pedido">“Planeje uma corrida no parque num dia de calor, sem ninguém passar mal e sem deixar lixo.”</p></div>
+  <p class="pense">Pense: quem entende destes 3 assuntos? Que situação junta os 3? Que formato ajuda quem vai ler?</p>
+  <div class="ft">Fica no meio da mesa durante a rodada. Vale para todos os lados.</div></div><div class="card t-missao"><div class="hd"><span>MISSÃO</span><span class="code">M05</span></div>
+  <div class="assuntos-missao"><span class="chip-assunto"><span class="ico a-S">✚</span>Saúde</span><span class="chip-assunto"><span class="ico a-E">⚽</span>Esporte</span><span class="chip-assunto"><span class="ico a-A">🌳</span>Meio ambiente</span></div>
+  <div class="body"><p class="pedido">“Monte o cardápio do time da escola sem desperdiçar comida.”</p></div>
+  <p class="pense">Pense: quem entende destes 3 assuntos? Que situação junta os 3? Que formato ajuda quem vai ler?</p>
+  <div class="ft">Fica no meio da mesa durante a rodada. Vale para todos os lados.</div></div><div class="card t-missao"><div class="hd"><span>MISSÃO</span><span class="code">M06</span></div>
+  <div class="assuntos-missao"><span class="chip-assunto"><span class="ico a-S">✚</span>Saúde</span><span class="chip-assunto"><span class="ico a-T">💻</span>Tecnologia</span><span class="chip-assunto"><span class="ico a-A">🌳</span>Meio ambiente</span></div>
+  <div class="body"><p class="pedido">“Crie uma mensagem de celular para as famílias tirarem a água parada e fugirem da dengue.”</p></div>
+  <p class="pense">Pense: quem entende destes 3 assuntos? Que situação junta os 3? Que formato ajuda quem vai ler?</p>
+  <div class="ft">Fica no meio da mesa durante a rodada. Vale para todos os lados.</div></div><div class="card t-missao"><div class="hd"><span>MISSÃO</span><span class="code">M07</span></div>
+  <div class="assuntos-missao"><span class="chip-assunto"><span class="ico a-S">✚</span>Saúde</span><span class="chip-assunto"><span class="ico a-T">💻</span>Tecnologia</span><span class="chip-assunto"><span class="ico a-A">🌳</span>Meio ambiente</span></div>
+  <div class="body"><p class="pedido">“Explique como o celular avisa as pessoas antes de uma enchente, para ninguém se ferir.”</p></div>
+  <p class="pense">Pense: quem entende destes 3 assuntos? Que situação junta os 3? Que formato ajuda quem vai ler?</p>
+  <div class="ft">Fica no meio da mesa durante a rodada. Vale para todos os lados.</div></div><div class="card t-missao"><div class="hd"><span>MISSÃO</span><span class="code">M08</span></div>
+  <div class="assuntos-missao"><span class="chip-assunto"><span class="ico a-E">⚽</span>Esporte</span><span class="chip-assunto"><span class="ico a-T">💻</span>Tecnologia</span><span class="chip-assunto"><span class="ico a-A">🌳</span>Meio ambiente</span></div>
+  <div class="body"><p class="pedido">“Mostre como um estádio pode usar a tecnologia para gastar menos água e energia.”</p></div>
+  <p class="pense">Pense: quem entende destes 3 assuntos? Que situação junta os 3? Que formato ajuda quem vai ler?</p>
+  <div class="ft">Fica no meio da mesa durante a rodada. Vale para todos os lados.</div></div><div class="card t-missao"><div class="hd"><span>MISSÃO</span><span class="code">M09</span></div>
+  <div class="assuntos-missao"><span class="chip-assunto"><span class="ico a-E">⚽</span>Esporte</span><span class="chip-assunto"><span class="ico a-T">💻</span>Tecnologia</span><span class="chip-assunto"><span class="ico a-A">🌳</span>Meio ambiente</span></div>
+  <div class="body"><p class="pedido">“Organize uma gincana de reciclagem com o placar num telão da escola.”</p></div>
+  <p class="pense">Pense: quem entende destes 3 assuntos? Que situação junta os 3? Que formato ajuda quem vai ler?</p>
+  <div class="ft">Fica no meio da mesa durante a rodada. Vale para todos os lados.</div></div></section>
+<section class="page grid"><p class="rotulo-folha"><b>Folha 1 de 7 · missões · verso</b> · cole atrás da frente desta folha antes de cortar (ou imprima dos dois lados, virando na borda longa)</p><div class="card verso-carta t-missao"><div class="verso-miolo">
+    <svg class="verso-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><circle cx="12" cy="12" r="5.5"/><circle cx="12" cy="12" r="1.6" fill="currentColor"/></svg>
+    <p class="verso-nome">MISSÃO</p><p class="verso-sub">o pedido da rodada</p><p class="verso-jogo">Palavra Mágica</p>
+  </div></div><div class="card verso-carta t-missao"><div class="verso-miolo">
+    <svg class="verso-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><circle cx="12" cy="12" r="5.5"/><circle cx="12" cy="12" r="1.6" fill="currentColor"/></svg>
+    <p class="verso-nome">MISSÃO</p><p class="verso-sub">o pedido da rodada</p><p class="verso-jogo">Palavra Mágica</p>
+  </div></div><div class="card verso-carta t-missao"><div class="verso-miolo">
+    <svg class="verso-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><circle cx="12" cy="12" r="5.5"/><circle cx="12" cy="12" r="1.6" fill="currentColor"/></svg>
+    <p class="verso-nome">MISSÃO</p><p class="verso-sub">o pedido da rodada</p><p class="verso-jogo">Palavra Mágica</p>
+  </div></div><div class="card verso-carta t-missao"><div class="verso-miolo">
+    <svg class="verso-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><circle cx="12" cy="12" r="5.5"/><circle cx="12" cy="12" r="1.6" fill="currentColor"/></svg>
+    <p class="verso-nome">MISSÃO</p><p class="verso-sub">o pedido da rodada</p><p class="verso-jogo">Palavra Mágica</p>
+  </div></div><div class="card verso-carta t-missao"><div class="verso-miolo">
+    <svg class="verso-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><circle cx="12" cy="12" r="5.5"/><circle cx="12" cy="12" r="1.6" fill="currentColor"/></svg>
+    <p class="verso-nome">MISSÃO</p><p class="verso-sub">o pedido da rodada</p><p class="verso-jogo">Palavra Mágica</p>
+  </div></div><div class="card verso-carta t-missao"><div class="verso-miolo">
+    <svg class="verso-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><circle cx="12" cy="12" r="5.5"/><circle cx="12" cy="12" r="1.6" fill="currentColor"/></svg>
+    <p class="verso-nome">MISSÃO</p><p class="verso-sub">o pedido da rodada</p><p class="verso-jogo">Palavra Mágica</p>
+  </div></div><div class="card verso-carta t-missao"><div class="verso-miolo">
+    <svg class="verso-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><circle cx="12" cy="12" r="5.5"/><circle cx="12" cy="12" r="1.6" fill="currentColor"/></svg>
+    <p class="verso-nome">MISSÃO</p><p class="verso-sub">o pedido da rodada</p><p class="verso-jogo">Palavra Mágica</p>
+  </div></div><div class="card verso-carta t-missao"><div class="verso-miolo">
+    <svg class="verso-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><circle cx="12" cy="12" r="5.5"/><circle cx="12" cy="12" r="1.6" fill="currentColor"/></svg>
+    <p class="verso-nome">MISSÃO</p><p class="verso-sub">o pedido da rodada</p><p class="verso-jogo">Palavra Mágica</p>
+  </div></div><div class="card verso-carta t-missao"><div class="verso-miolo">
+    <svg class="verso-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><circle cx="12" cy="12" r="5.5"/><circle cx="12" cy="12" r="1.6" fill="currentColor"/></svg>
+    <p class="verso-nome">MISSÃO</p><p class="verso-sub">o pedido da rodada</p><p class="verso-jogo">Palavra Mágica</p>
+  </div></div></section>
+<section class="page grid"><p class="rotulo-folha"><b>Folha 2 de 7 · contextos · frente</b> · corte nas linhas tracejadas</p><div class="card t-contexto"><div class="hd"><span>CONTEXTO</span><span class="code">C01</span></div>
+  <div class="body center"><svg class="emblema" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.6"/></svg><p class="big">Relógio no campeonato</p><p class="txt">“No campeonato de corrida da escola, cada aluno usa um relógio que mede os batimentos do coração.”</p></div>
+  <div class="ft">A situação: onde é e o que está acontecendo.</div></div><div class="card t-contexto"><div class="hd"><span>CONTEXTO</span><span class="code">C02</span></div>
+  <div class="body center"><svg class="emblema" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.6"/></svg><p class="big">Vôlei com dor nas costas</p><p class="txt">“O time de vôlei da escola tem muitos jogadores com dor nas costas.”</p></div>
+  <div class="ft">A situação: onde é e o que está acontecendo.</div></div><div class="card t-contexto"><div class="hd"><span>CONTEXTO</span><span class="code">C03</span></div>
+  <div class="body center"><svg class="emblema" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.6"/></svg><p class="big">Campo perto do rio</p><p class="txt">“O time do bairro treina num campo perto do rio, que vive cheio de lixo.”</p></div>
+  <div class="ft">A situação: onde é e o que está acontecendo.</div></div><div class="card t-contexto"><div class="hd"><span>CONTEXTO</span><span class="code">C04</span></div>
+  <div class="body center"><svg class="emblema" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.6"/></svg><p class="big">Feira de ciências</p><p class="txt">“A escola vai fazer uma feira de ciências aberta para as famílias do bairro.”</p></div>
+  <div class="ft">A situação: onde é e o que está acontecendo.</div></div><div class="card t-contexto"><div class="hd"><span>CONTEXTO</span><span class="code">C05</span></div>
+  <div class="body center"><svg class="emblema" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.6"/></svg><p class="big">Dengue depois da chuva</p><p class="txt">“Em Recife, choveu muito, e a prefeitura quer usar o celular para avisar sobre a dengue.”</p></div>
+  <div class="ft">A situação: onde é e o que está acontecendo.</div></div><div class="card t-contexto"><div class="hd"><span>CONTEXTO</span><span class="code">C06</span></div>
+  <div class="body center"><svg class="emblema" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.6"/></svg><p class="big">Gripe em Nova York</p><p class="txt">“Num hospital de Nova York, muitas crianças chegam com gripe no inverno.”</p></div>
+  <div class="ft">A situação: onde é e o que está acontecendo.</div></div><div class="card t-contexto"><div class="hd"><span>CONTEXTO</span><span class="code">C07</span></div>
+  <div class="body center"><svg class="emblema" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.6"/></svg><p class="big">Gincana de reciclagem em Seul</p><p class="txt">“Em Seul, as turmas competem para ver quem recicla mais, e o placar aparece num telão.”</p></div>
+  <div class="ft">A situação: onde é e o que está acontecendo.</div></div><div class="card t-contexto"><div class="hd"><span>CONTEXTO</span><span class="code">C08</span></div>
+  <div class="body center"><svg class="emblema" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.6"/></svg><p class="big">Celulares velhos na gaveta</p><p class="txt">“Lá em casa há cinco celulares velhos numa gaveta, e ninguém sabe onde jogar.”</p></div>
+  <div class="ft">A situação: onde é e o que está acontecendo.</div></div><div class="card t-contexto"><div class="hd"><span>CONTEXTO</span><span class="code">C09</span></div>
+  <div class="body center"><svg class="emblema" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.6"/></svg><p class="big">Calor na corrida do Rio</p><p class="txt">“No Rio de Janeiro, a corrida da escola vai ser no parque, num dia de calor forte.”</p></div>
+  <div class="ft">A situação: onde é e o que está acontecendo.</div></div></section>
+<section class="page grid"><p class="rotulo-folha"><b>Folha 2 de 7 · contextos · verso</b> · cole atrás da frente desta folha antes de cortar (ou imprima dos dois lados, virando na borda longa)</p><div class="card verso-carta t-contexto"><div class="verso-miolo">
+    <svg class="verso-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.6"/></svg>
+    <p class="verso-nome">CONTEXTO</p><p class="verso-sub">a situação</p><p class="verso-jogo">Palavra Mágica</p>
+  </div></div><div class="card verso-carta t-contexto"><div class="verso-miolo">
+    <svg class="verso-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.6"/></svg>
+    <p class="verso-nome">CONTEXTO</p><p class="verso-sub">a situação</p><p class="verso-jogo">Palavra Mágica</p>
+  </div></div><div class="card verso-carta t-contexto"><div class="verso-miolo">
+    <svg class="verso-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.6"/></svg>
+    <p class="verso-nome">CONTEXTO</p><p class="verso-sub">a situação</p><p class="verso-jogo">Palavra Mágica</p>
+  </div></div><div class="card verso-carta t-contexto"><div class="verso-miolo">
+    <svg class="verso-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.6"/></svg>
+    <p class="verso-nome">CONTEXTO</p><p class="verso-sub">a situação</p><p class="verso-jogo">Palavra Mágica</p>
+  </div></div><div class="card verso-carta t-contexto"><div class="verso-miolo">
+    <svg class="verso-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.6"/></svg>
+    <p class="verso-nome">CONTEXTO</p><p class="verso-sub">a situação</p><p class="verso-jogo">Palavra Mágica</p>
+  </div></div><div class="card verso-carta t-contexto"><div class="verso-miolo">
+    <svg class="verso-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.6"/></svg>
+    <p class="verso-nome">CONTEXTO</p><p class="verso-sub">a situação</p><p class="verso-jogo">Palavra Mágica</p>
+  </div></div><div class="card verso-carta t-contexto"><div class="verso-miolo">
+    <svg class="verso-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.6"/></svg>
+    <p class="verso-nome">CONTEXTO</p><p class="verso-sub">a situação</p><p class="verso-jogo">Palavra Mágica</p>
+  </div></div><div class="card verso-carta t-contexto"><div class="verso-miolo">
+    <svg class="verso-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.6"/></svg>
+    <p class="verso-nome">CONTEXTO</p><p class="verso-sub">a situação</p><p class="verso-jogo">Palavra Mágica</p>
+  </div></div><div class="card verso-carta t-contexto"><div class="verso-miolo">
+    <svg class="verso-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.6"/></svg>
+    <p class="verso-nome">CONTEXTO</p><p class="verso-sub">a situação</p><p class="verso-jogo">Palavra Mágica</p>
+  </div></div></section>
+<section class="page grid"><p class="rotulo-folha"><b>Folha 3 de 7 · contextos · frente</b> · corte nas linhas tracejadas</p><div class="card t-contexto"><div class="hd"><span>CONTEXTO</span><span class="code">C10</span></div>
+  <div class="body center"><svg class="emblema" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.6"/></svg><p class="big">Fumaça em Manaus</p><p class="txt">“Em Manaus, a fumaça das queimadas está fazendo muitas crianças tossirem.”</p></div>
+  <div class="ft">A situação: onde é e o que está acontecendo.</div></div><div class="card t-contexto"><div class="hd"><span>CONTEXTO</span><span class="code">C11</span></div>
+  <div class="body center"><svg class="emblema" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.6"/></svg><p class="big">Avós que caminham em Tóquio</p><p class="txt">“Em Tóquio, muitos avós usam um aplicativo que conta os passos para caminhar todo dia.”</p></div>
+  <div class="ft">A situação: onde é e o que está acontecendo.</div></div><div class="card t-contexto"><div class="hd"><span>CONTEXTO</span><span class="code">C12</span></div>
+  <div class="body center"><svg class="emblema" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.6"/></svg><p class="big">Sábado na escola</p><p class="txt">“No sábado, a escola abre para as famílias, com jogos na quadra, horta e lanche.”</p></div>
+  <div class="ft">A situação: onde é e o que está acontecendo.</div></div><div class="card t-contexto"><div class="hd"><span>CONTEXTO</span><span class="code">C13</span></div>
+  <div class="body center"><svg class="emblema" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.6"/></svg><p class="big">Estádio verde em Copenhague</p><p class="txt">“Em Copenhague, o estádio novo tem painéis solares e guarda a água da chuva para molhar o gramado.”</p></div>
+  <div class="ft">A situação: onde é e o que está acontecendo.</div></div><div class="card t-contexto"><div class="hd"><span>CONTEXTO</span><span class="code">C14</span></div>
+  <div class="body center"><svg class="emblema" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.6"/></svg><p class="big">Árbitro de vídeo</p><p class="txt">“No campeonato da cidade, os jogos têm árbitro de vídeo e placar eletrônico.”</p></div>
+  <div class="ft">A situação: onde é e o que está acontecendo.</div></div><div class="card t-contexto"><div class="hd"><span>CONTEXTO</span><span class="code">C15</span></div>
+  <div class="body center"><svg class="emblema" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.6"/></svg><p class="big">Posto de saúde com sol</p><p class="txt">“Em Fortaleza, o posto de saúde ganhou painéis solares no telhado.”</p></div>
+  <div class="ft">A situação: onde é e o que está acontecendo.</div></div><div class="card t-contexto"><div class="hd"><span>CONTEXTO</span><span class="code">C16</span></div>
+  <div class="body center"><svg class="emblema" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.6"/></svg><p class="big">Vale do Silício</p><p class="txt">“No Vale do Silício, as empresas criam aplicativos usados no mundo todo.”</p></div>
+  <div class="ft">A situação: onde é e o que está acontecendo.</div></div><div class="vaga"></div><div class="vaga"></div></section>
+<section class="page grid"><p class="rotulo-folha"><b>Folha 3 de 7 · contextos · verso</b> · cole atrás da frente desta folha antes de cortar (ou imprima dos dois lados, virando na borda longa)</p><div class="card verso-carta t-contexto"><div class="verso-miolo">
+    <svg class="verso-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.6"/></svg>
+    <p class="verso-nome">CONTEXTO</p><p class="verso-sub">a situação</p><p class="verso-jogo">Palavra Mágica</p>
+  </div></div><div class="card verso-carta t-contexto"><div class="verso-miolo">
+    <svg class="verso-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.6"/></svg>
+    <p class="verso-nome">CONTEXTO</p><p class="verso-sub">a situação</p><p class="verso-jogo">Palavra Mágica</p>
+  </div></div><div class="card verso-carta t-contexto"><div class="verso-miolo">
+    <svg class="verso-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.6"/></svg>
+    <p class="verso-nome">CONTEXTO</p><p class="verso-sub">a situação</p><p class="verso-jogo">Palavra Mágica</p>
+  </div></div><div class="card verso-carta t-contexto"><div class="verso-miolo">
+    <svg class="verso-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.6"/></svg>
+    <p class="verso-nome">CONTEXTO</p><p class="verso-sub">a situação</p><p class="verso-jogo">Palavra Mágica</p>
+  </div></div><div class="card verso-carta t-contexto"><div class="verso-miolo">
+    <svg class="verso-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.6"/></svg>
+    <p class="verso-nome">CONTEXTO</p><p class="verso-sub">a situação</p><p class="verso-jogo">Palavra Mágica</p>
+  </div></div><div class="card verso-carta t-contexto"><div class="verso-miolo">
+    <svg class="verso-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.6"/></svg>
+    <p class="verso-nome">CONTEXTO</p><p class="verso-sub">a situação</p><p class="verso-jogo">Palavra Mágica</p>
+  </div></div><div class="card verso-carta t-contexto"><div class="verso-miolo">
+    <svg class="verso-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.6"/></svg>
+    <p class="verso-nome">CONTEXTO</p><p class="verso-sub">a situação</p><p class="verso-jogo">Palavra Mágica</p>
+  </div></div><div class="card verso-carta t-contexto"><div class="verso-miolo">
+    <svg class="verso-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.6"/></svg>
+    <p class="verso-nome">CONTEXTO</p><p class="verso-sub">a situação</p><p class="verso-jogo">Palavra Mágica</p>
+  </div></div><div class="card verso-carta t-contexto"><div class="verso-miolo">
+    <svg class="verso-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.6"/></svg>
+    <p class="verso-nome">CONTEXTO</p><p class="verso-sub">a situação</p><p class="verso-jogo">Palavra Mágica</p>
+  </div></div></section>
+<section class="page grid"><p class="rotulo-folha"><b>Folha 4 de 7 · personas · frente</b> · corte nas linhas tracejadas</p><div class="card t-persona"><div class="hd"><span>PERSONA</span><span class="code">P01</span></div>
+  <div class="body center"><svg class="emblema" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg><p class="big">Criadora de aplicativos de exercício</p><p class="faz">Cria aplicativos que contam os passos e montam treinos.</p><p class="efeito">No prompt:<br>“Você é criadora de aplicativos de exercício.”</p></div>
   <div class="ft">Quem a IA vai ser ao responder.</div></div><div class="card t-persona"><div class="hd"><span>PERSONA</span><span class="code">P02</span></div>
-  <div class="assunto"><span class="ico a-S">✚</span>Saúde</div>
-  <div class="body center"><p class="big">Nutricionista</p><p class="efeito">No prompt:<br>“Você é nutricionista.”</p></div>
+  <div class="body center"><svg class="emblema" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg><p class="big">Fisioterapeuta de um time</p><p class="faz">Cuida do corpo dos jogadores e ajuda quem se machucou a voltar a jogar.</p><p class="efeito">No prompt:<br>“Você é fisioterapeuta de um time.”</p></div>
   <div class="ft">Quem a IA vai ser ao responder.</div></div><div class="card t-persona"><div class="hd"><span>PERSONA</span><span class="code">P03</span></div>
-  <div class="assunto"><span class="ico a-E">⚽</span>Esporte</div>
-  <div class="body center"><p class="big">Técnica de futebol</p><p class="efeito">No prompt:<br>“Você é técnica de futebol.”</p></div>
+  <div class="body center"><svg class="emblema" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg><p class="big">Professor de Educação Física</p><p class="faz">Dá aula no pátio e no parque, ensina a se aquecer e a se proteger do sol.</p><p class="efeito">No prompt:<br>“Você é professor de Educação Física.”</p></div>
   <div class="ft">Quem a IA vai ser ao responder.</div></div><div class="card t-persona"><div class="hd"><span>PERSONA</span><span class="code">P04</span></div>
-  <div class="assunto"><span class="ico a-E">⚽</span>Esporte</div>
-  <div class="body center"><p class="big">Professor de Educação Física</p><p class="efeito">No prompt:<br>“Você é professor de Educação Física.”</p></div>
+  <div class="body center"><svg class="emblema" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg><p class="big">Jornalista de ciência</p><p class="faz">Escreve notícias sobre descobertas da ciência para todo mundo entender.</p><p class="efeito">No prompt:<br>“Você é jornalista de ciência.”</p></div>
   <div class="ft">Quem a IA vai ser ao responder.</div></div><div class="card t-persona"><div class="hd"><span>PERSONA</span><span class="code">P05</span></div>
-  <div class="assunto"><span class="ico a-T">💻</span>Tecnologia</div>
-  <div class="body center"><p class="big">Engenheiro de computação</p><p class="efeito">No prompt:<br>“Você é engenheiro de computação.”</p></div>
+  <div class="body center"><svg class="emblema" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg><p class="big">Cientista que mapeia a dengue</p><p class="faz">Usa computadores e imagens de satélite para descobrir onde a dengue vai aparecer.</p><p class="efeito">No prompt:<br>“Você é uma cientista que mapeia a dengue.”</p></div>
   <div class="ft">Quem a IA vai ser ao responder.</div></div><div class="card t-persona"><div class="hd"><span>PERSONA</span><span class="code">P06</span></div>
-  <div class="assunto"><span class="ico a-T">💻</span>Tecnologia</div>
-  <div class="body center"><p class="big">Especialista em segurança na internet</p><p class="efeito">No prompt:<br>“Você é especialista em segurança na internet.”</p></div>
-  <div class="ft">Quem a IA vai ser ao responder.</div></div></section><section class="page grid"><div class="card t-persona"><div class="hd"><span>PERSONA</span><span class="code">P07</span></div>
-  <div class="assunto"><span class="ico a-A">🌳</span>Meio ambiente</div>
-  <div class="body center"><p class="big">Bióloga</p><p class="efeito">No prompt:<br>“Você é bióloga.”</p></div>
+  <div class="body center"><svg class="emblema" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg><p class="big">Médica do coração</p><p class="faz">Trabalha num grande hospital e opera o coração de quem está doente.</p><p class="efeito">No prompt:<br>“Você é médica do coração.”</p></div>
+  <div class="ft">Quem a IA vai ser ao responder.</div></div><div class="card t-persona"><div class="hd"><span>PERSONA</span><span class="code">P07</span></div>
+  <div class="body center"><svg class="emblema" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg><p class="big">Organizador de campeonatos de surfe</p><p class="faz">Escolhe o dia do campeonato pela previsão das ondas e cuida para a praia ficar limpa.</p><p class="efeito">No prompt:<br>“Você é organizador de campeonatos de surfe.”</p></div>
   <div class="ft">Quem a IA vai ser ao responder.</div></div><div class="card t-persona"><div class="hd"><span>PERSONA</span><span class="code">P08</span></div>
-  <div class="assunto"><span class="ico a-A">🌳</span>Meio ambiente</div>
-  <div class="body center"><p class="big">Engenheira ambiental</p><p class="efeito">No prompt:<br>“Você é engenheira ambiental.”</p></div>
+  <div class="body center"><svg class="emblema" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg><p class="big">Engenheira de energia solar</p><p class="faz">Instala painéis que transformam a luz do sol em energia para casas e escolas.</p><p class="efeito">No prompt:<br>“Você é engenheira de energia solar.”</p></div>
   <div class="ft">Quem a IA vai ser ao responder.</div></div><div class="card t-persona"><div class="hd"><span>PERSONA</span><span class="code">P09</span></div>
-  <div class="assunto"><span class="ico a-S">✚</span>Saúde</div>
-  <div class="body center"><p class="big">Enfermeiro</p><p class="efeito">No prompt:<br>“Você é enfermeiro.”</p></div>
-  <div class="ft">Quem a IA vai ser ao responder.</div></div><div class="card t-persona"><div class="hd"><span>PERSONA</span><span class="code">P10</span></div>
-  <div class="assunto"><span class="ico a-S">✚</span>Saúde</div>
-  <div class="body center"><p class="big">Agente comunitária de saúde</p><p class="efeito">No prompt:<br>“Você é agente comunitária de saúde.”</p></div>
+  <div class="body center"><svg class="emblema" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg><p class="big">Guia de trilhas</p><p class="faz">Leva grupos para caminhar na mata, cuida de quem se cansa e ensina a proteger a natureza.</p><p class="efeito">No prompt:<br>“Você é guia de trilhas.”</p></div>
+  <div class="ft">Quem a IA vai ser ao responder.</div></div></section>
+<section class="page grid"><p class="rotulo-folha"><b>Folha 4 de 7 · personas · verso</b> · cole atrás da frente desta folha antes de cortar (ou imprima dos dois lados, virando na borda longa)</p><div class="card verso-carta t-persona"><div class="verso-miolo">
+    <svg class="verso-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+    <p class="verso-nome">PERSONA</p><p class="verso-sub">quem responde</p><p class="verso-jogo">Palavra Mágica</p>
+  </div></div><div class="card verso-carta t-persona"><div class="verso-miolo">
+    <svg class="verso-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+    <p class="verso-nome">PERSONA</p><p class="verso-sub">quem responde</p><p class="verso-jogo">Palavra Mágica</p>
+  </div></div><div class="card verso-carta t-persona"><div class="verso-miolo">
+    <svg class="verso-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+    <p class="verso-nome">PERSONA</p><p class="verso-sub">quem responde</p><p class="verso-jogo">Palavra Mágica</p>
+  </div></div><div class="card verso-carta t-persona"><div class="verso-miolo">
+    <svg class="verso-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+    <p class="verso-nome">PERSONA</p><p class="verso-sub">quem responde</p><p class="verso-jogo">Palavra Mágica</p>
+  </div></div><div class="card verso-carta t-persona"><div class="verso-miolo">
+    <svg class="verso-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+    <p class="verso-nome">PERSONA</p><p class="verso-sub">quem responde</p><p class="verso-jogo">Palavra Mágica</p>
+  </div></div><div class="card verso-carta t-persona"><div class="verso-miolo">
+    <svg class="verso-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+    <p class="verso-nome">PERSONA</p><p class="verso-sub">quem responde</p><p class="verso-jogo">Palavra Mágica</p>
+  </div></div><div class="card verso-carta t-persona"><div class="verso-miolo">
+    <svg class="verso-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+    <p class="verso-nome">PERSONA</p><p class="verso-sub">quem responde</p><p class="verso-jogo">Palavra Mágica</p>
+  </div></div><div class="card verso-carta t-persona"><div class="verso-miolo">
+    <svg class="verso-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+    <p class="verso-nome">PERSONA</p><p class="verso-sub">quem responde</p><p class="verso-jogo">Palavra Mágica</p>
+  </div></div><div class="card verso-carta t-persona"><div class="verso-miolo">
+    <svg class="verso-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+    <p class="verso-nome">PERSONA</p><p class="verso-sub">quem responde</p><p class="verso-jogo">Palavra Mágica</p>
+  </div></div></section>
+<section class="page grid"><p class="rotulo-folha"><b>Folha 5 de 7 · personas · frente</b> · corte nas linhas tracejadas</p><div class="card t-persona"><div class="hd"><span>PERSONA</span><span class="code">P10</span></div>
+  <div class="body center"><svg class="emblema" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg><p class="big">Enfermeiro na Amazônia</p><p class="faz">Cuida da saúde das famílias que vivem na floresta, longe da cidade.</p><p class="efeito">No prompt:<br>“Você é enfermeiro na Amazônia.”</p></div>
   <div class="ft">Quem a IA vai ser ao responder.</div></div><div class="card t-persona"><div class="hd"><span>PERSONA</span><span class="code">P11</span></div>
-  <div class="assunto"><span class="ico a-E">⚽</span>Esporte</div>
-  <div class="body center"><p class="big">Atleta olímpica</p><p class="efeito">No prompt:<br>“Você é atleta olímpica.”</p></div>
+  <div class="body center"><svg class="emblema" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg><p class="big">Técnica de futebol</p><p class="faz">Analisa os jogos no computador para montar o treino do time.</p><p class="efeito">No prompt:<br>“Você é técnica de futebol.”</p></div>
   <div class="ft">Quem a IA vai ser ao responder.</div></div><div class="card t-persona"><div class="hd"><span>PERSONA</span><span class="code">P12</span></div>
-  <div class="assunto"><span class="ico a-E">⚽</span>Esporte</div>
-  <div class="body center"><p class="big">Jornalista esportivo</p><p class="efeito">No prompt:<br>“Você é jornalista esportivo.”</p></div>
+  <div class="body center"><svg class="emblema" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg><p class="big">Diretor da escola</p><p class="faz">Cuida da escola inteira: das aulas, da merenda, da quadra e do lixo.</p><p class="efeito">No prompt:<br>“Você é diretor da escola.”</p></div>
   <div class="ft">Quem a IA vai ser ao responder.</div></div><div class="card t-persona"><div class="hd"><span>PERSONA</span><span class="code">P13</span></div>
-  <div class="assunto"><span class="ico a-T">💻</span>Tecnologia</div>
-  <div class="body center"><p class="big">Professora de informática</p><p class="efeito">No prompt:<br>“Você é professora de informática.”</p></div>
+  <div class="body center"><svg class="emblema" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg><p class="big">Engenheiro de estádios</p><p class="faz">Projeta estádios com placar eletrônico, luzes que gastam pouca energia e reúso da água da chuva.</p><p class="efeito">No prompt:<br>“Você é engenheiro de estádios.”</p></div>
   <div class="ft">Quem a IA vai ser ao responder.</div></div><div class="card t-persona"><div class="hd"><span>PERSONA</span><span class="code">P14</span></div>
-  <div class="assunto"><span class="ico a-T">💻</span>Tecnologia</div>
-  <div class="body center"><p class="big">Desenvolvedor de aplicativos</p><p class="efeito">No prompt:<br>“Você é desenvolvedor de aplicativos.”</p></div>
+  <div class="body center"><svg class="emblema" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg><p class="big">Narradora de jogos na internet</p><p class="faz">Narra os jogos ao vivo pela internet e mostra os números da partida na tela.</p><p class="efeito">No prompt:<br>“Você é narradora de jogos na internet.”</p></div>
   <div class="ft">Quem a IA vai ser ao responder.</div></div><div class="card t-persona"><div class="hd"><span>PERSONA</span><span class="code">P15</span></div>
-  <div class="assunto"><span class="ico a-A">🌳</span>Meio ambiente</div>
-  <div class="body center"><p class="big">Guarda-parque</p><p class="efeito">No prompt:<br>“Você é guarda-parque.”</p></div>
-  <div class="ft">Quem a IA vai ser ao responder.</div></div></section><section class="page grid"><div class="card t-persona"><div class="hd"><span>PERSONA</span><span class="code">P16</span></div>
-  <div class="assunto"><span class="ico a-A">🌳</span>Meio ambiente</div>
-  <div class="body center"><p class="big">Meteorologista</p><p class="efeito">No prompt:<br>“Você é meteorologista.”</p></div>
-  <div class="ft">Quem a IA vai ser ao responder.</div></div><div class="card t-formato"><div class="hd"><span>FORMATO</span><span class="code">F01</span></div>
-  <div class="body center"><p class="big">Lista curta (3 itens)</p><div class="desenho"><svg viewBox="0 0 100 36" aria-hidden="true"><g fill="currentColor"><circle cx="10" cy="8" r="2.6"/><circle cx="10" cy="18" r="2.6"/><circle cx="10" cy="28" r="2.6"/></g><line x1="18" y1="8" x2="84" y2="8" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><line x1="18" y1="18" x2="70" y2="18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><line x1="18" y1="28" x2="78" y2="28" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></div><p class="efeito">3 tópicos curtos, um em cada linha.</p></div>
-  <div class="ft">Como a resposta chega para quem vai ler.</div></div><div class="card t-formato"><div class="hd"><span>FORMATO</span><span class="code">F01</span></div>
-  <div class="body center"><p class="big">Lista curta (3 itens)</p><div class="desenho"><svg viewBox="0 0 100 36" aria-hidden="true"><g fill="currentColor"><circle cx="10" cy="8" r="2.6"/><circle cx="10" cy="18" r="2.6"/><circle cx="10" cy="28" r="2.6"/></g><line x1="18" y1="8" x2="84" y2="8" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><line x1="18" y1="18" x2="70" y2="18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><line x1="18" y1="28" x2="78" y2="28" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></div><p class="efeito">3 tópicos curtos, um em cada linha.</p></div>
+  <div class="body center"><svg class="emblema" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg><p class="big">Agente comunitária de saúde</p><p class="faz">Visita as casas do bairro, procura água parada e manda avisos de saúde pelo celular.</p><p class="efeito">No prompt:<br>“Você é agente comunitária de saúde.”</p></div>
+  <div class="ft">Quem a IA vai ser ao responder.</div></div><div class="card t-persona"><div class="hd"><span>PERSONA</span><span class="code">P16</span></div>
+  <div class="body center"><svg class="emblema" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg><p class="big">Programador de banco</p><p class="faz">Escreve programas para os computadores de um banco.</p><p class="efeito">No prompt:<br>“Você é programador de banco.”</p></div>
+  <div class="ft">Quem a IA vai ser ao responder.</div></div><div class="vaga"></div><div class="vaga"></div></section>
+<section class="page grid"><p class="rotulo-folha"><b>Folha 5 de 7 · personas · verso</b> · cole atrás da frente desta folha antes de cortar (ou imprima dos dois lados, virando na borda longa)</p><div class="card verso-carta t-persona"><div class="verso-miolo">
+    <svg class="verso-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+    <p class="verso-nome">PERSONA</p><p class="verso-sub">quem responde</p><p class="verso-jogo">Palavra Mágica</p>
+  </div></div><div class="card verso-carta t-persona"><div class="verso-miolo">
+    <svg class="verso-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+    <p class="verso-nome">PERSONA</p><p class="verso-sub">quem responde</p><p class="verso-jogo">Palavra Mágica</p>
+  </div></div><div class="card verso-carta t-persona"><div class="verso-miolo">
+    <svg class="verso-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+    <p class="verso-nome">PERSONA</p><p class="verso-sub">quem responde</p><p class="verso-jogo">Palavra Mágica</p>
+  </div></div><div class="card verso-carta t-persona"><div class="verso-miolo">
+    <svg class="verso-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+    <p class="verso-nome">PERSONA</p><p class="verso-sub">quem responde</p><p class="verso-jogo">Palavra Mágica</p>
+  </div></div><div class="card verso-carta t-persona"><div class="verso-miolo">
+    <svg class="verso-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+    <p class="verso-nome">PERSONA</p><p class="verso-sub">quem responde</p><p class="verso-jogo">Palavra Mágica</p>
+  </div></div><div class="card verso-carta t-persona"><div class="verso-miolo">
+    <svg class="verso-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+    <p class="verso-nome">PERSONA</p><p class="verso-sub">quem responde</p><p class="verso-jogo">Palavra Mágica</p>
+  </div></div><div class="card verso-carta t-persona"><div class="verso-miolo">
+    <svg class="verso-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+    <p class="verso-nome">PERSONA</p><p class="verso-sub">quem responde</p><p class="verso-jogo">Palavra Mágica</p>
+  </div></div><div class="card verso-carta t-persona"><div class="verso-miolo">
+    <svg class="verso-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+    <p class="verso-nome">PERSONA</p><p class="verso-sub">quem responde</p><p class="verso-jogo">Palavra Mágica</p>
+  </div></div><div class="card verso-carta t-persona"><div class="verso-miolo">
+    <svg class="verso-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+    <p class="verso-nome">PERSONA</p><p class="verso-sub">quem responde</p><p class="verso-jogo">Palavra Mágica</p>
+  </div></div></section>
+<section class="page grid"><p class="rotulo-folha"><b>Folha 6 de 7 · formatos · frente</b> · corte nas linhas tracejadas</p><div class="card t-formato"><div class="hd"><span>FORMATO</span><span class="code">F01</span></div>
+  <div class="body center"><p class="big">Tela de aplicativo</p><div class="desenho"><svg viewBox="0 0 100 36" aria-hidden="true"><rect x="36" y="1" width="28" height="34" rx="3" fill="none" stroke="currentColor" stroke-width="2"/><line x1="47" y1="32.4" x2="53" y2="32.4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="50" cy="13" r="6.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-dasharray="30 11"/><rect x="41" y="23" width="18" height="5" rx="2.5" fill="currentColor"/></svg></div><p class="efeito">Como a tela de um aplicativo: a meta do dia, um botão e um aviso.</p></div>
   <div class="ft">Como a resposta chega para quem vai ler.</div></div><div class="card t-formato"><div class="hd"><span>FORMATO</span><span class="code">F02</span></div>
-  <div class="body center"><p class="big">Passo a passo</p><div class="desenho"><svg viewBox="0 0 100 36" aria-hidden="true"><text x="6" y="11" font-size="8" font-weight="800" fill="currentColor" font-family="Segoe UI, Arial">1</text><text x="6" y="21" font-size="8" font-weight="800" fill="currentColor" font-family="Segoe UI, Arial">2</text><text x="6" y="31" font-size="8" font-weight="800" fill="currentColor" font-family="Segoe UI, Arial">3</text><line x1="18" y1="8" x2="84" y2="8" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><line x1="18" y1="18" x2="72" y2="18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><line x1="18" y1="28" x2="80" y2="28" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></div><p class="efeito">Etapas numeradas, na ordem de fazer.</p></div>
-  <div class="ft">Como a resposta chega para quem vai ler.</div></div><div class="card t-formato"><div class="hd"><span>FORMATO</span><span class="code">F02</span></div>
-  <div class="body center"><p class="big">Passo a passo</p><div class="desenho"><svg viewBox="0 0 100 36" aria-hidden="true"><text x="6" y="11" font-size="8" font-weight="800" fill="currentColor" font-family="Segoe UI, Arial">1</text><text x="6" y="21" font-size="8" font-weight="800" fill="currentColor" font-family="Segoe UI, Arial">2</text><text x="6" y="31" font-size="8" font-weight="800" fill="currentColor" font-family="Segoe UI, Arial">3</text><line x1="18" y1="8" x2="84" y2="8" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><line x1="18" y1="18" x2="72" y2="18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><line x1="18" y1="28" x2="80" y2="28" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></div><p class="efeito">Etapas numeradas, na ordem de fazer.</p></div>
+  <div class="body center"><p class="big">Ficha de treino</p><div class="desenho"><svg viewBox="0 0 100 36" aria-hidden="true"><text x="4" y="10" font-size="7" font-weight="800" fill="currentColor" font-family="Segoe UI, Arial">10x</text><text x="4" y="21" font-size="7" font-weight="800" fill="currentColor" font-family="Segoe UI, Arial">20s</text><text x="4" y="32" font-size="6.4" font-weight="800" fill="currentColor" font-family="Segoe UI, Arial">água</text><line x1="22" y1="8" x2="70" y2="8" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><line x1="22" y1="19" x2="62" y2="19" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><line x1="22" y1="30" x2="66" y2="30" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><g fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="84" cy="8" r="4"/><circle cx="84" cy="19" r="4"/></g><line x1="84" y1="8" x2="84" y2="6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><line x1="84" y1="19" x2="86" y2="19" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M84 25.5c2.4 3 3.6 4.6 3.6 6a3.6 3.6 0 0 1-7.2 0c0-1.4 1.2-3 3.6-6z" fill="currentColor"/></svg></div><p class="efeito">Os exercícios do dia, o tempo de cada um e a pausa para beber água.</p></div>
   <div class="ft">Como a resposta chega para quem vai ler.</div></div><div class="card t-formato"><div class="hd"><span>FORMATO</span><span class="code">F03</span></div>
-  <div class="body center"><p class="big">Resumo em 2 frases</p><div class="desenho"><svg viewBox="0 0 100 36" aria-hidden="true"><line x1="8" y1="10" x2="92" y2="10" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><line x1="8" y1="19" x2="52" y2="19" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><circle cx="58" cy="19" r="1.8" fill="currentColor"/><line x1="8" y1="28" x2="80" y2="28" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><circle cx="86" cy="28" r="1.8" fill="currentColor"/></svg></div><p class="efeito">Só o mais importante, em 2 frases.</p></div>
-  <div class="ft">Como a resposta chega para quem vai ler.</div></div><div class="card t-formato"><div class="hd"><span>FORMATO</span><span class="code">F03</span></div>
-  <div class="body center"><p class="big">Resumo em 2 frases</p><div class="desenho"><svg viewBox="0 0 100 36" aria-hidden="true"><line x1="8" y1="10" x2="92" y2="10" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><line x1="8" y1="19" x2="52" y2="19" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><circle cx="58" cy="19" r="1.8" fill="currentColor"/><line x1="8" y1="28" x2="80" y2="28" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><circle cx="86" cy="28" r="1.8" fill="currentColor"/></svg></div><p class="efeito">Só o mais importante, em 2 frases.</p></div>
+  <div class="body center"><p class="big">Lista do que levar</p><div class="desenho"><svg viewBox="0 0 100 36" aria-hidden="true"><rect x="8" y="3" width="7" height="7" rx="1.4" fill="none" stroke="currentColor" stroke-width="2"/><rect x="8" y="14.5" width="7" height="7" rx="1.4" fill="none" stroke="currentColor" stroke-width="2"/><rect x="8" y="26" width="7" height="7" rx="1.4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M9.4 6.6l2 2 3.4-4.2M9.4 18.1l2 2 3.4-4.2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><line x1="22" y1="6.5" x2="80" y2="6.5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><line x1="22" y1="18" x2="70" y2="18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><line x1="22" y1="29.5" x2="76" y2="29.5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></div><p class="efeito">Coisas para marcar antes de sair: água, protetor solar, boné e saco para o lixo.</p></div>
   <div class="ft">Como a resposta chega para quem vai ler.</div></div><div class="card t-formato"><div class="hd"><span>FORMATO</span><span class="code">F04</span></div>
-  <div class="body center"><p class="big">Pergunta e resposta</p><div class="desenho"><svg viewBox="0 0 100 36" aria-hidden="true"><text x="6" y="13" font-size="8" font-weight="800" fill="currentColor" font-family="Segoe UI, Arial">P</text><line x1="18" y1="10" x2="76" y2="10" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><text x="80" y="13" font-size="8" font-weight="800" fill="currentColor" font-family="Segoe UI, Arial">?</text><text x="6" y="29" font-size="8" font-weight="800" fill="currentColor" font-family="Segoe UI, Arial">R</text><line x1="18" y1="26" x2="88" y2="26" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></div><p class="efeito">As dúvidas de quem lê, cada uma com a resposta.</p></div>
-  <div class="ft">Como a resposta chega para quem vai ler.</div></div><div class="card t-formato"><div class="hd"><span>FORMATO</span><span class="code">F04</span></div>
-  <div class="body center"><p class="big">Pergunta e resposta</p><div class="desenho"><svg viewBox="0 0 100 36" aria-hidden="true"><text x="6" y="13" font-size="8" font-weight="800" fill="currentColor" font-family="Segoe UI, Arial">P</text><line x1="18" y1="10" x2="76" y2="10" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><text x="80" y="13" font-size="8" font-weight="800" fill="currentColor" font-family="Segoe UI, Arial">?</text><text x="6" y="29" font-size="8" font-weight="800" fill="currentColor" font-family="Segoe UI, Arial">R</text><line x1="18" y1="26" x2="88" y2="26" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></div><p class="efeito">As dúvidas de quem lê, cada uma com a resposta.</p></div>
-  <div class="ft">Como a resposta chega para quem vai ler.</div></div></section><section class="page grid"><div class="card t-formato"><div class="hd"><span>FORMATO</span><span class="code">F05</span></div>
-  <div class="body center"><p class="big">Tabela</p><div class="desenho"><svg viewBox="0 0 100 36" aria-hidden="true"><rect x="8" y="3" width="84" height="30" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><line x1="36" y1="3" x2="36" y2="33" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="64" y1="3" x2="64" y2="33" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="8" y1="13" x2="92" y2="13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="8" y1="23" x2="92" y2="23" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div><p class="efeito">Linhas e colunas para comparar ou organizar.</p></div>
+  <div class="body center"><p class="big">Lista curta (3 itens)</p><div class="desenho"><svg viewBox="0 0 100 36" aria-hidden="true"><g fill="currentColor"><circle cx="10" cy="8" r="2.6"/><circle cx="10" cy="18" r="2.6"/><circle cx="10" cy="28" r="2.6"/></g><line x1="18" y1="8" x2="84" y2="8" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><line x1="18" y1="18" x2="70" y2="18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><line x1="18" y1="28" x2="78" y2="28" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></div><p class="efeito">3 tópicos curtos, um em cada linha.</p></div>
   <div class="ft">Como a resposta chega para quem vai ler.</div></div><div class="card t-formato"><div class="hd"><span>FORMATO</span><span class="code">F05</span></div>
-  <div class="body center"><p class="big">Tabela</p><div class="desenho"><svg viewBox="0 0 100 36" aria-hidden="true"><rect x="8" y="3" width="84" height="30" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><line x1="36" y1="3" x2="36" y2="33" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="64" y1="3" x2="64" y2="33" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="8" y1="13" x2="92" y2="13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="8" y1="23" x2="92" y2="23" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div><p class="efeito">Linhas e colunas para comparar ou organizar.</p></div>
+  <div class="body center"><p class="big">Alerta no celular</p><div class="desenho"><svg viewBox="0 0 100 36" aria-hidden="true"><rect x="34" y="1" width="32" height="34" rx="3" fill="none" stroke="currentColor" stroke-width="2"/><line x1="47" y1="32.4" x2="53" y2="32.4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><rect x="27" y="6" width="46" height="11" rx="3" fill="currentColor"/><text x="31.5" y="14.6" font-size="9" font-weight="800" fill="#fff" font-family="Segoe UI, Arial">!</text><line x1="38" y1="11.5" x2="66" y2="11.5" stroke="#fff" stroke-width="2" stroke-linecap="round"/><line x1="40" y1="24" x2="60" y2="24" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><line x1="40" y1="28.5" x2="56" y2="28.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></div><p class="efeito">Uma mensagem curta e urgente que aparece na tela do celular.</p></div>
   <div class="ft">Como a resposta chega para quem vai ler.</div></div><div class="card t-formato"><div class="hd"><span>FORMATO</span><span class="code">F06</span></div>
-  <div class="body center"><p class="big">Mapa mental</p><div class="desenho"><svg viewBox="0 0 100 36" aria-hidden="true"><rect x="38" y="12" width="24" height="12" rx="4" fill="currentColor"/><line x1="38" y1="18" x2="16" y2="8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="38" y1="18" x2="16" y2="28" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="62" y1="18" x2="84" y2="8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="62" y1="18" x2="84" y2="28" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><g fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="7" r="4"/><circle cx="12" cy="29" r="4"/><circle cx="88" cy="7" r="4"/><circle cx="88" cy="29" r="4"/></g></svg></div><p class="efeito">Um tema no meio e as ideias ligadas a ele.</p></div>
-  <div class="ft">Como a resposta chega para quem vai ler.</div></div><div class="card t-formato"><div class="hd"><span>FORMATO</span><span class="code">F06</span></div>
-  <div class="body center"><p class="big">Mapa mental</p><div class="desenho"><svg viewBox="0 0 100 36" aria-hidden="true"><rect x="38" y="12" width="24" height="12" rx="4" fill="currentColor"/><line x1="38" y1="18" x2="16" y2="8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="38" y1="18" x2="16" y2="28" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="62" y1="18" x2="84" y2="8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="62" y1="18" x2="84" y2="28" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><g fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="7" r="4"/><circle cx="12" cy="29" r="4"/><circle cx="88" cy="7" r="4"/><circle cx="88" cy="29" r="4"/></g></svg></div><p class="efeito">Um tema no meio e as ideias ligadas a ele.</p></div>
+  <div class="body center"><p class="big">Resumo em 2 frases</p><div class="desenho"><svg viewBox="0 0 100 36" aria-hidden="true"><line x1="8" y1="10" x2="92" y2="10" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><line x1="8" y1="19" x2="52" y2="19" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><circle cx="58" cy="19" r="1.8" fill="currentColor"/><line x1="8" y1="28" x2="80" y2="28" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><circle cx="86" cy="28" r="1.8" fill="currentColor"/></svg></div><p class="efeito">Só o mais importante, em 2 frases.</p></div>
   <div class="ft">Como a resposta chega para quem vai ler.</div></div><div class="card t-formato"><div class="hd"><span>FORMATO</span><span class="code">F07</span></div>
-  <div class="body center"><p class="big">Cartaz (título e 3 frases)</p><div class="desenho"><svg viewBox="0 0 100 36" aria-hidden="true"><rect x="24" y="1" width="52" height="34" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><rect x="30" y="6" width="40" height="7" rx="1.5" fill="currentColor"/><line x1="31" y1="19" x2="69" y2="19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="31" y1="25" x2="64" y2="25" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="31" y1="31" x2="67" y2="31" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div><p class="efeito">Um título que chama atenção e 3 frases curtas.</p></div>
-  <div class="ft">Como a resposta chega para quem vai ler.</div></div><div class="card t-formato"><div class="hd"><span>FORMATO</span><span class="code">F07</span></div>
-  <div class="body center"><p class="big">Cartaz (título e 3 frases)</p><div class="desenho"><svg viewBox="0 0 100 36" aria-hidden="true"><rect x="24" y="1" width="52" height="34" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><rect x="30" y="6" width="40" height="7" rx="1.5" fill="currentColor"/><line x1="31" y1="19" x2="69" y2="19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="31" y1="25" x2="64" y2="25" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="31" y1="31" x2="67" y2="31" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div><p class="efeito">Um título que chama atenção e 3 frases curtas.</p></div>
+  <div class="body center"><p class="big">Gráfico de barras</p><div class="desenho"><svg viewBox="0 0 100 36" aria-hidden="true"><line x1="10" y1="2" x2="10" y2="33" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="10" y1="33" x2="92" y2="33" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><rect x="18" y="18" width="12" height="15" rx="1" fill="currentColor"/><rect x="36" y="8" width="12" height="25" rx="1" fill="currentColor"/><rect x="54" y="22" width="12" height="11" rx="1" fill="currentColor"/><rect x="72" y="13" width="12" height="20" rx="1" fill="currentColor"/></svg></div><p class="efeito">Barras que comparam números: quem reciclou mais, quem correu mais.</p></div>
   <div class="ft">Como a resposta chega para quem vai ler.</div></div><div class="card t-formato"><div class="hd"><span>FORMATO</span><span class="code">F08</span></div>
-  <div class="body center"><p class="big">Diálogo curto</p><div class="desenho"><svg viewBox="0 0 100 36" aria-hidden="true"><rect x="6" y="3" width="50" height="13" rx="6" fill="none" stroke="currentColor" stroke-width="2"/><rect x="44" y="20" width="50" height="13" rx="6" fill="currentColor"/><line x1="14" y1="9.5" x2="46" y2="9.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div><p class="efeito">Uma conversa curta entre duas pessoas.</p></div>
-  <div class="ft">Como a resposta chega para quem vai ler.</div></div><div class="card t-formato"><div class="hd"><span>FORMATO</span><span class="code">F08</span></div>
-  <div class="body center"><p class="big">Diálogo curto</p><div class="desenho"><svg viewBox="0 0 100 36" aria-hidden="true"><rect x="6" y="3" width="50" height="13" rx="6" fill="none" stroke="currentColor" stroke-width="2"/><rect x="44" y="20" width="50" height="13" rx="6" fill="currentColor"/><line x1="14" y1="9.5" x2="46" y2="9.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div><p class="efeito">Uma conversa curta entre duas pessoas.</p></div>
+  <div class="body center"><p class="big">Cardápio da semana</p><div class="desenho"><svg viewBox="0 0 100 36" aria-hidden="true"><circle cx="50" cy="18" r="14" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="50" cy="18" r="9" fill="none" stroke="currentColor" stroke-width="1.4"/><line x1="26" y1="6" x2="26" y2="30" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><line x1="23" y1="6" x2="23" y2="13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><line x1="29" y1="6" x2="29" y2="13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M74 6c3 0 3 9 0 11v13" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></div><p class="efeito">O que comer em cada dia, do café da manhã ao jantar.</p></div>
   <div class="ft">Como a resposta chega para quem vai ler.</div></div><div class="card t-formato"><div class="hd"><span>FORMATO</span><span class="code">F09</span></div>
+  <div class="body center"><p class="big">Mapa do percurso</p><div class="desenho"><svg viewBox="0 0 100 36" aria-hidden="true"><path d="M8 29C24 29 26 8 44 13S70 31 88 9" fill="none" stroke="currentColor" stroke-width="2.4" stroke-dasharray="4 3.4" stroke-linecap="round"/><circle cx="8" cy="29" r="3.4" fill="currentColor"/><line x1="88" y1="9" x2="88" y2="1.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M88 1.5l8 3-8 3z" fill="currentColor"/><path d="M44 6.5c2 2.5 3 3.8 3 5a3 3 0 0 1-6 0c0-1.2 1-2.5 3-5z" fill="currentColor"/></svg></div><p class="efeito">O caminho desenhado, com as paradas para água e sombra.</p></div>
+  <div class="ft">Como a resposta chega para quem vai ler.</div></div></section>
+<section class="page grid"><p class="rotulo-folha"><b>Folha 6 de 7 · formatos · verso</b> · cole atrás da frente desta folha antes de cortar (ou imprima dos dois lados, virando na borda longa)</p><div class="card verso-carta t-formato"><div class="verso-miolo">
+    <svg class="verso-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h4"/></svg>
+    <p class="verso-nome">FORMATO</p><p class="verso-sub">como a resposta chega</p><p class="verso-jogo">Palavra Mágica</p>
+  </div></div><div class="card verso-carta t-formato"><div class="verso-miolo">
+    <svg class="verso-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h4"/></svg>
+    <p class="verso-nome">FORMATO</p><p class="verso-sub">como a resposta chega</p><p class="verso-jogo">Palavra Mágica</p>
+  </div></div><div class="card verso-carta t-formato"><div class="verso-miolo">
+    <svg class="verso-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h4"/></svg>
+    <p class="verso-nome">FORMATO</p><p class="verso-sub">como a resposta chega</p><p class="verso-jogo">Palavra Mágica</p>
+  </div></div><div class="card verso-carta t-formato"><div class="verso-miolo">
+    <svg class="verso-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h4"/></svg>
+    <p class="verso-nome">FORMATO</p><p class="verso-sub">como a resposta chega</p><p class="verso-jogo">Palavra Mágica</p>
+  </div></div><div class="card verso-carta t-formato"><div class="verso-miolo">
+    <svg class="verso-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h4"/></svg>
+    <p class="verso-nome">FORMATO</p><p class="verso-sub">como a resposta chega</p><p class="verso-jogo">Palavra Mágica</p>
+  </div></div><div class="card verso-carta t-formato"><div class="verso-miolo">
+    <svg class="verso-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h4"/></svg>
+    <p class="verso-nome">FORMATO</p><p class="verso-sub">como a resposta chega</p><p class="verso-jogo">Palavra Mágica</p>
+  </div></div><div class="card verso-carta t-formato"><div class="verso-miolo">
+    <svg class="verso-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h4"/></svg>
+    <p class="verso-nome">FORMATO</p><p class="verso-sub">como a resposta chega</p><p class="verso-jogo">Palavra Mágica</p>
+  </div></div><div class="card verso-carta t-formato"><div class="verso-miolo">
+    <svg class="verso-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h4"/></svg>
+    <p class="verso-nome">FORMATO</p><p class="verso-sub">como a resposta chega</p><p class="verso-jogo">Palavra Mágica</p>
+  </div></div><div class="card verso-carta t-formato"><div class="verso-miolo">
+    <svg class="verso-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h4"/></svg>
+    <p class="verso-nome">FORMATO</p><p class="verso-sub">como a resposta chega</p><p class="verso-jogo">Palavra Mágica</p>
+  </div></div></section>
+<section class="page grid"><p class="rotulo-folha"><b>Folha 7 de 7 · formatos · frente</b> · corte nas linhas tracejadas</p><div class="card t-formato"><div class="hd"><span>FORMATO</span><span class="code">F10</span></div>
+  <div class="body center"><p class="big">Pergunta e resposta</p><div class="desenho"><svg viewBox="0 0 100 36" aria-hidden="true"><text x="6" y="13" font-size="8" font-weight="800" fill="currentColor" font-family="Segoe UI, Arial">P</text><line x1="18" y1="10" x2="76" y2="10" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><text x="80" y="13" font-size="8" font-weight="800" fill="currentColor" font-family="Segoe UI, Arial">?</text><text x="6" y="29" font-size="8" font-weight="800" fill="currentColor" font-family="Segoe UI, Arial">R</text><line x1="18" y1="26" x2="88" y2="26" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></div><p class="efeito">As dúvidas de quem lê, cada uma com a resposta.</p></div>
+  <div class="ft">Como a resposta chega para quem vai ler.</div></div><div class="card t-formato"><div class="hd"><span>FORMATO</span><span class="code">F11</span></div>
+  <div class="body center"><p class="big">Passo a passo com as telas</p><div class="desenho"><svg viewBox="0 0 100 36" aria-hidden="true"><rect x="4" y="4" width="20" height="30" rx="3" fill="none" stroke="currentColor" stroke-width="2"/><line x1="11" y1="31.4" x2="17" y2="31.4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><rect x="40" y="4" width="20" height="30" rx="3" fill="none" stroke="currentColor" stroke-width="2"/><line x1="47" y1="31.4" x2="53" y2="31.4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><rect x="76" y="4" width="20" height="30" rx="3" fill="none" stroke="currentColor" stroke-width="2"/><line x1="83" y1="31.4" x2="89" y2="31.4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><text x="11.2" y="22" font-size="10" font-weight="800" fill="currentColor" font-family="Segoe UI, Arial">1</text><text x="47.2" y="22" font-size="10" font-weight="800" fill="currentColor" font-family="Segoe UI, Arial">2</text><text x="83.2" y="22" font-size="10" font-weight="800" fill="currentColor" font-family="Segoe UI, Arial">3</text><path d="M28 19h8m-3-3 3 3-3 3M64 19h8m-3-3 3 3-3 3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><p class="efeito">Etapas numeradas mostrando onde tocar em cada tela do celular.</p></div>
+  <div class="ft">Como a resposta chega para quem vai ler.</div></div><div class="card t-formato"><div class="hd"><span>FORMATO</span><span class="code">F12</span></div>
+  <div class="body center"><p class="big">Cartaz (título e 3 frases)</p><div class="desenho"><svg viewBox="0 0 100 36" aria-hidden="true"><rect x="24" y="1" width="52" height="34" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><rect x="30" y="6" width="40" height="7" rx="1.5" fill="currentColor"/><line x1="31" y1="19" x2="69" y2="19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="31" y1="25" x2="64" y2="25" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="31" y1="31" x2="67" y2="31" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div><p class="efeito">Um título que chama atenção e 3 frases curtas, para o mural.</p></div>
+  <div class="ft">Como a resposta chega para quem vai ler.</div></div><div class="card t-formato"><div class="hd"><span>FORMATO</span><span class="code">F13</span></div>
+  <div class="body center"><p class="big">Placar no telão</p><div class="desenho"><svg viewBox="0 0 100 36" aria-hidden="true"><rect x="14" y="1" width="72" height="25" rx="2.4" fill="none" stroke="currentColor" stroke-width="2"/><text x="31" y="20" font-size="15" font-weight="800" fill="currentColor" font-family="Segoe UI, Arial">3 x 2</text><line x1="30" y1="26" x2="26" y2="35" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="70" y1="26" x2="74" y2="35" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div><p class="efeito">Números grandes que todos veem de longe, como no estádio ou na gincana.</p></div>
+  <div class="ft">Como a resposta chega para quem vai ler.</div></div><div class="card t-formato"><div class="hd"><span>FORMATO</span><span class="code">F14</span></div>
+  <div class="body center"><p class="big">História em quadrinhos</p><div class="desenho"><svg viewBox="0 0 100 36" aria-hidden="true"><rect x="4" y="3" width="28" height="30" rx="1.6" fill="none" stroke="currentColor" stroke-width="2"/><rect x="36" y="3" width="28" height="30" rx="1.6" fill="none" stroke="currentColor" stroke-width="2"/><rect x="68" y="3" width="28" height="30" rx="1.6" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 8h18v7H14l-3 3v-3H8z" fill="currentColor"/><path d="M42 8h18v7H50l-3 3v-3h-5z" fill="currentColor"/><g fill="currentColor"><circle cx="18" cy="25" r="3.6"/><circle cx="50" cy="25" r="3.6"/><circle cx="82" cy="20" r="3.6"/></g><line x1="73" y1="29" x2="91" y2="29" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></div><p class="efeito">3 quadrinhos com desenhos e falas curtas.</p></div>
+  <div class="ft">Como a resposta chega para quem vai ler.</div></div><div class="card t-formato"><div class="hd"><span>FORMATO</span><span class="code">F15</span></div>
+  <div class="body center"><p class="big">Folheto para as casas</p><div class="desenho"><svg viewBox="0 0 100 36" aria-hidden="true"><path d="M28 1h36l8 8v26H28z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M64 1v8h8" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M34 15l7-6 7 6v8H34z" fill="currentColor"/><line x1="52" y1="13" x2="66" y2="13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="52" y1="19" x2="63" y2="19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="34" y1="29" x2="66" y2="29" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div><p class="efeito">Uma folha com desenhos e poucas palavras, para entregar de casa em casa.</p></div>
+  <div class="ft">Como a resposta chega para quem vai ler.</div></div><div class="card t-formato"><div class="hd"><span>FORMATO</span><span class="code">F16</span></div>
   <div class="body center"><p class="big">Linha do tempo</p><div class="desenho"><svg viewBox="0 0 100 36" aria-hidden="true"><line x1="6" y1="20" x2="94" y2="20" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><g fill="currentColor"><circle cx="14" cy="20" r="4"/><circle cx="38" cy="20" r="4"/><circle cx="62" cy="20" r="4"/><circle cx="86" cy="20" r="4"/></g><text x="8" y="34" font-size="7" font-weight="800" fill="currentColor" font-family="Segoe UI, Arial">1890</text><text x="32" y="34" font-size="7" font-weight="800" fill="currentColor" font-family="Segoe UI, Arial">1950</text><text x="56" y="34" font-size="7" font-weight="800" fill="currentColor" font-family="Segoe UI, Arial">2000</text><text x="79" y="34" font-size="7" font-weight="800" fill="currentColor" font-family="Segoe UI, Arial">hoje</text></svg></div><p class="efeito">Os fatos em ordem, do mais antigo ao mais novo.</p></div>
-  <div class="ft">Como a resposta chega para quem vai ler.</div></div></section><section class="page grid"><div class="card t-formato"><div class="hd"><span>FORMATO</span><span class="code">F09</span></div>
-  <div class="body center"><p class="big">Linha do tempo</p><div class="desenho"><svg viewBox="0 0 100 36" aria-hidden="true"><line x1="6" y1="20" x2="94" y2="20" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><g fill="currentColor"><circle cx="14" cy="20" r="4"/><circle cx="38" cy="20" r="4"/><circle cx="62" cy="20" r="4"/><circle cx="86" cy="20" r="4"/></g><text x="8" y="34" font-size="7" font-weight="800" fill="currentColor" font-family="Segoe UI, Arial">1890</text><text x="32" y="34" font-size="7" font-weight="800" fill="currentColor" font-family="Segoe UI, Arial">1950</text><text x="56" y="34" font-size="7" font-weight="800" fill="currentColor" font-family="Segoe UI, Arial">2000</text><text x="79" y="34" font-size="7" font-weight="800" fill="currentColor" font-family="Segoe UI, Arial">hoje</text></svg></div><p class="efeito">Os fatos em ordem, do mais antigo ao mais novo.</p></div>
-  <div class="ft">Como a resposta chega para quem vai ler.</div></div><div class="card t-ajuda"><div class="hd"><span>RESUMO DA VEZ</span></div>
-  <div class="body passos">
-    <p><span class="n">1</span><span><b>Compre 1</b>do monte ou a de cima do lixo.</span></p>
-    <p><span class="n">2</span><span><b>Fechou um prompt? Bata!</b>Contexto e persona com o ícone de uma missão da mesa + 1 formato.</span></p>
-    <p><span class="n">3</span><span><b>Descarte 1</b>Fique sempre com 5 cartas.</span></p>
-    <p class="vale"><b>★★★</b> formato que ajuda quem vai ler<br><b>★★</b> outro formato</p>
-    <p class="depois">Bateu? Fique com a missão, ponha as 3 cartas embaixo do monte, compre 3 e vire outra missão.</p>
-  </div>
-  <div class="ft">Ganha quem chegar a <b>6 estrelas</b> primeiro.</div></div><div class="card t-ajuda"><div class="hd"><span>RESUMO DA VEZ</span></div>
-  <div class="body passos">
-    <p><span class="n">1</span><span><b>Compre 1</b>do monte ou a de cima do lixo.</span></p>
-    <p><span class="n">2</span><span><b>Fechou um prompt? Bata!</b>Contexto e persona com o ícone de uma missão da mesa + 1 formato.</span></p>
-    <p><span class="n">3</span><span><b>Descarte 1</b>Fique sempre com 5 cartas.</span></p>
-    <p class="vale"><b>★★★</b> formato que ajuda quem vai ler<br><b>★★</b> outro formato</p>
-    <p class="depois">Bateu? Fique com a missão, ponha as 3 cartas embaixo do monte, compre 3 e vire outra missão.</p>
-  </div>
-  <div class="ft">Ganha quem chegar a <b>6 estrelas</b> primeiro.</div></div><div class="card t-ajuda"><div class="hd"><span>RESUMO DA VEZ</span></div>
-  <div class="body passos">
-    <p><span class="n">1</span><span><b>Compre 1</b>do monte ou a de cima do lixo.</span></p>
-    <p><span class="n">2</span><span><b>Fechou um prompt? Bata!</b>Contexto e persona com o ícone de uma missão da mesa + 1 formato.</span></p>
-    <p><span class="n">3</span><span><b>Descarte 1</b>Fique sempre com 5 cartas.</span></p>
-    <p class="vale"><b>★★★</b> formato que ajuda quem vai ler<br><b>★★</b> outro formato</p>
-    <p class="depois">Bateu? Fique com a missão, ponha as 3 cartas embaixo do monte, compre 3 e vire outra missão.</p>
-  </div>
-  <div class="ft">Ganha quem chegar a <b>6 estrelas</b> primeiro.</div></div><div class="card t-ajuda"><div class="hd"><span>RESUMO DA VEZ</span></div>
-  <div class="body passos">
-    <p><span class="n">1</span><span><b>Compre 1</b>do monte ou a de cima do lixo.</span></p>
-    <p><span class="n">2</span><span><b>Fechou um prompt? Bata!</b>Contexto e persona com o ícone de uma missão da mesa + 1 formato.</span></p>
-    <p><span class="n">3</span><span><b>Descarte 1</b>Fique sempre com 5 cartas.</span></p>
-    <p class="vale"><b>★★★</b> formato que ajuda quem vai ler<br><b>★★</b> outro formato</p>
-    <p class="depois">Bateu? Fique com a missão, ponha as 3 cartas embaixo do monte, compre 3 e vire outra missão.</p>
-  </div>
-  <div class="ft">Ganha quem chegar a <b>6 estrelas</b> primeiro.</div></div><div class="card t-ajuda"><div class="hd"><span>RESUMO DA VEZ</span></div>
-  <div class="body passos">
-    <p><span class="n">1</span><span><b>Compre 1</b>do monte ou a de cima do lixo.</span></p>
-    <p><span class="n">2</span><span><b>Fechou um prompt? Bata!</b>Contexto e persona com o ícone de uma missão da mesa + 1 formato.</span></p>
-    <p><span class="n">3</span><span><b>Descarte 1</b>Fique sempre com 5 cartas.</span></p>
-    <p class="vale"><b>★★★</b> formato que ajuda quem vai ler<br><b>★★</b> outro formato</p>
-    <p class="depois">Bateu? Fique com a missão, ponha as 3 cartas embaixo do monte, compre 3 e vire outra missão.</p>
-  </div>
-  <div class="ft">Ganha quem chegar a <b>6 estrelas</b> primeiro.</div></div><div class="card t-ajuda"><div class="hd"><span>RESUMO DA VEZ</span></div>
-  <div class="body passos">
-    <p><span class="n">1</span><span><b>Compre 1</b>do monte ou a de cima do lixo.</span></p>
-    <p><span class="n">2</span><span><b>Fechou um prompt? Bata!</b>Contexto e persona com o ícone de uma missão da mesa + 1 formato.</span></p>
-    <p><span class="n">3</span><span><b>Descarte 1</b>Fique sempre com 5 cartas.</span></p>
-    <p class="vale"><b>★★★</b> formato que ajuda quem vai ler<br><b>★★</b> outro formato</p>
-    <p class="depois">Bateu? Fique com a missão, ponha as 3 cartas embaixo do monte, compre 3 e vire outra missão.</p>
-  </div>
-  <div class="ft">Ganha quem chegar a <b>6 estrelas</b> primeiro.</div></div><div class="card t-ajuda"><div class="hd"><span>RESUMO DA VEZ</span></div>
-  <div class="body passos">
-    <p><span class="n">1</span><span><b>Compre 1</b>do monte ou a de cima do lixo.</span></p>
-    <p><span class="n">2</span><span><b>Fechou um prompt? Bata!</b>Contexto e persona com o ícone de uma missão da mesa + 1 formato.</span></p>
-    <p><span class="n">3</span><span><b>Descarte 1</b>Fique sempre com 5 cartas.</span></p>
-    <p class="vale"><b>★★★</b> formato que ajuda quem vai ler<br><b>★★</b> outro formato</p>
-    <p class="depois">Bateu? Fique com a missão, ponha as 3 cartas embaixo do monte, compre 3 e vire outra missão.</p>
-  </div>
-  <div class="ft">Ganha quem chegar a <b>6 estrelas</b> primeiro.</div></div><div class="card t-ajuda"><div class="hd"><span>RESUMO DA VEZ</span></div>
-  <div class="body passos">
-    <p><span class="n">1</span><span><b>Compre 1</b>do monte ou a de cima do lixo.</span></p>
-    <p><span class="n">2</span><span><b>Fechou um prompt? Bata!</b>Contexto e persona com o ícone de uma missão da mesa + 1 formato.</span></p>
-    <p><span class="n">3</span><span><b>Descarte 1</b>Fique sempre com 5 cartas.</span></p>
-    <p class="vale"><b>★★★</b> formato que ajuda quem vai ler<br><b>★★</b> outro formato</p>
-    <p class="depois">Bateu? Fique com a missão, ponha as 3 cartas embaixo do monte, compre 3 e vire outra missão.</p>
-  </div>
-  <div class="ft">Ganha quem chegar a <b>6 estrelas</b> primeiro.</div></div></section><section class="page doc gab-pag">
-<h1>Gabarito do professor <small>use se o aplicativo não abrir · não misture com as cartas</small></h1>
-<h2>Quando alguém bate</h2>
-<ol>
-<li>O contexto e a persona têm o ícone da missão? Se um deles não tiver, <b>não vale</b>: as cartas voltam para a mão, o lado descarta 1 e passa a vez. Não diga se o formato servia, porque a missão continua na mesa.</li>
-<li>O formato está na lista da missão? <b>Sim: ★★★ (3 estrelas). Não: ★★ (2 estrelas).</b> Leia em voz alta quais formatos serviam.</li>
-<li>Ganha quem chegar a 6 estrelas primeiro.</li>
-</ol>
-<h2>Missões e formatos que dão ★★★</h2>
-<table class="gab"><tr><th>Missão</th><th>Ícone</th><th>Formatos que dão ★★★</th></tr>
-<tr><td><b>M01</b> Explique a dengue para uma criança de 10 anos.</td><td>✚ Saúde</td><td>F01 Lista curta · F03 Resumo em 2 frases · F08 Diálogo curto</td></tr><tr><td><b>M02</b> Crie um cardápio de lanche saudável para a semana.</td><td>✚ Saúde</td><td>F05 Tabela · F07 Cartaz</td></tr><tr><td><b>M03</b> Faça um aviso para os alunos beberem mais água.</td><td>✚ Saúde</td><td>F07 Cartaz · F01 Lista curta</td></tr><tr><td><b>M04</b> Monte um aquecimento seguro para a aula de Educação Física.</td><td>⚽ Esporte</td><td>F02 Passo a passo · F01 Lista curta</td></tr><tr><td><b>M05</b> Conte a história de um esporte, do começo até hoje.</td><td>⚽ Esporte</td><td>F09 Linha do tempo · F03 Resumo em 2 frases</td></tr><tr><td><b>M06</b> Ensine os avós a criar uma senha forte.</td><td>💻 Tecnologia</td><td>F02 Passo a passo · F08 Diálogo curto</td></tr><tr><td><b>M07</b> Explique para a turma como evitar golpes na internet.</td><td>💻 Tecnologia</td><td>F01 Lista curta · F04 Pergunta e resposta</td></tr><tr><td><b>M08</b> Mostre como a internet mudou desde que seus pais eram crianças.</td><td>💻 Tecnologia</td><td>F09 Linha do tempo · F05 Tabela</td></tr><tr><td><b>M09</b> Crie um plano para a escola separar o lixo.</td><td>🌳 Meio ambiente</td><td>F02 Passo a passo · F06 Mapa mental</td></tr><tr><td><b>M10</b> Explique o aquecimento global para os alunos da escola.</td><td>🌳 Meio ambiente</td><td>F07 Cartaz · F06 Mapa mental · F04 Pergunta e resposta</td></tr>
-</table>
-<h2>Contextos por assunto</h2>
-<p class="small2"><b>✚ Saúde:</b> C01 Dengue em Recife · C02 Gripe em Nova York · C03 Lanche em Miami · C04 Mãos limpas em Cantão · C05 Merenda em Roma<br><b>⚽ Esporte:</b> C06 Basquete em Chicago · C07 Futsal da escola · C08 Ginástica em Xangai · C09 Críquete na Índia · C10 Corrida em Boston<br><b>💻 Tecnologia:</b> C11 Informática em Manaus · C12 Tecnologia em Bangalore · C13 Pagamento em Hangzhou · C14 Escola digital na Estônia · C15 Vale do Silício<br><b>🌳 Meio ambiente:</b> C16 Queimadas na Amazônia · C17 Incêndios na Califórnia · C18 Troca verde em Curitiba · C19 Energia solar em Copenhague · C20 Lixo na calçada</p>
-<h2>Personas por assunto</h2>
-<p class="small2"><b>✚ Saúde:</b> P01 Médica de posto de saúde · P02 Nutricionista · P09 Enfermeiro · P10 Agente comunitária de saúde<br><b>⚽ Esporte:</b> P03 Técnica de futebol · P04 Professor de Educação Física · P11 Atleta olímpica · P12 Jornalista esportivo<br><b>💻 Tecnologia:</b> P05 Engenheiro de computação · P06 Especialista em segurança na internet · P13 Professora de informática · P14 Desenvolvedor de aplicativos<br><b>🌳 Meio ambiente:</b> P07 Bióloga · P08 Engenheira ambiental · P15 Guarda-parque · P16 Meteorologista</p>
-<h2>Formatos</h2>
-<p class="small2">F01 Lista curta (3 itens) · F02 Passo a passo · F03 Resumo em 2 frases · F04 Pergunta e resposta · F05 Tabela · F06 Mapa mental · F07 Cartaz (título e 3 frases) · F08 Diálogo curto · F09 Linha do tempo <i>(2 cópias de cada, com o mesmo código)</i></p>
-<p class="small2"><b>Para imprimir:</b> 72 cartas (10 missões, 20 contextos, 16 personas, 18 formatos e 8 resumos da vez) e a folha de regras. Papel mais grosso ou cartolina deixa as cartas melhores de embaralhar. Os resumos da vez não entram no monte.</p>
-</section></body></html>
+  <div class="ft">Como a resposta chega para quem vai ler.</div></div><div class="vaga"></div><div class="vaga"></div></section>
+<section class="page grid"><p class="rotulo-folha"><b>Folha 7 de 7 · formatos · verso</b> · cole atrás da frente desta folha antes de cortar (ou imprima dos dois lados, virando na borda longa)</p><div class="card verso-carta t-formato"><div class="verso-miolo">
+    <svg class="verso-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h4"/></svg>
+    <p class="verso-nome">FORMATO</p><p class="verso-sub">como a resposta chega</p><p class="verso-jogo">Palavra Mágica</p>
+  </div></div><div class="card verso-carta t-formato"><div class="verso-miolo">
+    <svg class="verso-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h4"/></svg>
+    <p class="verso-nome">FORMATO</p><p class="verso-sub">como a resposta chega</p><p class="verso-jogo">Palavra Mágica</p>
+  </div></div><div class="card verso-carta t-formato"><div class="verso-miolo">
+    <svg class="verso-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h4"/></svg>
+    <p class="verso-nome">FORMATO</p><p class="verso-sub">como a resposta chega</p><p class="verso-jogo">Palavra Mágica</p>
+  </div></div><div class="card verso-carta t-formato"><div class="verso-miolo">
+    <svg class="verso-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h4"/></svg>
+    <p class="verso-nome">FORMATO</p><p class="verso-sub">como a resposta chega</p><p class="verso-jogo">Palavra Mágica</p>
+  </div></div><div class="card verso-carta t-formato"><div class="verso-miolo">
+    <svg class="verso-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h4"/></svg>
+    <p class="verso-nome">FORMATO</p><p class="verso-sub">como a resposta chega</p><p class="verso-jogo">Palavra Mágica</p>
+  </div></div><div class="card verso-carta t-formato"><div class="verso-miolo">
+    <svg class="verso-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h4"/></svg>
+    <p class="verso-nome">FORMATO</p><p class="verso-sub">como a resposta chega</p><p class="verso-jogo">Palavra Mágica</p>
+  </div></div><div class="card verso-carta t-formato"><div class="verso-miolo">
+    <svg class="verso-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h4"/></svg>
+    <p class="verso-nome">FORMATO</p><p class="verso-sub">como a resposta chega</p><p class="verso-jogo">Palavra Mágica</p>
+  </div></div><div class="card verso-carta t-formato"><div class="verso-miolo">
+    <svg class="verso-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h4"/></svg>
+    <p class="verso-nome">FORMATO</p><p class="verso-sub">como a resposta chega</p><p class="verso-jogo">Palavra Mágica</p>
+  </div></div><div class="card verso-carta t-formato"><div class="verso-miolo">
+    <svg class="verso-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h4"/></svg>
+    <p class="verso-nome">FORMATO</p><p class="verso-sub">como a resposta chega</p><p class="verso-jogo">Palavra Mágica</p>
+  </div></div></section></body></html>

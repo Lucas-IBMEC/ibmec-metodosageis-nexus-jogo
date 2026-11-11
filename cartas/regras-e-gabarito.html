@@ -1,0 +1,185 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><title>Palavra Mágica · regras e gabarito</title><style>
+@page { size: A4 portrait; margin: 0; }
+* { box-sizing: border-box; }
+body { margin: 0; font-family: 'Segoe UI', Arial, sans-serif; color: #1b1f2a; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.page { width: 210mm; height: 297mm; page-break-after: always; break-after: page; overflow: hidden; background: #fff; position: relative; }
+.grid { display: grid; grid-template-columns: repeat(3, 63mm); grid-template-rows: repeat(3, 88mm); justify-content: center; align-content: center; }
+
+.t-missao { --c: #c98a00; --claro: #fff6dc; } .t-persona { --c: #6d3fc0; --claro: #f1ebfb; }
+.t-contexto { --c: #1f5fd1; --claro: #e8f0fd; } .t-formato { --c: #e06c00; --claro: #fff0e2; }
+.a-S { color: #c62828; }
+
+.card { width: 63mm; height: 88mm; border: 0.3mm dashed #9aa3b5; padding: 3mm; display: flex; flex-direction: column; gap: 1.6mm; position: relative; }
+.card::before { content: ''; position: absolute; inset: 1.6mm; border: 0.6mm solid var(--c); border-radius: 3mm; pointer-events: none; }
+.hd { background: var(--c); color: #fff; border-radius: 2mm; padding: 1.2mm 2.4mm; display: flex; justify-content: space-between; font-weight: 800; font-size: 8.5pt; letter-spacing: .06em; position: relative; }
+.code { font-weight: 700; background: rgba(255,255,255,.25); border-radius: 1mm; padding: 0 1.4mm; }
+.assuntos-missao { display: flex; flex-wrap: wrap; gap: 1mm; margin: 0 1mm; }
+.chip-assunto { display: inline-flex; align-items: center; gap: 1mm; padding: .5mm 1.8mm .5mm .5mm; background: var(--claro); border-radius: 5mm; font-size: 7.8pt; font-weight: 800; }
+.chip-assunto .ico { width: 5.4mm; height: 5.4mm; border-radius: 50%; background: #fff; display: inline-flex; align-items: center; justify-content: center; font-size: 8.6pt; line-height: 1; }
+.body { flex: 1; padding: 0 1.5mm; display: flex; flex-direction: column; justify-content: flex-start; gap: 1.4mm; }
+.body.center { justify-content: center; text-align: center; }
+.pedido { font-size: 12.4pt; font-weight: 800; line-height: 1.28; margin: .5mm 0 0; }
+.pense { font-size: 7.4pt; color: #4a5368; font-style: italic; margin: 0 1.5mm; line-height: 1.3; }
+.txt { font-size: 10.6pt; line-height: 1.32; margin: 0; }
+.big { font-size: 12pt; font-weight: 800; margin: 0; line-height: 1.2; }
+.emblema { width: 11mm; height: 11mm; padding: 2mm; margin: 0 auto 1mm; border-radius: 50%; background: var(--claro); color: var(--c); flex: none; }
+.faz { font-size: 9pt; line-height: 1.32; margin: 0; }
+.efeito { font-size: 8.2pt; margin: 0; line-height: 1.35; color: #2b3245; }
+.t-persona .efeito { background: var(--claro); border-radius: 2mm; padding: 1.2mm 1.6mm; }
+.desenho { color: var(--c); margin: 1mm auto; width: 40mm; }
+.desenho svg { width: 100%; height: auto; display: block; }
+.ft { font-size: 6.3pt; line-height: 1.3; color: #4a5368; border-top: 0.3mm solid #d6dbe6; padding: 1mm 1.5mm 0; margin: 0 .5mm .5mm; }
+.ft b { color: var(--c); }
+
+/* Verso: o nome do baralho, com listras claras (gasta pouca tinta) */
+.verso-carta::before { display: none; }
+.verso-miolo { flex: 1; border: 1mm solid var(--c); border-radius: 3mm; color: var(--c); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.6mm; text-align: center;
+  background: repeating-linear-gradient(45deg, var(--claro) 0 2.6mm, #fff 2.6mm 5.2mm); }
+.verso-ico { width: 20mm; height: 20mm; background: #fff; border-radius: 50%; padding: 3mm; border: .6mm solid var(--c); }
+.verso-nome { margin: 1mm 0 0; font-size: 17pt; font-weight: 900; letter-spacing: .08em; background: #fff; padding: 0 2.4mm; border-radius: 1.4mm; }
+.verso-sub { margin: 0; font-size: 9pt; font-weight: 700; background: #fff; padding: 0 2mm; border-radius: 1.4mm; color: #2b3245; }
+.verso-jogo { margin: 3mm 0 0; font-size: 8pt; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; background: var(--c); color: #fff; padding: .6mm 2.4mm; border-radius: 1.4mm; }
+.vaga { width: 63mm; height: 88mm; }
+.rotulo-folha { position: absolute; top: 6mm; left: 0; right: 0; margin: 0; text-align: center; font-size: 8pt; color: #6b7489; }
+.rotulo-folha b { color: #1b1f2a; }
+
+/* Folhas de texto */
+.doc { padding: 10mm 12mm; font-size: 9.2pt; line-height: 1.34; }
+.regras { font-size: 10.2pt; line-height: 1.36; }
+.doc h1 { font-size: 18pt; margin: 0 0 2.5mm; } .doc h1 small { display: block; font-size: 9pt; font-weight: 500; color: #4a5368; }
+.doc h2 { font-size: 11.5pt; margin: 3.2mm 0 1.2mm; color: #1f5fd1; }
+.doc p { margin: 0 0 1.4mm; }
+.doc ul, .doc ol { margin: 0 0 1mm; padding-left: 5mm; } .doc li { margin-bottom: 1mm; }
+.cols { display: grid; grid-template-columns: 1fr 1fr; gap: 7mm; }
+.objetivo { background: #fff6dc; border: 0.4mm solid #e0b84a; border-radius: 2mm; padding: 2.4mm 3mm; font-size: 10.6pt; }
+.vez-passos { font-size: 10.4pt; } .vez-passos li { margin-bottom: 1.3mm; }
+.formula { display: flex; align-items: stretch; gap: 1.4mm; margin: 1mm 0 1.6mm; }
+.formula i { font-style: normal; font-weight: 800; font-size: 13pt; align-self: center; }
+.peca { flex: 1; border: 0.5mm solid var(--c); background: var(--claro); border-radius: 2mm; padding: 1.4mm 1.6mm; font-size: 7.6pt; line-height: 1.25; text-align: center; }
+.peca b { display: block; color: var(--c); font-size: 9.4pt; }
+.sem-quebra { white-space: nowrap; }
+.exemplo { margin-top: 3mm; border-left: 1.2mm solid #c98a00; background: #fff6dc; border-radius: 0 2mm 2mm 0; padding: 2.2mm 3mm; font-size: 9.2pt; line-height: 1.35; }
+.exemplo p { margin: 0 0 1.2mm; } .exemplo p:last-child { margin: 0; }
+.exemplo-t { font-weight: 800; font-size: 9pt; letter-spacing: .06em; text-transform: uppercase; color: #8a5a00; }
+.exemplo-missao { font-style: italic; }
+.nota-tab { width: 100%; border-collapse: collapse; margin: 1mm 0 1.6mm; } .nota-tab td { border: 0.3mm solid #e0c27a; padding: 1.2mm 2mm; font-size: 9.6pt; } .nota-tab td:last-child { text-align: right; font-weight: 700; white-space: nowrap; }
+.nota-tab b { color: #8a5a00; }
+.ganha { background: #e3f4ea; border: 0.4mm solid #7cc49c; border-radius: 2mm; padding: 1.8mm 2.6mm; }
+.pequeno { font-size: 9pt; }
+.mesa { margin-top: 3mm; border: 0.4mm dashed #9aa3b5; border-radius: 3mm; padding: 2.4mm 3mm 2.6mm; background: #f6f8fc; text-align: center; }
+.mesa-t { font-weight: 800; font-size: 9pt; margin: 0 0 1mm !important; color: #4a5368; letter-spacing: .06em; text-transform: uppercase; }
+.mesa-fila { display: flex; justify-content: center; gap: 3mm; margin: 1.6mm 0; }
+.mini { width: 19mm; height: 26mm; border-radius: 1.6mm; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .6mm; font-size: 8pt; font-weight: 800; color: #fff; }
+.mini small { font-size: 6pt; font-weight: 600; line-height: 1.2; padding: 0 1mm; }
+.mini.m { background: #c98a00; } .mini.c { background: #1f5fd1; } .mini.p { background: #6d3fc0; } .mini.f { background: #e06c00; }
+.mesa-mao { margin: 1.4mm 0 0 !important; font-size: 8.6pt; font-weight: 700; }
+.aviso { background: #eef2f8; border-radius: 2mm; padding: 2mm 3mm; font-size: 8.4pt; color: #4a5368; margin-top: 3mm; }
+.gab-pag { font-size: 9pt; }
+table.gab { width: 100%; border-collapse: collapse; margin-bottom: 1.6mm; } .gab th, .gab td { border: 0.3mm solid #c9cfdb; padding: 1mm 1.8mm; text-align: left; vertical-align: top; font-size: 8.4pt; } .gab th { background: #eef2f8; }
+.gab.num td, .gab.num th { padding: .8mm 1.4mm; font-size: 8.2pt; vertical-align: middle; }
+.gab .n { width: 7mm; text-align: center; font-variant-numeric: tabular-nums; }
+.gab .v4 { font-weight: 800; background: #e3f4ea; } .gab .v1 { color: #b42318; background: #fde8e7; }
+.duas-tabelas { display: grid; grid-template-columns: 1fr 1fr; gap: 5mm; align-items: start; }
+.legenda { font-size: 8.4pt; color: #4a5368; }
+.small2 { font-size: 8.6pt; line-height: 1.45; }
+.conversao { font-size: 8.8pt; line-height: 1.7; display: flex; flex-wrap: wrap; gap: 0 3mm; }
+.trio-gab { border-top: 0.3mm solid #d6dbe6; padding-top: 1.2mm; }
+</style></head><body><section class="page doc regras">
+<h1>Palavra Mágica · Como jogar <small>versão de teste · grupo NEXUS · 2 a 5 lados · 5 rodadas · cerca de 25 minutos</small></h1>
+<p class="objetivo"><b>Objetivo:</b> em cada rodada, montar o prompt que mais combina com a missão, com 1 contexto, 1 persona e 1 formato. O melhor prompt da rodada ganha <b>1 ponto</b>. Depois de <b>5 rodadas</b>, ganha quem tiver mais pontos.</p>
+
+<div class="cols">
+<div>
+<h2>No jogo</h2>
+<p>9 missões · 16 contextos · 16 personas · 16 formatos · o celular do professor com o aplicativo.</p>
+
+<h2>Preparação</h2>
+<ol>
+<li>Divida a turma em 2 a 5 lados: cada lado é 1 aluno, uma dupla ou um grupo.</li>
+<li>Embaralhe cada baralho separado (<b>contexto</b>, <b>persona</b> e <b>formato</b>) e ponha os 3 montes virados para baixo no meio da mesa. O verso mostra qual é qual.</li>
+<li>Embaralhe as <b>missões</b> e deixe o montinho ao lado.</li>
+<li>O professor abre a página Partida no aplicativo, cadastra os lados e toca em <b>Sortear</b> para ver quem começa.</li>
+</ol>
+
+<div class="mesa">
+  <p class="mesa-t">A mesa</p>
+  <div class="mesa-fila"><span class="mini m">Missão<small>aberta</small></span></div>
+  <div class="mesa-fila"><span class="mini c">Contexto<small>monte</small></span><span class="mini p">Persona<small>monte</small></span><span class="mini f">Formato<small>monte</small></span></div>
+  <p class="mesa-mao">Na frente de cada lado: as 3 cartas escolhidas, viradas para baixo</p>
+</div>
+
+<div class="exemplo">
+  <p class="exemplo-t">Exemplo de uma rodada</p>
+  <p class="exemplo-missao">Missão <b>M04</b> <span class="a-S">✚</span> <span class="a-E">⚽</span> <span class="a-A">🌳</span>: “Planeje uma corrida no parque num dia de calor, sem ninguém passar mal e sem deixar lixo.”</p>
+  <p><b>Lado 1:</b> <b>C09</b> Calor na corrida do Rio + <b>P09</b> Guia de trilhas + <b>F03</b> Lista do que levar. Nota <b>3,6</b>.</p>
+  <p><b>Lado 2:</b> <b>C02</b> Vôlei com dor nas costas + <b>P02</b> Fisioterapeuta de um time + <b>F02</b> Ficha de treino. Nota <b>3,0</b>. O aplicativo explica: as 3 cartas não têm nada a ver com meio ambiente, e a missão pede meio ambiente (o lixo no parque).</p>
+  <p>O Lado 1 ganha 1 ponto.</p>
+</div>
+</div>
+
+<div>
+<h2>Uma rodada</h2>
+<ol class="vez-passos">
+<li><b>Vire 1 missão</b> no meio da mesa. Leiam juntos o pedido e os <b>3 assuntos</b>.</li>
+<li><b>Na vez do seu lado</b> (até 1 minuto): compre <b>3 contextos, 3 personas e 3 formatos</b>.</li>
+<li><b>Escolha 1 de cada</b>, as que mais combinam com os 3 assuntos, e deixe viradas para baixo na sua frente.</li>
+<li><b>Devolva as outras 6</b>, cada uma no seu monte, e embaralhe. A vez passa para o próximo lado.</li>
+<li>Todos escolheram? <b>Virem as cartas.</b> O professor digita no aplicativo a missão e as cartas de cada lado.</li>
+</ol>
+
+<h2>A nota do prompt</h2>
+<div class="formula">
+  <span class="peca t-contexto"><b>Contexto</b>a situação</span><i>+</i>
+  <span class="peca t-persona"><b>Persona</b>quem responde</span><i>+</i>
+  <span class="peca t-formato"><b>Formato</b>como chega</span>
+</div>
+<p>Cada carta combina mais ou menos com cada assunto, de <b>1</b> (não combina) a <b>4</b> (combina muito). Os números ficam escondidos no aplicativo: leia as cartas e pense. A nota do prompt vai de 1 a 4, e o aplicativo diz <b>por que cada prompt perdeu pontos</b>.</p>
+<table class="nota-tab"><tr><td><b>Melhor prompt da rodada</b></td><td>1 ponto</td></tr><tr><td>Empate no melhor prompt</td><td>1 ponto para cada</td></tr></table>
+<p>Depois, as cartas voltam para os seus montes (embaralhe) e a missão sai do jogo. Na rodada seguinte, quem começa é o próximo lado.</p>
+<p class="ganha"><b>Depois de 5 rodadas, ganha quem tiver mais pontos.</b> Empate: ganha quem somou as maiores notas. O aplicativo avisa.</p>
+
+<h2>Casos especiais</h2>
+<ul class="pequeno">
+<li>Acabou o tempo da vez: escolha agora as 3 cartas e devolva as outras.</li>
+<li>Mostrou as cartas antes da hora: tudo bem, mas o melhor é guardar segredo até todos escolherem.</li>
+<li>Sem celular: o gabarito do professor tem os números e a conta.</li>
+</ul>
+</div>
+</div>
+<p class="aviso">Números de teste: 5 rodadas, 3 cartas de cada baralho e 1 minuto por vez. Anotem o que ficou fácil ou difícil demais para ajustar depois da partida de teste.</p>
+</section><section class="page doc gab-pag">
+<h1>Gabarito do professor <small>use se o aplicativo não abrir · não misture com as cartas</small></h1>
+<h2>Dar a nota sem o aplicativo</h2>
+<ol>
+<li>Veja os <b>3 assuntos da missão</b> (tabela abaixo).</li>
+<li>Para cada carta do prompt, <b>some os números dos 3 assuntos da missão</b> (tabelas das cartas). Pule a coluna do assunto que a missão não tem.</li>
+<li><b>Some as 3 cartas.</b> A maior soma ganha 1 ponto; empate: 1 ponto para cada. Anote a soma de cada lado: ela desempata no fim.</li>
+<li>Para dizer <b>por que o prompt perdeu pontos</b>, procure os números 1 e 2 nos assuntos da missão: 1 = não combina, 2 = combina pouco.</li>
+</ol>
+<table class="gab"><tr><th>Missão</th><th>Assuntos</th></tr>
+<tr><td><b>M01</b> Crie um aviso no celular para o time de futsal beber água no treino.</td><td class="sem-quebra">✚ Saúde · ⚽ Esporte · 💻 Tecnologia</td></tr><tr><td><b>M02</b> Ensine os avós a usar um aplicativo que conta os passos da caminhada.</td><td class="sem-quebra">✚ Saúde · ⚽ Esporte · 💻 Tecnologia</td></tr><tr><td><b>M03</b> Explique como um relógio que mede o coração ajuda um atleta a treinar sem se machucar.</td><td class="sem-quebra">✚ Saúde · ⚽ Esporte · 💻 Tecnologia</td></tr><tr><td><b>M04</b> Planeje uma corrida no parque num dia de calor, sem ninguém passar mal e sem deixar lixo.</td><td class="sem-quebra">✚ Saúde · ⚽ Esporte · 🌳 Meio ambiente</td></tr><tr><td><b>M05</b> Monte o cardápio do time da escola sem desperdiçar comida.</td><td class="sem-quebra">✚ Saúde · ⚽ Esporte · 🌳 Meio ambiente</td></tr><tr><td><b>M06</b> Crie uma mensagem de celular para as famílias tirarem a água parada e fugirem da dengue.</td><td class="sem-quebra">✚ Saúde · 💻 Tecnologia · 🌳 Meio ambiente</td></tr><tr><td><b>M07</b> Explique como o celular avisa as pessoas antes de uma enchente, para ninguém se ferir.</td><td class="sem-quebra">✚ Saúde · 💻 Tecnologia · 🌳 Meio ambiente</td></tr><tr><td><b>M08</b> Mostre como um estádio pode usar a tecnologia para gastar menos água e energia.</td><td class="sem-quebra">⚽ Esporte · 💻 Tecnologia · 🌳 Meio ambiente</td></tr><tr><td><b>M09</b> Organize uma gincana de reciclagem com o placar num telão da escola.</td><td class="sem-quebra">⚽ Esporte · 💻 Tecnologia · 🌳 Meio ambiente</td></tr>
+</table>
+<p class="legenda">Colunas: ✚ Saúde · ⚽ Esporte · 💻 Tecnologia · 🌳 Meio ambiente. 4 = combina muito · 3 = combina bem · 2 = combina pouco · 1 = não combina.</p>
+<div class="duas-tabelas"><table class="gab num"><tr><th>Contexto</th><th class="n" title="Saúde">✚</th><th class="n" title="Esporte">⚽</th><th class="n" title="Tecnologia">💻</th><th class="n" title="Meio ambiente">🌳</th></tr>
+<tr><td><b>C01</b> Relógio no campeonato</td><td class="n v3">3</td><td class="n v4">4</td><td class="n v4">4</td><td class="n v1">1</td></tr><tr><td><b>C02</b> Vôlei com dor nas costas</td><td class="n v4">4</td><td class="n v4">4</td><td class="n v1">1</td><td class="n v1">1</td></tr><tr><td><b>C03</b> Campo perto do rio</td><td class="n v2">2</td><td class="n v4">4</td><td class="n v1">1</td><td class="n v4">4</td></tr><tr><td><b>C04</b> Feira de ciências</td><td class="n v3">3</td><td class="n v2">2</td><td class="n v3">3</td><td class="n v3">3</td></tr><tr><td><b>C05</b> Dengue depois da chuva</td><td class="n v4">4</td><td class="n v1">1</td><td class="n v4">4</td><td class="n v3">3</td></tr><tr><td><b>C06</b> Gripe em Nova York</td><td class="n v4">4</td><td class="n v1">1</td><td class="n v1">1</td><td class="n v1">1</td></tr><tr><td><b>C07</b> Gincana de reciclagem em Seul</td><td class="n v1">1</td><td class="n v3">3</td><td class="n v3">3</td><td class="n v4">4</td></tr><tr><td><b>C08</b> Celulares velhos na gaveta</td><td class="n v1">1</td><td class="n v1">1</td><td class="n v4">4</td><td class="n v4">4</td></tr><tr><td><b>C09</b> Calor na corrida do Rio</td><td class="n v4">4</td><td class="n v4">4</td><td class="n v1">1</td><td class="n v3">3</td></tr><tr><td><b>C10</b> Fumaça em Manaus</td><td class="n v4">4</td><td class="n v1">1</td><td class="n v1">1</td><td class="n v4">4</td></tr><tr><td><b>C11</b> Avós que caminham em Tóquio</td><td class="n v4">4</td><td class="n v3">3</td><td class="n v3">3</td><td class="n v1">1</td></tr><tr><td><b>C12</b> Sábado na escola</td><td class="n v3">3</td><td class="n v3">3</td><td class="n v2">2</td><td class="n v3">3</td></tr><tr><td><b>C13</b> Estádio verde em Copenhague</td><td class="n v1">1</td><td class="n v4">4</td><td class="n v3">3</td><td class="n v4">4</td></tr><tr><td><b>C14</b> Árbitro de vídeo</td><td class="n v1">1</td><td class="n v4">4</td><td class="n v4">4</td><td class="n v1">1</td></tr><tr><td><b>C15</b> Posto de saúde com sol</td><td class="n v3">3</td><td class="n v1">1</td><td class="n v3">3</td><td class="n v4">4</td></tr><tr><td><b>C16</b> Vale do Silício</td><td class="n v1">1</td><td class="n v1">1</td><td class="n v4">4</td><td class="n v1">1</td></tr>
+</table><table class="gab num"><tr><th>Persona</th><th class="n" title="Saúde">✚</th><th class="n" title="Esporte">⚽</th><th class="n" title="Tecnologia">💻</th><th class="n" title="Meio ambiente">🌳</th></tr>
+<tr><td><b>P01</b> Criadora de aplicativos de exercício</td><td class="n v3">3</td><td class="n v4">4</td><td class="n v4">4</td><td class="n v1">1</td></tr><tr><td><b>P02</b> Fisioterapeuta de um time</td><td class="n v4">4</td><td class="n v4">4</td><td class="n v1">1</td><td class="n v1">1</td></tr><tr><td><b>P03</b> Professor de Educação Física</td><td class="n v3">3</td><td class="n v4">4</td><td class="n v1">1</td><td class="n v3">3</td></tr><tr><td><b>P04</b> Jornalista de ciência</td><td class="n v3">3</td><td class="n v2">2</td><td class="n v3">3</td><td class="n v3">3</td></tr><tr><td><b>P05</b> Cientista que mapeia a dengue</td><td class="n v4">4</td><td class="n v1">1</td><td class="n v4">4</td><td class="n v3">3</td></tr><tr><td><b>P06</b> Médica do coração</td><td class="n v4">4</td><td class="n v2">2</td><td class="n v1">1</td><td class="n v1">1</td></tr><tr><td><b>P07</b> Organizador de campeonatos de surfe</td><td class="n v1">1</td><td class="n v4">4</td><td class="n v2">2</td><td class="n v4">4</td></tr><tr><td><b>P08</b> Engenheira de energia solar</td><td class="n v1">1</td><td class="n v1">1</td><td class="n v4">4</td><td class="n v4">4</td></tr><tr><td><b>P09</b> Guia de trilhas</td><td class="n v3">3</td><td class="n v4">4</td><td class="n v1">1</td><td class="n v4">4</td></tr><tr><td><b>P10</b> Enfermeiro na Amazônia</td><td class="n v4">4</td><td class="n v1">1</td><td class="n v1">1</td><td class="n v4">4</td></tr><tr><td><b>P11</b> Técnica de futebol</td><td class="n v2">2</td><td class="n v4">4</td><td class="n v4">4</td><td class="n v1">1</td></tr><tr><td><b>P12</b> Diretor da escola</td><td class="n v3">3</td><td class="n v3">3</td><td class="n v2">2</td><td class="n v3">3</td></tr><tr><td><b>P13</b> Engenheiro de estádios</td><td class="n v1">1</td><td class="n v4">4</td><td class="n v4">4</td><td class="n v3">3</td></tr><tr><td><b>P14</b> Narradora de jogos na internet</td><td class="n v1">1</td><td class="n v4">4</td><td class="n v4">4</td><td class="n v1">1</td></tr><tr><td><b>P15</b> Agente comunitária de saúde</td><td class="n v4">4</td><td class="n v1">1</td><td class="n v3">3</td><td class="n v3">3</td></tr><tr><td><b>P16</b> Programador de banco</td><td class="n v1">1</td><td class="n v1">1</td><td class="n v4">4</td><td class="n v1">1</td></tr>
+</table></div>
+</section>
+<section class="page doc gab-pag">
+<h1>Gabarito do professor <small>continuação</small></h1>
+<div class="duas-tabelas">
+  <table class="gab num"><tr><th>Formato</th><th class="n" title="Saúde">✚</th><th class="n" title="Esporte">⚽</th><th class="n" title="Tecnologia">💻</th><th class="n" title="Meio ambiente">🌳</th></tr>
+<tr><td><b>F01</b> Tela de aplicativo</td><td class="n v3">3</td><td class="n v4">4</td><td class="n v4">4</td><td class="n v1">1</td></tr><tr><td><b>F02</b> Ficha de treino</td><td class="n v4">4</td><td class="n v4">4</td><td class="n v1">1</td><td class="n v1">1</td></tr><tr><td><b>F03</b> Lista do que levar</td><td class="n v4">4</td><td class="n v3">3</td><td class="n v1">1</td><td class="n v3">3</td></tr><tr><td><b>F04</b> Lista curta</td><td class="n v3">3</td><td class="n v3">3</td><td class="n v3">3</td><td class="n v3">3</td></tr><tr><td><b>F05</b> Alerta no celular</td><td class="n v3">3</td><td class="n v1">1</td><td class="n v4">4</td><td class="n v4">4</td></tr><tr><td><b>F06</b> Resumo em 2 frases</td><td class="n v2">2</td><td class="n v2">2</td><td class="n v2">2</td><td class="n v2">2</td></tr><tr><td><b>F07</b> Gráfico de barras</td><td class="n v2">2</td><td class="n v3">3</td><td class="n v3">3</td><td class="n v4">4</td></tr><tr><td><b>F08</b> Cardápio da semana</td><td class="n v4">4</td><td class="n v3">3</td><td class="n v1">1</td><td class="n v2">2</td></tr><tr><td><b>F09</b> Mapa do percurso</td><td class="n v3">3</td><td class="n v4">4</td><td class="n v1">1</td><td class="n v4">4</td></tr><tr><td><b>F10</b> Pergunta e resposta</td><td class="n v3">3</td><td class="n v2">2</td><td class="n v3">3</td><td class="n v3">3</td></tr><tr><td><b>F11</b> Passo a passo com as telas</td><td class="n v3">3</td><td class="n v3">3</td><td class="n v4">4</td><td class="n v1">1</td></tr><tr><td><b>F12</b> Cartaz</td><td class="n v3">3</td><td class="n v3">3</td><td class="n v2">2</td><td class="n v3">3</td></tr><tr><td><b>F13</b> Placar no telão</td><td class="n v1">1</td><td class="n v4">4</td><td class="n v4">4</td><td class="n v3">3</td></tr><tr><td><b>F14</b> História em quadrinhos</td><td class="n v3">3</td><td class="n v3">3</td><td class="n v2">2</td><td class="n v2">2</td></tr><tr><td><b>F15</b> Folheto para as casas</td><td class="n v4">4</td><td class="n v1">1</td><td class="n v2">2</td><td class="n v4">4</td></tr><tr><td><b>F16</b> Linha do tempo</td><td class="n v2">2</td><td class="n v3">3</td><td class="n v3">3</td><td class="n v3">3</td></tr>
+</table>
+  <div>
+    <h2>Da soma para a nota (de 1 a 4)</h2>
+    <p class="small2">A nota é a soma dos 9 números dividida por 9. A maior soma possível é 33 (nota 3,7): nenhuma carta é perfeita nos 3 assuntos.</p>
+    <p class="conversao"><span class="sem-quebra"><b>33</b> = 3,7</span> <span class="sem-quebra"><b>32</b> = 3,6</span> <span class="sem-quebra"><b>31</b> = 3,4</span> <span class="sem-quebra"><b>30</b> = 3,3</span> <span class="sem-quebra"><b>29</b> = 3,2</span> <span class="sem-quebra"><b>28</b> = 3,1</span> <span class="sem-quebra"><b>27</b> = 3,0</span> <span class="sem-quebra"><b>26</b> = 2,9</span> <span class="sem-quebra"><b>25</b> = 2,8</span> <span class="sem-quebra"><b>24</b> = 2,7</span> <span class="sem-quebra"><b>23</b> = 2,6</span> <span class="sem-quebra"><b>22</b> = 2,4</span> <span class="sem-quebra"><b>21</b> = 2,3</span> <span class="sem-quebra"><b>20</b> = 2,2</span> <span class="sem-quebra"><b>19</b> = 2,1</span> <span class="sem-quebra"><b>18</b> = 2,0</span></p>
+    <h2>As melhores cartas de cada missão</h2>
+    <p class="small2">As 2 cartas de cada baralho que mais somam, com a soma entre parênteses.</p>
+    <p class="small2 trio-gab"><b>M01, M02, M03</b> (✚ ⚽ 💻)<br><b>Contexto:</b> C01 (11), C11 (10) · <b>Persona:</b> P01 (11), P11 (10) · <b>Formato:</b> F01 (11), F11 (10)</p><p class="small2 trio-gab"><b>M04, M05</b> (✚ ⚽ 🌳)<br><b>Contexto:</b> C09 (11), C03 (10) · <b>Persona:</b> P09 (11), P03 (10) · <b>Formato:</b> F09 (11), F03 (10)</p><p class="small2 trio-gab"><b>M06, M07</b> (✚ 💻 🌳)<br><b>Contexto:</b> C05 (11), C15 (10) · <b>Persona:</b> P05 (11), P15 (10) · <b>Formato:</b> F05 (11), F15 (10)</p><p class="small2 trio-gab"><b>M08, M09</b> (⚽ 💻 🌳)<br><b>Contexto:</b> C13 (11), C07 (10) · <b>Persona:</b> P13 (11), P07 (10) · <b>Formato:</b> F13 (11), F07 (10)</p>
+  </div>
+</div>
+<p class="small2"><b>Para imprimir as cartas:</b> o arquivo de cartas tem 57 cartas (9 missões, 16 contextos, 16 personas e 16 formatos) em 7 folhas de frente, cada uma seguida da folha do verso. Cole o verso atrás da frente antes de cortar, ou imprima dos dois lados do papel, virando na borda longa. Papel mais grosso ou cartolina deixa as cartas melhores de embaralhar.</p>
+</section></body></html>

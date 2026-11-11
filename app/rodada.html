@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
+  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#16274f">
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0b1530">
+  <meta name="color-scheme" content="light dark">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icones/icone.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icones/icone-192.png">
+  <link rel="stylesheet" href="css/app.css">
+  <title>Rodada</title>
+</head>
+<body data-pagina="rodada">
+  <header class="topo">
+    <div class="topo-linha"><span class="marca" data-dado="nomeDoJogo">Palavra Mágica</span><h1 id="titulo">Conferir a rodada</h1></div>
+  </header>
+
+  <main class="conteudo">
+    <p class="aviso" id="aviso-rodada" hidden style="margin: 0"></p>
+
+    <section class="bloco">
+      <h2><span class="passo">1</span>A missão da rodada</h2>
+      <label class="campo-codigo t-missao missao-campo">
+        <span class="letra" aria-hidden="true">M</span>
+        <input class="campo" id="missao" inputmode="numeric" pattern="[0-9]*" maxlength="2" autocomplete="off"
+          enterkeyhint="next" aria-label="Número da missão" placeholder="Número, ex.: 4">
+      </label>
+      <div id="missao-info" aria-live="polite"></div>
+    </section>
+
+    <section class="bloco">
+      <h2><span class="passo">2</span>As 3 cartas de cada lado</h2>
+      <p class="sub">Digite só o número de cada carta. O aplicativo passa sozinho para o próximo campo.</p>
+      <div class="quantos-prompts" id="quantos-prompts" hidden>
+        <span class="rotulo" style="margin: 0">Quantos prompts</span>
+        <div class="contador">
+          <button type="button" class="mais-menos" id="menos-prompts" aria-label="Menos prompts">−</button>
+          <div class="valor"><b id="quantos">2</b><span>prompts</span></div>
+          <button type="button" class="mais-menos" id="mais-prompts" aria-label="Mais prompts">+</button>
+        </div>
+      </div>
+      <div class="prompts" id="prompts"></div>
+    </section>
+
+    <button type="button" class="botao largo" id="ver">Ver o resultado</button>
+    <p class="aviso" id="falta" hidden style="margin: 0"></p>
+
+    <section class="bloco resultado-rodada" id="resultado" hidden aria-live="polite"></section>
+
+    <section class="bloco ponto" id="ponto" hidden></section>
+
+    <details class="item melhores" id="melhores" hidden>
+      <summary><span class="nome-item">As melhores cartas do jogo para esta missão</span></summary>
+      <div class="corpo" id="melhores-corpo"></div>
+    </details>
+  </main>
+
+  <nav id="menu" class="menu" aria-label="Páginas"></nav>
+
+  <script src="js/dados.js"></script>
+  <script src="js/nota.js"></script>
+  <script src="js/comum.js"></script>
+  <script src="js/rodada.js"></script>
+</body>
+</html>

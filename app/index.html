@@ -6,7 +6,7 @@
   <meta name="theme-color" media="(prefers-color-scheme: light)" content="#16274f">
   <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0b1530">
   <meta name="color-scheme" content="light dark">
-  <meta name="description" content="Aplicativo do professor: placar, tempo da vez e conferência dos prompts do jogo.">
+  <meta name="description" content="Aplicativo do professor: placar das rodadas, tempo da vez e nota dos prompts do jogo.">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <link rel="manifest" href="manifest.webmanifest">
@@ -41,7 +41,7 @@
           <div class="valor"><b id="quantos">2</b><span id="nome-quantos">lados</span></div>
           <button type="button" class="mais-menos" id="mais-lados" aria-label="Mais lados">+</button>
         </div>
-        <p class="nota">Ganha quem chegar a <span data-dado="metaDeEstrelas">6</span> estrelas primeiro: 2 ou 3 missões.</p>
+        <p class="nota">O melhor prompt de cada rodada vale 1 ponto. Depois de <span data-dado="rodadas">5</span> rodadas, ganha quem tiver mais pontos.</p>
 
         <span class="rotulo">Nomes (se quiser)</span>
         <div class="nomes-lados" id="config-lados"></div>
@@ -51,9 +51,8 @@
       <div class="bloco">
         <h2>Antes de começar</h2>
         <ol class="regras" style="margin: 0; padding-left: 20px">
-          <li>Embaralhe as missões e vire <span data-dado="missoesNaMesa">3</span> para cima no meio da mesa.</li>
-          <li>Embaralhe juntos os contextos, as personas e os formatos: esse é o monte.</li>
-          <li>Dê <span data-dado="cartasNaMao">5</span> cartas e 1 resumo da vez para cada lado. Vire 1 carta do monte ao lado dele: é o lixo.</li>
+          <li>Embaralhe cada baralho separado (contexto, persona e formato) e ponha os 3 montes virados para baixo no meio da mesa. O verso mostra qual é qual.</li>
+          <li>Embaralhe as missões e deixe o montinho ao lado.</li>
         </ol>
         <p class="nota">O passo a passo completo está em <a href="regras.html">Regras</a>.</p>
       </div>
@@ -63,7 +62,7 @@
     <section id="tela-placar" hidden>
       <div id="quem-comeca" class="bloco" hidden>
         <h2>Quem começa?</h2>
-        <p class="sub">Sorteie ou escolha. Depois, a vez segue no sentido horário.</p>
+        <p class="sub">Sorteie ou escolha. Em cada rodada, quem começa é o próximo lado.</p>
         <button type="button" class="botao largo" id="sortear">Sortear quem começa</button>
         <p class="rotulo">Ou toque em quem começa</p>
         <div class="chips" id="opcoes-comeca"></div>
@@ -71,6 +70,7 @@
 
       <div id="vez" class="vez" hidden></div>
       <p class="aviso" id="aviso-turno" hidden></p>
+      <div id="fase" class="bloco fase" hidden></div>
 
       <div class="lados" id="lados"></div>
 
@@ -89,19 +89,20 @@
           <circle class="trilho" cx="32" cy="32" r="28"></circle>
           <circle class="arco" id="arco" cx="32" cy="32" r="28"></circle>
         </svg>
-        <span class="seg" id="segundos">30</span>
+        <span class="seg" id="segundos">60</span>
       </div>
       <button type="button" class="botao secundario" id="cronometro">Iniciar</button>
-      <button type="button" class="botao" id="proximo">Passar a vez</button>
+      <button type="button" class="botao" id="proximo">Próximo lado</button>
     </div>
   </div>
 
   <dialog id="fim">
     <h2 id="fim-titulo">Fim da partida</h2>
-    <p class="nota">Ganha quem chega a <span data-dado="metaDeEstrelas">6</span> estrelas primeiro. Se a partida acabar antes, ganha quem tiver mais estrelas; empate: quem fez mais missões com ★★★.</p>
+    <p class="nota" id="fim-sub"></p>
     <ol class="ranking" id="ranking"></ol>
-    <p class="nota">Para fechar a aula: cada lado mostra uma missão que fez e diz por que escolheu aquele formato.</p>
-    <div class="acoes" style="margin-top: 12px">
+    <p class="nota">Para fechar a aula: o desafio final, sem cartas. Cada lado escreve um prompt com as 4 partes e você confere se aprenderam.</p>
+    <a class="botao largo" href="aprendeu.html" style="margin-top: 12px">Conferir se aprendeu</a>
+    <div class="acoes" style="margin-top: 8px">
       <button type="button" class="botao secundario" id="voltar-jogo">Voltar ao jogo</button>
       <button type="button" class="botao" id="nova-do-fim">Nova partida</button>
     </div>
@@ -119,6 +120,7 @@
   <nav id="menu" class="menu" aria-label="Páginas"></nav>
 
   <script src="js/dados.js"></script>
+  <script src="js/nota.js"></script>
   <script src="js/comum.js"></script>
   <script src="js/partida.js"></script>
 </body>

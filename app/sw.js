@@ -1,19 +1,21 @@
-// Service worker: guarda o app no celular para funcionar sem internet (história 2.4.1).
+// Service worker: guarda o aplicativo no celular para funcionar sem internet (história 2.4.1).
 // Ao mudar qualquer arquivo, aumente a VERSAO para os celulares baixarem de novo.
 
-const VERSAO = 'palavra-magica-v6';
+const VERSAO = 'palavra-magica-v7';
 const ARQUIVOS = [
   './',
   './index.html',
-  './missao.html',
+  './rodada.html',
+  './aprendeu.html',
   './cartas.html',
   './regras.html',
   './css/app.css',
   './js/dados.js',
-  './js/respostas.js',
+  './js/nota.js',
   './js/comum.js',
   './js/partida.js',
-  './js/missao.js',
+  './js/rodada.js',
+  './js/aprendeu.js',
   './js/cartas.js',
   './manifest.webmanifest',
   './icones/icone.svg',

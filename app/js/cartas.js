@@ -1,6 +1,9 @@
 // Página Cartas: consulta de qualquer carta pelo código ou pelo nome. História 2.3.1.
+// Cada carta mostra o que está escrito nela e, fechado, o gabarito do professor: os números escondidos
+// (de 1 a 4, quanto ela combina com cada assunto) e a nota que ela dá em cada tipo de missão.
 
 const $ = (seletor) => document.querySelector(seletor);
+const LETRAS = Object.keys(DADOS.assuntos); // S, E, T, A
 
 const FILTROS = [
   { nome: 'Todas', tipos: null },
@@ -10,6 +13,12 @@ const FILTROS = [
   { nome: 'Formato', tipos: ['Formato'] },
 ];
 
+// Os tipos de missão que existem (cada um com 3 assuntos) e as missões de cada um
+const TRIOS = [...new Set(DADOS.missoes.map((m) => m.assuntos.join('')))].map((chave) => ({
+  assuntos: chave.split(''),
+  missoes: DADOS.missoes.filter((m) => m.assuntos.join('') === chave).map((m) => m.codigo),
+}));
+
 let filtro = 0;
 
 // Busca sem ligar para acento nem maiúscula ("saude" acha "Saúde")
@@ -17,23 +26,35 @@ function simples(texto) {
   return String(texto ?? '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
 }
 
-function nomeDoFormato(codigo) {
-  return DADOS.porCodigo[codigo].nome.replace(/ \(.*\)$/, '');
-}
+const simbolos = (assuntos) => assuntos.map((a) => DADOS.assuntos[a].ico).join(' ');
 
 function linhasDaCarta(c) {
-  const linhas = [];
-  if (c.assunto) linhas.push(['Assunto', MP.comSimbolo(c.assunto)]);
-  if (c.tipo === 'Contexto') linhas.push(['Texto da carta', `“${c.texto}”`]);
-  if (c.tipo === 'Persona') linhas.push(['No prompt', `“${c.texto}”`]);
-  if (c.tipo === 'Formato') linhas.push(['Como fica', c.texto]);
-  if (c.copias > 1) linhas.push(['Cópias no baralho', `${c.copias}, com o mesmo código`]);
-  if (c.tipo === 'Contexto' || c.tipo === 'Persona') linhas.push(['Serve para bater', `em missão de ${c.assunto}`]);
-  if (c.tipo === 'Formato') {
-    const missoes = DADOS.missoes.filter((m) => m.formatos.includes(c.codigo)).map((m) => m.codigo);
-    linhas.push(['Dá ★★★', `nas missões ${missoes.join(', ')} (nas outras, ★★)`]);
-  }
-  return linhas;
+  if (c.tipo === 'Missão') return [['Assuntos', c.assuntos.map(MP.comSimbolo).join(' · ')]];
+  if (c.tipo === 'Contexto') return [['Texto da carta', `“${c.texto}”`]];
+  if (c.tipo === 'Persona') return [['Na carta', c.texto], ['No prompt', `“${c.prompt}”`]];
+  return [['Como fica', c.texto]];
+}
+
+// Missão: as melhores cartas de cada baralho e a nota mais alta possível
+function gabaritoDaMissao(m) {
+  const maxima = MP.somaMaxima(m.assuntos);
+  return `${MP.TIPOS.map((tipo) => `<p class="melhores-tipo ${MP.classeDoTipo(tipo)}">${tipo}</p>
+    <ul class="melhores-lista">${MP.melhoresCartas(tipo, m.assuntos).map(({ carta, soma }) => `<li class="${MP.classeDoTipo(tipo)}">
+      <span class="cod">${carta.codigo}</span><span>${MP.esc(carta.nome)}</span><b>${NOTA.numero(soma / 3)}</b></li>`).join('')}
+    </ul>`).join('')}
+    <p class="nota">Com a melhor carta de cada baralho, o prompt tira ${NOTA.numero(maxima / 9)}: a nota mais alta possível nesta missão.</p>`;
+}
+
+// Contexto, persona e formato: o número de cada assunto e a nota da carta em cada tipo de missão
+function gabaritoDaCarta(c) {
+  return `<div class="numeros">${LETRAS.map((a) => `<div class="numero v${c.combina[a]}">
+      <span>${MP.esc(MP.comSimbolo(a))}</span><b>${c.combina[a]}</b></div>`).join('')}</div>
+    <p class="rotulo">Nota da carta em cada missão</p>
+    <ul class="notas-trio">${TRIOS.map((t) => `<li>
+      <span class="trio-ico" aria-label="${MP.esc(MP.juntar(t.assuntos.map((a) => MP.NOMES[a])))}">${simbolos(t.assuntos)}</span>
+      <span class="trio-missoes">${t.missoes.join(', ')}</span>
+      <b>${NOTA.numero(NOTA.mediaDaCarta(c, t.assuntos))}</b></li>`).join('')}</ul>
+    <p class="nota">4 = combina muito com o assunto, 1 = não combina. A nota da carta é a média dos 3 assuntos da missão.</p>`;
 }
 
 function htmlDaCarta(c) {
@@ -44,11 +65,10 @@ function htmlDaCarta(c) {
     </summary>
     <div class="corpo">
       ${linhasDaCarta(c).map(([rotulo, valor]) => `<p><b>${rotulo}:</b> ${MP.esc(valor)}</p>`).join('')}
-      ${c.tipo === 'Missão' ? `<details class="gabarito">
+      <details class="gabarito">
         <summary>Gabarito do professor</summary>
-        <p><b>Para bater:</b> contexto e persona de ${MP.esc(MP.comSimbolo(c.assunto))}.</p>
-        <p><b>Formatos que dão ★★★:</b> ${MP.esc(c.formatos.map((f) => `${f} ${nomeDoFormato(f)}`).join(' · '))}</p>
-      </details>` : ''}
+        ${c.tipo === 'Missão' ? gabaritoDaMissao(c) : gabaritoDaCarta(c)}
+      </details>
     </div>
   </details>`;
 }
@@ -61,12 +81,12 @@ function atualizar() {
     if (tipos && !tipos.includes(c.tipo)) return false;
     if (!termo) return true;
     if (codigo && c.codigo === codigo) return true;
-    return simples(`${c.codigo} ${c.nome} ${c.texto || ''} ${c.assunto || ''}`).includes(termo);
+    return simples(`${c.codigo} ${c.nome} ${c.texto || ''} ${c.prompt || ''}`).includes(termo);
   });
 
   // Código exato aparece primeiro e já aberto
   achadas.sort((a, b) => (b.codigo === codigo) - (a.codigo === codigo));
-  $('#contagem').textContent = `${achadas.length} ${achadas.length === 1 ? 'carta' : 'cartas'}`;
+  $('#contagem').textContent = MP.plural(achadas.length, 'carta', 'cartas');
   $('#lista').innerHTML = achadas.length
     ? achadas.map(htmlDaCarta).join('')
     : '<p class="vazio">Nenhuma carta encontrada.</p>';

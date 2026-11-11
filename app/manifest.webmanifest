@@ -1,7 +1,7 @@
 {
   "name": "Palavra Mágica · aplicativo do professor",
   "short_name": "Palavra Mágica",
-  "description": "Placar, nota das missões em estrelas e consulta das cartas do jogo Palavra Mágica. Funciona sem internet.",
+  "description": "Placar das rodadas, nota dos prompts e consulta das cartas do jogo Palavra Mágica. Funciona sem internet.",
   "lang": "pt-BR",
   "start_url": "./index.html",
   "scope": "./",

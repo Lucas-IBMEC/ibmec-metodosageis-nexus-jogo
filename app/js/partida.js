@@ -1,15 +1,17 @@
-// Página Partida: monta a partida, sorteia quem começa, mostra as estrelas de cada lado,
+// Página Partida: monta a partida, sorteia quem começa, mostra a rodada, de quem é a vez e os pontos de cada lado,
 // marca o tempo de cada vez e mostra quem ganhou. Histórias: 2.5.1 (placar) e o cronômetro.
-// As estrelas entram pela página Missão, quando o professor confere o prompt de quem bateu.
+// O ponto de cada rodada entra pela página Rodada, quando o professor confere os prompts.
+// Fases de cada rodada: escolhendo (cada lado na sua vez) → conferindo → pontuada → próxima rodada. Depois da última: fim.
 
-const DURACAO_DA_VEZ = DADOS.duracaoDaVez || 30; // segundos
-const META = DADOS.metaDeEstrelas || 6;
+const DURACAO_DA_VEZ = MP.DURACAO_DA_VEZ;
+const RODADAS = MP.RODADAS;
+const MAX_LADOS = DADOS.maximoDeLados || 5;
 const VOLTA_DO_RELOGIO = 2 * Math.PI * 28; // tamanho do círculo do cronômetro
 
 const MODOS = {
   duelo: { min: 2, max: 2, padrao: 2, nome: 'Lado', texto: '1 contra 1, ou dupla contra dupla (cada dupla é um lado).' },
-  mesa: { min: 3, max: 5, padrao: 3, nome: 'Lado', texto: 'Cada lado é 1 aluno ou 1 dupla. Todos contra todos.' },
-  turma: { min: 2, max: 5, padrao: 4, nome: 'Grupo', texto: 'Cada grupo é um lado e decide junto. Quem segura as cartas troca a cada vez.' },
+  mesa: { min: 3, max: MAX_LADOS, padrao: 3, nome: 'Lado', texto: 'Cada lado é 1 aluno ou 1 dupla. Cada um por si.' },
+  turma: { min: 2, max: MAX_LADOS, padrao: 4, nome: 'Grupo', texto: 'Cada grupo é um lado e decide junto. Quem compra as cartas troca a cada rodada.' },
 };
 
 const $ = (seletor) => document.querySelector(seletor);
@@ -39,19 +41,28 @@ function mostrarConfiguracao() {
 
 function comecarPartida() {
   const nome = MODOS[config.modo].nome;
+  const usados = new Set();
+  const nomes = [...document.querySelectorAll('#config-lados input')].map((campo, i) => {
+    // Dois lados com o mesmo nome confundiriam a hora de dar o ponto
+    let escolhido = campo.value.trim() || `${nome} ${i + 1}`;
+    if (usados.has(escolhido.toLowerCase())) escolhido = `${escolhido} (${i + 1})`;
+    usados.add(escolhido.toLowerCase());
+    return escolhido;
+  });
   partida = {
     versao: MP.VERSAO_DA_PARTIDA,
     inicio: Date.now(),
     modo: config.modo,
-    lados: [...document.querySelectorAll('#config-lados input')].map((campo, i) => ({
-      nome: campo.value.trim() || `${nome} ${i + 1}`,
-      estrelas: 0,
-      missoes: 0, // missões feitas
-      perfeitas: 0, // missões com 3 estrelas (desempate)
+    lados: nomes.map((n) => ({
+      nome: n,
+      pontos: 0,
+      soma: 0, // soma dos números das cartas nas rodadas (desempate)
     })),
-    feitas: [], // códigos das missões que já saíram da mesa
-    vez: null,
-    turno: 0,
+    primeiro: null, // quem começa a 1ª rodada
+    rodada: 1,
+    fase: 'escolhendo',
+    vez: 0, // posição na ordem da rodada: 0 é quem começa
+    historico: [], // o ponto de cada rodada: { rodada, missao, prompts, ganhadores }
     fimMostrado: false,
     cronometro: { fim: null, restante: DURACAO_DA_VEZ, esgotou: false },
   };
@@ -61,92 +72,120 @@ function comecarPartida() {
 
 // ---------- Tela 2: placar ----------
 
-// Do mais perto da vitória para o mais longe (empate: mais missões com 3 estrelas)
-function ranking() {
-  return [...partida.lados].sort((a, b) => b.estrelas - a.estrelas || b.perfeitas - a.perfeitas);
+const nomeDo = (i) => partida.lados[i].nome;
+
+function htmlDaVez() {
+  const ordem = MP.ordemDaRodada(partida);
+  if (partida.fase === 'fim') {
+    const frente = MP.naFrente(partida);
+    return `<div class="vez-topo"><small>Fim da partida · ${RODADAS} rodadas</small>
+      <strong>${frente.length > 1 ? `Empate: ${MP.esc(MP.juntar(frente.map((l) => l.nome)))}` : `🏆 ${MP.esc(frente[0].nome)} ganhou!`}</strong></div>`;
+  }
+  const ponto = MP.pontoDaRodada(partida);
+  const titulo = {
+    escolhendo: `Vez de ${MP.esc(nomeDo(ordem[partida.vez]))}`,
+    conferindo: 'Todos escolheram',
+    pontuada: ponto ? `Ponto para ${MP.esc(MP.juntar(ponto.ganhadores.map(nomeDo)))}` : 'Ponto dado',
+  }[partida.fase];
+  const fila = ordem.map((i, posicao) => {
+    let estado = '';
+    if (partida.fase !== 'escolhendo' || posicao < partida.vez) estado = 'feito';
+    else if (posicao === partida.vez) estado = 'agora';
+    return `<span class="na-fila ${estado}">${estado === 'feito' ? '✓ ' : ''}${MP.esc(nomeDo(i))}</span>`;
+  }).join('<span class="seta" aria-hidden="true">→</span>');
+  return `<div class="vez-topo"><small>Rodada ${partida.rodada} de ${RODADAS}</small><strong>${titulo}</strong></div>
+    <div class="fila-da-vez" aria-label="Ordem da rodada">${fila}</div>`;
 }
 
-// Quem chegou à meta (se mais de um, o que tem mais estrelas)
-function vencedor() {
-  const primeiro = ranking()[0];
-  return primeiro && primeiro.estrelas >= META ? primeiro : null;
-}
-
-function filaDeEstrelas(n) {
-  const cheias = Math.min(n, META);
-  return `${'★'.repeat(cheias)}<span class="vazias">${'☆'.repeat(META - cheias)}</span>${n > META ? `<small>+${n - META}</small>` : ''}`;
+// O que fazer agora, com o botão do próximo passo
+function htmlDaFase() {
+  if (partida.fase === 'conferindo') {
+    return `<p>Virem as cartas. Digite a missão e as 3 cartas de cada lado para ver a nota de cada prompt.</p>
+      <a class="botao largo" href="rodada.html">Conferir a rodada</a>`;
+  }
+  if (partida.fase === 'pontuada') {
+    const ultima = partida.rodada >= RODADAS;
+    return `<p>As cartas voltam para os seus montes (embaralhe) e a missão sai do jogo.${ultima ? '' : ` Na rodada ${partida.rodada + 1}, começa ${MP.esc(nomeDo(MP.quemComeca(partida, partida.rodada + 1)))}.`}</p>
+      <button type="button" class="botao largo" data-acao="avancar">${ultima ? 'Ver o resultado final' : `Começar a rodada ${partida.rodada + 1}`}</button>
+      <a class="botao secundario largo" href="rodada.html">Ver o resultado da rodada</a>`;
+  }
+  if (partida.fase === 'fim') {
+    return `<p>Agora o desafio final, sem cartas: cada lado escreve um prompt com as 4 partes e você confere se aprenderam.</p>
+      <a class="botao largo" href="aprendeu.html">Conferir se aprendeu</a>
+      <button type="button" class="botao secundario largo" data-acao="resultado">Ver o resultado</button>`;
+  }
+  return '';
 }
 
 function htmlDoLado(lado, i) {
-  const daVez = i === partida.vez;
-  const ganhou = lado.estrelas >= META;
-  return `<article class="lado ${daVez ? 'da-vez' : ''} ${ganhou ? 'ganhou' : ''}" data-lado="${i}">
-    <div class="lado-topo">
-      <div>
-        <p class="lado-nome">${ganhou ? '🏆 ' : ''}${MP.esc(lado.nome)}</p>
-        <span class="lado-info">${MP.plural(lado.missoes, 'missão feita', 'missões feitas')}${lado.perfeitas ? ` · ${lado.perfeitas} com ★★★` : ''}</span>
-      </div>
-      ${daVez ? '<span class="cod selo-vez">VEZ</span>' : ''}
+  const ordem = MP.ordemDaRodada(partida);
+  const posicao = ordem.indexOf(i);
+  const escolhendo = partida.fase === 'escolhendo' && partida.primeiro !== null;
+  const daVez = escolhendo && posicao === partida.vez;
+  const escolheu = escolhendo && posicao < partida.vez;
+  const campeao = partida.fase === 'fim' && MP.naFrente(partida).includes(lado);
+  return `<article class="lado ${daVez ? 'da-vez' : ''} ${campeao ? 'ganhou' : ''}" data-lado="${i}">
+    <div class="lado-texto">
+      <p class="lado-nome">${campeao ? '🏆 ' : ''}${MP.esc(lado.nome)}${daVez ? ' <span class="cod selo-vez">VEZ</span>' : ''}</p>
+      <span class="lado-info">Soma das notas: ${MP.somaDasNotas(lado)}${escolheu ? ' · <span class="escolheu">✓ escolheu</span>' : ''}</span>
     </div>
-    <div class="estrelas-lado">
-      <p class="fila-estrelas" aria-hidden="true">${filaDeEstrelas(lado.estrelas)}</p>
-      <div class="contador">
-        <button type="button" class="mais-menos" data-delta="-1" aria-label="Tirar 1 estrela de ${MP.esc(lado.nome)}">−</button>
-        <div class="valor"><b>${lado.estrelas}</b><span>de ${META} ★</span></div>
-        <button type="button" class="mais-menos" data-delta="1" aria-label="Dar 1 estrela a ${MP.esc(lado.nome)}">+</button>
-      </div>
+    <div class="contador">
+      <button type="button" class="mais-menos" data-delta="-1" aria-label="Tirar 1 ponto de ${MP.esc(lado.nome)}">−</button>
+      <div class="valor"><b>${lado.pontos}</b><span>${lado.pontos === 1 ? 'ponto' : 'pontos'}</span></div>
+      <button type="button" class="mais-menos" data-delta="1" aria-label="Dar 1 ponto a ${MP.esc(lado.nome)}">+</button>
     </div>
   </article>`;
 }
 
 function mostrarPlacar() {
-  const escolhendo = partida.vez === null;
-  $('#quem-comeca').hidden = !escolhendo;
-  $('#vez').hidden = escolhendo;
-  $('#barra-turno').hidden = escolhendo;
-  document.body.classList.toggle('com-barra', !escolhendo);
-  const campeao = vencedor();
+  const semComeco = partida.primeiro === null;
+  const escolhendo = !semComeco && partida.fase === 'escolhendo';
+  $('#quem-comeca').hidden = !semComeco;
+  $('#vez').hidden = semComeco;
+  $('#barra-turno').hidden = !escolhendo;
+  document.body.classList.toggle('com-barra', escolhendo);
 
-  if (escolhendo) {
+  if (semComeco) {
     $('#opcoes-comeca').innerHTML = partida.lados.map((lado, i) => (
       `<button type="button" class="chip" data-comeca="${i}">${MP.esc(lado.nome)}</button>`)).join('');
   } else {
-    const lado = partida.lados[partida.vez];
-    $('#vez').innerHTML = campeao
-      ? `<div><small>Chegou a ${MP.plural(campeao.estrelas, 'estrela', 'estrelas')}</small><br><strong>🏆 ${MP.esc(campeao.nome)} ganhou!</strong></div>`
-      : `<div><small>Vez de</small><br><strong>${MP.esc(lado.nome)}</strong></div>
-        <small>${MP.plural(partida.feitas.length, 'missão feita', 'missões feitas')} de ${DADOS.totalDeMissoes}</small>`;
-    const avisos = [];
-    if (!campeao && partida.turno === 1) {
-      avisos.push('Na vez: compre 1, bata se fechou um prompt e descarte 1. Alguém bateu? Confira na página Missão.');
-    }
-    if (!campeao && partida.feitas.length >= DADOS.totalDeMissoes) {
-      avisos.push('As missões acabaram: toque em Encerrar partida. Ganha quem tiver mais estrelas.');
-    }
-    $('#aviso-turno').hidden = avisos.length === 0;
-    $('#aviso-turno').textContent = avisos.join(' ');
+    $('#vez').innerHTML = htmlDaVez();
   }
+
+  const fase = semComeco ? '' : htmlDaFase();
+  $('#fase').hidden = !fase;
+  $('#fase').innerHTML = fase;
   $('#lados').innerHTML = partida.lados.map(htmlDoLado).join('');
+  atualizarAviso();
   atualizarRelogio();
 
-  // Alguém chegou à meta (na página Missão): mostra o resultado uma vez só.
-  // Se a estrela for desfeita, a vitória some e pode aparecer de novo depois.
-  if (!campeao && partida.fimMostrado) {
-    partida.fimMostrado = false;
-    MP.salvarPartida(partida);
-  }
-  if (campeao && !partida.fimMostrado && !escolhendo) {
+  // A última rodada terminou: mostra o resultado uma vez só
+  if (partida.fase === 'fim' && !partida.fimMostrado) {
     partida.fimMostrado = true;
-    partida.cronometro = { fim: null, restante: restante(), esgotou: false };
     MP.salvarPartida(partida);
-    encerrar();
+    mostrarFim();
   }
 }
 
-// O + e o − corrigem as estrelas à mão (a página Missão já soma sozinha)
-function mudarEstrelas(i, delta) {
+function atualizarAviso() {
+  const avisos = [];
+  if (partida.primeiro !== null && partida.fase === 'escolhendo') {
+    if (partida.cronometro.esgotou) {
+      avisos.push('Tempo esgotado! O lado escolhe agora as 3 cartas e devolve as outras 6.');
+    } else if (partida.vez === 0) {
+      avisos.push('Vire 1 missão e leiam juntos o pedido e os 3 assuntos. Depois, toque em Iniciar.');
+    } else {
+      avisos.push(`Na vez: compre ${DADOS.cartasCompradas || 3} de cada baralho, escolha 1 de cada e devolva as outras 6.`);
+    }
+  }
+  $('#aviso-turno').hidden = avisos.length === 0;
+  $('#aviso-turno').textContent = avisos.join(' ');
+}
+
+// O + e o − corrigem os pontos à mão (a página Rodada já dá o ponto sozinha)
+function mudarPontos(i, delta) {
   const lado = partida.lados[i];
-  lado.estrelas = Math.max(0, lado.estrelas + delta);
+  lado.pontos = Math.max(0, lado.pontos + delta);
   MP.salvarPartida(partida);
   mostrarPlacar();
 }
@@ -154,8 +193,10 @@ function mudarEstrelas(i, delta) {
 // ---------- Vez ----------
 
 function escolherQuemComeca(i) {
-  partida.vez = i;
-  partida.turno = 1;
+  partida.primeiro = i;
+  partida.rodada = 1;
+  partida.fase = 'escolhendo';
+  partida.vez = 0;
   partida.cronometro = { fim: null, restante: DURACAO_DA_VEZ, esgotou: false };
   MP.salvarPartida(partida);
   mostrarPlacar();
@@ -167,13 +208,20 @@ function sortearQuemComeca() {
   MP.aviso(`Sorteado: ${partida.lados[i].nome} começa`);
 }
 
-function passarAVez() {
-  partida.vez = (partida.vez + 1) % partida.lados.length;
-  partida.turno += 1;
-  iniciarCronometro();
-  mostrarPlacar();
-  // Com muitos grupos, leva a tela até o lado da vez
-  document.querySelector('.lado.da-vez')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+// O último lado terminou: hora de conferir os prompts na página Rodada
+function proximoLado() {
+  if (partida.vez < partida.lados.length - 1) {
+    partida.vez += 1;
+    iniciarCronometro();
+    mostrarPlacar();
+    // Com muitos lados, leva a tela até o lado da vez
+    document.querySelector('.lado.da-vez')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return;
+  }
+  partida.fase = 'conferindo';
+  partida.cronometro = { fim: null, restante: DURACAO_DA_VEZ, esgotou: false };
+  MP.salvarPartida(partida);
+  location.href = 'rodada.html';
 }
 
 // ---------- Cronômetro ----------
@@ -202,17 +250,18 @@ function botaoDoCronometro() {
     manterTelaLigada();
   }
   prepararSom();
+  atualizarAviso();
   atualizarRelogio();
 }
 
 function atualizarRelogio() {
-  if (!partida || partida.vez === null) return;
+  if (!partida || partida.primeiro === null || partida.fase !== 'escolhendo') return;
   const c = partida.cronometro;
-  const r = restante();
-  if (c.fim && r <= 0) {
+  if (c.fim && restante() <= 0) {
     partida.cronometro = { fim: null, restante: 0, esgotou: true };
     MP.salvarPartida(partida);
     tocarAlarme();
+    atualizarAviso();
   }
   const segundos = Math.ceil(restante());
   $('#segundos').textContent = segundos;
@@ -227,16 +276,17 @@ function atualizarRelogio() {
   if (partida.cronometro.fim) botao.textContent = 'Pausar';
   else if (partida.cronometro.esgotou) botao.textContent = 'Reiniciar';
   else botao.textContent = segundos >= DURACAO_DA_VEZ ? 'Iniciar' : 'Continuar';
-  if (partida.cronometro.esgotou) {
-    $('#aviso-turno').hidden = false;
-    $('#aviso-turno').textContent = 'Tempo esgotado! O lado descarta 1 carta e passa a vez.';
-  }
+  $('#proximo').textContent = partida.vez >= partida.lados.length - 1 ? 'Conferir a rodada' : 'Próximo lado';
 }
 
 // Som e vibração quando o tempo acaba (o som só pode tocar depois de um toque na tela)
 let audio;
 function prepararSom() {
-  if (!audio && window.AudioContext) audio = new AudioContext();
+  try {
+    if (!audio && window.AudioContext) audio = new AudioContext();
+  } catch (erro) {
+    // Sem som: o círculo vermelho e o aviso continuam
+  }
 }
 function tocarAlarme() {
   if (navigator.vibrate) navigator.vibrate([250, 120, 250]);
@@ -268,14 +318,16 @@ async function manterTelaLigada() {
 
 // ---------- Fim da partida ----------
 
-function encerrar() {
-  const ordem = ranking();
-  const primeiro = ordem[0];
-  const empatados = ordem.filter((l) => l.estrelas === primeiro.estrelas && l.perfeitas === primeiro.perfeitas);
-  $('#fim-titulo').textContent = empatados.length > 1 ? 'Empate!' : `🏆 ${primeiro.nome} ganhou!`;
-  $('#ranking').innerHTML = ordem.map((lado) => `<li>
-    <span>${empatados.includes(lado) ? '🏆 ' : ''}${MP.esc(lado.nome)}</span>
-    <span>${MP.plural(lado.estrelas, 'estrela', 'estrelas')} · ${MP.plural(lado.missoes, 'missão', 'missões')}</span></li>`).join('');
+function mostrarFim() {
+  const ordem = MP.ranking(partida);
+  const frente = MP.naFrente(partida);
+  const acabou = partida.fase === 'fim';
+  $('#fim-titulo').textContent = frente.length > 1 ? 'Empate!' : `🏆 ${frente[0].nome} ganhou!`;
+  $('#fim-sub').textContent = `${acabou ? `Depois de ${RODADAS} rodadas.` : `Partida encerrada na rodada ${partida.rodada} de ${RODADAS}.`} Ganha quem tem mais pontos. Empate nos pontos: ganha quem somou as maiores notas.`;
+  $('#ranking').innerHTML = ordem.map((lado) => `<li class="${frente.includes(lado) ? 'primeiro' : ''}">
+    <span>${frente.includes(lado) ? '🏆 ' : ''}${MP.esc(lado.nome)}</span>
+    <span>${MP.plural(lado.pontos, 'ponto', 'pontos')} · notas ${MP.somaDasNotas(lado)}</span></li>`).join('');
+  $('#voltar-jogo').textContent = acabou ? 'Fechar' : 'Voltar ao jogo';
   if (!$('#fim').open) $('#fim').showModal();
 }
 
@@ -288,6 +340,7 @@ function pedirNovaPartida() {
 function novaPartida() {
   partida = null;
   MP.apagar('mp-partida');
+  MP.apagar('mp-rodada');
   $('#confirmar-nova').close();
   mostrar();
   window.scrollTo({ top: 0 });
@@ -326,18 +379,29 @@ $('#opcoes-comeca').addEventListener('click', (evento) => {
 $('#lados').addEventListener('click', (evento) => {
   const botao = evento.target.closest('[data-delta]');
   if (!botao) return;
-  mudarEstrelas(Number(botao.closest('[data-lado]').dataset.lado), Number(botao.dataset.delta));
+  mudarPontos(Number(botao.closest('[data-lado]').dataset.lado), Number(botao.dataset.delta));
+});
+$('#fase').addEventListener('click', (evento) => {
+  const botao = evento.target.closest('[data-acao]');
+  if (!botao) return;
+  if (botao.dataset.acao === 'avancar') {
+    MP.avancarRodada(partida);
+    mostrarPlacar();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  } else if (botao.dataset.acao === 'resultado') {
+    mostrarFim();
+  }
 });
 $('#cronometro').addEventListener('click', botaoDoCronometro);
-$('#proximo').addEventListener('click', () => { prepararSom(); passarAVez(); });
-$('#encerrar').addEventListener('click', encerrar);
+$('#proximo').addEventListener('click', () => { prepararSom(); proximoLado(); });
+$('#encerrar').addEventListener('click', mostrarFim);
 $('#nova').addEventListener('click', pedirNovaPartida);
 $('#nova-do-fim').addEventListener('click', pedirNovaPartida);
 $('#confirmar-nova-botao').addEventListener('click', novaPartida);
 $('#cancelar-nova').addEventListener('click', () => $('#confirmar-nova').close());
 $('#voltar-jogo').addEventListener('click', () => $('#fim').close());
 
-// A página Missão pode ter mudado o placar
+// A página Rodada pode ter mudado o placar
 window.addEventListener('pageshow', () => { partida = MP.lerPartida(); mostrar(); });
 document.addEventListener('visibilitychange', () => {
   if (document.visibilityState === 'visible' && partida?.cronometro?.fim) manterTelaLigada();
