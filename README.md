@@ -2,7 +2,7 @@
 
 **Palavra Mágica** é o jogo de cartas do grupo NEXUS (Métodos Ágeis, IBMEC) que ensina a escrever bons prompts, sem internet na sala de aula. Antes ele se chamava *Magic Prompt*; o professor pediu um nome em português na Revisão da Sprint 4 (04/11/2026).
 
-Esta é a **versão "Rodadas" para a partida de teste de 11/11**. Em cada rodada, cada lado monta um prompt com 3 cartas para a mesma missão, e o melhor prompt ganha 1 ponto. No fim, um desafio sem cartas confere se a turma aprendeu.
+Esta é a **versão "Rodadas"**, com as mudanças pedidas pelo cliente depois da partida de teste de 11/11 (regras de 16/11). Em cada rodada, cada lado monta um prompt com 3 cartas para a mesma missão, e o melhor prompt ganha 1 ponto. No fim, um desafio sem cartas confere se a turma aprendeu.
 
 Só o professor usa o celular em sala. O aplicativo do professor foi feito **primeiro para o celular**, funciona **sem internet** depois da primeira visita e pode ser **instalado na tela inicial**.
 
@@ -17,7 +17,7 @@ Só o professor usa o celular em sala. O aplicativo do professor foi feito **pri
 | `cartas/manual.cjs` | Texto e desenho do Manual do Professor |
 | `cartas/imagens/` | Fotos das telas do aplicativo usadas no manual |
 | `app/` | O aplicativo do professor |
-| `app-vue/` | Versão antiga em Vue 3, ainda com as regras do pacote E |
+| `app-vue/` | Versão antiga em Vue 3, feita pelo Frederico Queiroz em 28/10 (Sprint 3). Fica só como histórico: o aplicativo que vale é o da pasta `app/` |
 
 ## O jogo em 6 linhas
 
@@ -64,9 +64,11 @@ Ao **criar um arquivo novo** no aplicativo, coloque o nome dele na lista `ARQUIV
 
 Seguimos a regra do professor: se existe palavra em português que diz o mesmo, usamos a palavra em português. As que ficaram (como *prompt*, *persona*, *Sprint* e *Kanban*) estão explicadas e justificadas na seção 8 do Manual do Professor. Os nomes de arquivos e o código usam os nomes técnicos das linguagens de programação (HTML, CSS e JavaScript).
 
-## Ainda falta
+## O que já foi testado
 
-- Testar num celular de verdade: modo sem internet, som e vibração do cronômetro, tela que não apaga.
-- Testar com alguém que não sabe escrever prompts (tarefa da história 2.2.1).
-- Ajustar os números depois da partida de teste: 5 rodadas, 4 cartas abertas em cada baralho e 1 minuto por vez.
-- Atualizar o `app-vue` para esta versão.
+- Teste com alguém que não sabe escrever prompts (Sprint 4, história 2.2.1).
+- Partida de teste com o professor em 11/11: passou de 25 minutos, por isso agora existe a partida rápida (3 rodadas).
+- Números ajustados depois da partida de teste: 5 rodadas (ou 3 na rápida), 4 cartas abertas em cada baralho e 1 minuto por vez.
+- Aplicativo no celular em modo avião (16/11): funcionou sem internet.
+
+Ainda não testado no celular: o som e a vibração do cronômetro e a tela que não apaga.
