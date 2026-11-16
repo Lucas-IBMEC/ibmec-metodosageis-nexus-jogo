@@ -1,6 +1,7 @@
 // Página Rodada: o professor digita a missão e as 3 cartas de cada lado (contexto, persona e formato).
 // O aplicativo dá a nota de cada prompt (a média dos números escondidos nos 3 assuntos da missão),
 // diz por que cada um perdeu pontos e dá 1 ponto para o melhor (empate: 1 ponto para cada).
+// Lado roubado por uma carta especial perde a rodada: não precisa digitar as cartas e não ganha ponto.
 // Histórias: 2.1.1, 2.1.2, 2.2.1 e 2.2.2.
 
 const $ = (seletor) => document.querySelector(seletor);
@@ -20,7 +21,7 @@ function chaveAtual() {
 }
 
 function estadoVazio() {
-  return { chave: chaveAtual(), missao: '', prompts: {}, quantos: 2, revelado: false };
+  return { chave: chaveAtual(), missao: '', prompts: {}, roubados: {}, quantos: 2, revelado: false };
 }
 
 function pontoDado() {
@@ -38,6 +39,7 @@ function lerEstado() {
     ponto.prompts.forEach((p) => {
       estado.prompts[p.lado] = Object.fromEntries(TIPOS.map((tipo, k) => [tipo, String(Number(p.cartas[k].slice(1)))]));
     });
+    estado.roubados = Object.fromEntries((ponto.roubados || []).map((i) => [i, true]));
     estado.revelado = true;
   }
 }
@@ -67,7 +69,7 @@ function maiuscula(texto) {
 // A missão, as cartas de cada prompt e o que falta
 function lerTudo() {
   const missao = MP.cartaPeloNumero('Missão', estado.missao);
-  const linhas = quem().map(({ i, nome }) => {
+  const todas = quem().map(({ i, nome }) => {
     const digitado = estado.prompts[i] || {};
     const cartas = TIPOS.map((tipo) => {
       const numero = String(digitado[tipo] || '');
@@ -75,6 +77,9 @@ function lerTudo() {
     });
     return { i, nome, cartas, completo: cartas.every((c) => c.carta) };
   });
+  // Quem foi roubado fica de fora da conta
+  const roubados = todas.filter((linha) => estado.roubados[linha.i]);
+  const linhas = todas.filter((linha) => !estado.roubados[linha.i]);
   // Só existe uma carta de cada: a mesma carta em dois prompts quer dizer que alguém digitou errado
   const donos = {};
   linhas.forEach((linha) => linha.cartas.forEach((c) => {
@@ -85,12 +90,20 @@ function lerTudo() {
   const falta = [];
   if (!missao) falta.push('a missão');
   linhas.forEach((linha) => { if (!linha.completo) falta.push(`as cartas de ${linha.nome}`); });
-  return { missao, linhas, donos, falta, completo: falta.length === 0 };
+  return { missao, linhas, roubados, donos, falta, completo: falta.length === 0 };
 }
 
 // ---------- Campos ----------
 
+// Só vale o roubo de quem está na rodada, e sempre sobra pelo menos 1 lado que não foi roubado
+function ajustarRoubados() {
+  const naRodada = new Set(quem().map(({ i }) => String(i)));
+  Object.keys(estado.roubados).forEach((i) => { if (!naRodada.has(i)) delete estado.roubados[i]; });
+  if (Object.keys(estado.roubados).length >= naRodada.size) estado.roubados = {};
+}
+
 function montarCampos() {
+  ajustarRoubados();
   const travado = pontoDado();
   $('#missao').value = estado.missao;
   $('#missao').disabled = travado;
@@ -99,19 +112,30 @@ function montarCampos() {
   $('#menos-prompts').disabled = estado.quantos <= 2;
   $('#mais-prompts').disabled = estado.quantos >= MAX_PROMPTS;
   const comOrdem = partida && partida.primeiro !== null;
-  $('#prompts').innerHTML = quem().map(({ i, nome }, posicao) => `
-    <div class="prompt-entrada" data-prompt="${i}">
-      <p class="prompt-quem">${comOrdem ? `<span class="ordem-n">${posicao + 1}º</span>` : ''}${MP.esc(nome)}</p>
-      <div class="trio-campos">
+  const todos = quem();
+  const livres = todos.filter(({ i }) => !estado.roubados[i]).length;
+  $('#prompts').innerHTML = todos.map(({ i, nome }, posicao) => {
+    const roubado = Boolean(estado.roubados[i]);
+    // Sempre sobra pelo menos 1 lado que não foi roubado
+    const bloqueado = travado || (!roubado && livres <= 1);
+    return `
+    <div class="prompt-entrada ${roubado ? 'roubado' : ''}" data-prompt="${i}">
+      <div class="prompt-linha">
+        <p class="prompt-quem">${comOrdem ? `<span class="ordem-n">${posicao + 1}º</span>` : ''}${MP.esc(nome)}</p>
+        <button type="button" class="chip roubo" data-roubado="${i}" aria-pressed="${roubado}" ${bloqueado ? 'disabled' : ''}>Foi roubado</button>
+      </div>
+      <p class="roubado-aviso" ${roubado ? '' : 'hidden'}>Perdeu a rodada: não ganha ponto e não precisa digitar as cartas.</p>
+      <div class="trio-campos" ${roubado ? 'hidden' : ''}>
         ${TIPOS.map((tipo) => `<label class="campo-codigo ${MP.classeDoTipo(tipo)}">
           <span class="letra" aria-hidden="true">${MP.LETRA[tipo]}</span>
           <input class="campo" data-tipo="${tipo}" inputmode="numeric" pattern="[0-9]*" maxlength="2"
             autocomplete="off" enterkeyhint="next" placeholder="nº" aria-label="${tipo} de ${MP.esc(nome)}"
-            value="${MP.esc((estado.prompts[i] || {})[tipo] || '')}" ${travado ? 'disabled' : ''}>
+            value="${MP.esc((estado.prompts[i] || {})[tipo] || '')}" ${travado || roubado ? 'disabled' : ''}>
         </label>`).join('')}
       </div>
-      <ul class="cartas-digitadas" aria-live="polite"></ul>
-    </div>`).join('');
+      <ul class="cartas-digitadas" aria-live="polite" ${roubado ? 'hidden' : ''}></ul>
+    </div>`;
+  }).join('');
 }
 
 // Embaixo de cada campo: o nome da carta digitada, ou o erro
@@ -198,7 +222,8 @@ function htmlDoResultado(tudo, resultados) {
     <ol class="lista-resultado">${resultados.map((r) => {
       const posicao = 1 + resultados.filter((outro) => outro.soma > r.soma).length;
       return htmlDoPrompt(tudo.missao, r, posicao, maxima);
-    }).join('')}</ol>`;
+    }).join('')}</ol>
+    ${tudo.roubados.length ? `<p class="roubados-res">Roubado: ${MP.esc(MP.juntar(tudo.roubados.map((l) => l.nome)))} perdeu a rodada e não ganha ponto.</p>` : ''}`;
 }
 
 // ---------- Ponto ----------
@@ -212,7 +237,7 @@ function htmlDoPonto(tudo, resultados) {
   }
   const ponto = MP.pontoDaRodada(partida);
   if (ponto) {
-    const ultima = partida.rodada >= MP.RODADAS;
+    const ultima = partida.rodada >= MP.rodadasDa(partida);
     const placar = MP.ranking(partida).map((l) => `${MP.esc(l.nome)} ${l.pontos}`).join(' · ');
     const proximo = partida.fase === 'fim'
       ? '<a class="botao" href="index.html">Ver o resultado final</a>'
@@ -249,6 +274,7 @@ function darPonto() {
     missao: tudo.missao.codigo,
     prompts: resultados.map((r) => ({ lado: r.i, cartas: r.cartas.map((c) => c.codigo), soma: r.soma })),
     ganhadores,
+    roubados: tudo.roubados.map((l) => l.i),
   });
   partida.fase = 'pontuada';
   partida.cronometro = { fim: null, restante: MP.DURACAO_DA_VEZ, esgotou: false };
@@ -316,7 +342,7 @@ function textoDoAviso() {
 
 function atualizar() {
   const tudo = lerTudo();
-  $('#titulo').textContent = partida ? `Rodada ${partida.rodada} de ${MP.RODADAS}` : 'Conferir prompts';
+  $('#titulo').textContent = partida ? `Rodada ${partida.rodada} de ${MP.rodadasDa(partida)}` : 'Conferir prompts';
   const aviso = textoDoAviso();
   $('#aviso-rodada').hidden = !aviso;
   $('#aviso-rodada').innerHTML = aviso;
@@ -385,6 +411,18 @@ principal.addEventListener('keydown', (evento) => {
     evento.preventDefault();
     proximoCampo(evento.target);
   }
+});
+
+// Foi roubado: o lado perde a rodada, os campos dele somem e ele sai da conta
+$('#prompts').addEventListener('click', (evento) => {
+  const botao = evento.target.closest('[data-roubado]');
+  if (!botao || botao.disabled) return;
+  const i = botao.dataset.roubado;
+  if (estado.roubados[i]) delete estado.roubados[i];
+  else estado.roubados[i] = true;
+  salvarEstado();
+  montarCampos();
+  atualizar();
 });
 
 $('#ver').addEventListener('click', () => {

@@ -1,7 +1,7 @@
 // Service worker: guarda o aplicativo no celular para funcionar sem internet (história 2.4.1).
 // Ao mudar qualquer arquivo, aumente a VERSAO para os celulares baixarem de novo.
 
-const VERSAO = 'palavra-magica-v7';
+const VERSAO = 'palavra-magica-v8';
 const ARQUIVOS = [
   './',
   './index.html',
@@ -15,6 +15,7 @@ const ARQUIVOS = [
   './js/comum.js',
   './js/partida.js',
   './js/rodada.js',
+  './js/avaliar.js',
   './js/aprendeu.js',
   './js/cartas.js',
   './manifest.webmanifest',

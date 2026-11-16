@@ -22,31 +22,38 @@
   <main class="conteudo">
     <section class="bloco">
       <h2><span class="passo">1</span>O desafio final</h2>
-      <p class="sub">Agora não tem carta: cada lado escreve um prompt com as 4 partes para este problema da escola. Vocês têm 3 minutos.</p>
+      <p class="sub">Agora não tem carta: cada lado escreve um prompt para este problema da escola, com as 3 partes das cartas. Vocês têm 3 minutos.</p>
       <p class="problema" id="problema" aria-live="polite"></p>
-      <button type="button" class="botao secundario largo" id="sortear">Sortear outro problema</button>
-      <p class="rotulo">As 4 partes do prompt</p>
+      <div class="assuntos-missao" id="assuntos-problema"></div>
+      <button type="button" class="botao secundario largo" id="sortear" style="margin-top: 12px">Sortear outro problema</button>
+      <p class="rotulo">As 3 partes do prompt</p>
       <ul class="quatro-partes">
-        <li class="t-persona"><b>Persona</b> Quem a IA vai ser? <span>“Você é…”</span></li>
-        <li class="t-contexto"><b>Contexto</b> Onde é e o que está acontecendo?</li>
-        <li class="t-missao"><b>Tarefa</b> O que você quer que ela faça?</li>
-        <li class="t-formato"><b>Formato</b> Como a resposta deve chegar? <span>“Responda em formato de…”</span></li>
+        <li class="t-persona"><b>Persona</b> Quem a IA vai ser? Alguém que entende do problema. <span>“Você é…”</span></li>
+        <li class="t-contexto"><b>Contexto</b> Onde é, o que está acontecendo e um detalhe. <span>“Na nossa escola…”</span></li>
+        <li class="t-formato"><b>Formato</b> Como a resposta deve chegar, e para quem. <span>“Responda em formato de lista com 3 passos.”</span></li>
       </ul>
+      <p class="nota">O pedido é resolver o problema: “Crie…”, “Explique…”.</p>
+      <details class="exemplo-pergunta exemplos-partes">
+        <summary>Ver exemplos de cada parte</summary>
+        <div id="exemplos"></div>
+      </details>
     </section>
 
     <section class="bloco">
-      <h2><span class="passo">2</span>As 4 perguntas</h2>
-      <p class="sub">Cada lado lê o seu prompt em voz alta. Para cada pergunta, toque em Sim ou Não. Toque em “Ver exemplo” se a turma tiver dúvida.</p>
-      <div class="chips" id="lados" role="group" aria-label="Lado que está sendo conferido"></div>
-      <p class="quem-confere" id="quem"></p>
-      <ol class="perguntas" id="perguntas"></ol>
-      <div class="veredito-aprendeu" id="veredito" aria-live="polite"></div>
-      <button type="button" class="botao largo" id="proximo" hidden>Conferir o próximo lado</button>
+      <h2><span class="passo">2</span>A nota de cada prompt</h2>
+      <p class="sub">Cada lado lê o prompt em voz alta e você digita aqui. O aplicativo dá a nota de 1 a 4, sem internet, com as mesmas regras das cartas.</p>
+      <div class="chips" id="lados" role="group" aria-label="Lado do prompt"></div>
+      <label class="rotulo" for="texto-prompt" id="quem">O prompt</label>
+      <textarea class="campo campo-prompt" id="texto-prompt" rows="6" autocapitalize="sentences" spellcheck="true" enterkeyhint="enter"
+        placeholder="Você é… Na nossa escola… Crie… Responda em formato de…"></textarea>
+      <button type="button" class="botao largo" id="avaliar" style="margin-top: 10px">Ver a nota</button>
+      <div id="resultado-desafio" aria-live="polite"></div>
+      <button type="button" class="botao secundario largo" id="proximo" hidden style="margin-top: 10px">Próximo lado</button>
     </section>
 
     <section class="bloco" id="resumo" hidden></section>
 
-    <p class="nota" style="margin: 0 4px">Com internet no celular, dá para ver a IA de verdade: cole o prompt que a turma achou melhor num assistente de IA e leia a resposta em voz alta.</p>
+    <p class="nota" style="margin: 0 4px">A nota vem das palavras do prompt, como os números escondidos das cartas: o aplicativo mostra o porquê de cada parte, e a palavra final é do professor. Com internet, dá para ver a IA de verdade: cole o melhor prompt num assistente de IA e leia a resposta em voz alta.</p>
   </main>
 
   <nav id="menu" class="menu" aria-label="Páginas"></nav>
@@ -54,6 +61,7 @@
   <script src="js/dados.js"></script>
   <script src="js/nota.js"></script>
   <script src="js/comum.js"></script>
+  <script src="js/avaliar.js"></script>
   <script src="js/aprendeu.js"></script>
 </body>
 </html>

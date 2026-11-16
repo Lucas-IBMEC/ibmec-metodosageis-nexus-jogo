@@ -1,8 +1,9 @@
-// Palavra Mágica · versão "Rodadas" para a partida de teste (11/11/2026).
-// Cada rodada tem 1 missão com 3 assuntos. Na sua vez, cada lado compra 3 cartas de cada baralho
-// (contexto, persona e formato), escolhe 1 de cada e devolve as outras 6. No fim da rodada, o professor digita
-// as cartas no aplicativo: ele dá a nota de cada prompt e diz por que perdeu pontos. O melhor prompt ganha 1 ponto.
-// Depois de 5 rodadas, ganha quem tiver mais pontos.
+// Palavra Mágica · versão "Rodadas" com as cartas abertas (16/11/2026).
+// 4 baralhos: missão, contexto, persona e formato. Cada rodada tem 1 missão com 3 assuntos, a mesma para todos os lados.
+// Cada baralho de contexto, persona e formato tem 4 cartas abertas na mesa. Na sua vez, o lado pega 1 de cada baralho:
+// uma das 4 abertas ou a de cima do monte, sem ver. Cada baralho tem 1 carta especial (Mágico, Espião e Ímã), que rouba
+// a carta daquele baralho de qualquer adversário; quem foi roubado perde a rodada. No fim da rodada, o professor digita as cartas no aplicativo: ele dá a nota de
+// cada prompt e diz por que perdeu pontos. O melhor prompt ganha 1 ponto. Depois de 5 rodadas, ganha quem tiver mais pontos.
 // Uma lista de dados só: dela saem as cartas (frente e verso), a folha de regras, o gabarito do professor,
 // o Manual do Professor e os dados do aplicativo do professor.
 // Uso: node cartas/gerar.cjs
@@ -27,7 +28,8 @@ const ENDERECO_DO_APP = 'lucas-ibmec.github.io/ibmec-metodosageis-nexus-jogo/app
 // ---------------------------------------------------------------- números da regra (de teste)
 
 const RODADAS = 5;
-const COMPRA = 3; // cartas que cada lado compra de cada baralho
+const RODADAS_RAPIDA = 3; // a partida rápida, para o fim da aula
+const ABERTAS = 4; // cartas abertas na mesa em cada baralho (contexto, persona e formato)
 const VEZ_SEGUNDOS = 60;
 const MAX_LADOS = 5;
 
@@ -120,17 +122,39 @@ const formatos = [
   ['F16', 'Linha do tempo', 'Os fatos em ordem, do mais antigo ao mais novo.', [2, 3, 3, 3]],
 ];
 
+// A imagem de cada carta (para o aluno do Fundamental 2 reconhecer de longe). Não usa os símbolos dos assuntos
+// (✚ ⚽ 💻 🌳), para ninguém achar que a imagem diz o assunto da carta.
+const IMAGEM = {
+  C01: '⌚', C02: '🏐', C03: '🏞️', C04: '🔬', C05: '🦟', C06: '🤧', C07: '♻️', C08: '📱',
+  C09: '🌡️', C10: '🔥', C11: '👵', C12: '🏫', C13: '🏟️', C14: '📹', C15: '🏥', C16: '🏢',
+  P01: '👩‍💻', P02: '🦵', P03: '🤸', P04: '📰', P05: '👩‍🔬', P06: '🫀', P07: '🏄', P08: '👷‍♀️',
+  P09: '🥾', P10: '👨‍⚕️', P11: '🥅', P12: '🧑‍💼', P13: '🏗️', P14: '🎙️', P15: '🏘️', P16: '🏦',
+  F01: '📲', F02: '🏋️', F03: '🎒', F04: '📝', F05: '🚨', F06: '✂️', F07: '📊', F08: '🍽️',
+  F09: '🗺️', F10: '❓', F11: '👣', F12: '🪧', F13: '🔢', F14: '💬', F15: '📬', F16: '⏳',
+};
+
+// A carta especial de cada baralho: o mesmo poder (roubar a carta daquele baralho de qualquer adversário),
+// cada uma com a sua imagem. Não tem número nem código: não entra no prompt, então o professor nunca digita.
+const ESPECIAIS = {
+  Contexto: { nome: 'Mágico', ico: '🎩', frase: 'Num passe de mágica, o contexto de um adversário aparece no seu prompt.', o: 'o', carta: 'contexto' },
+  Persona: { nome: 'Espião', ico: '🕵️', frase: 'O espião se infiltra e traz para você a persona de um adversário.', o: 'a', carta: 'persona' },
+  Formato: { nome: 'Ímã', ico: '🧲', frase: 'O ímã puxa para você o formato de um adversário.', o: 'o', carta: 'formato' },
+};
+// O poder, igual nas 3: roubar a carta daquele baralho de qualquer adversário. Quem foi roubado perde a rodada.
+const poderDa = (e) => `Roube ${e.o} ${e.carta} de qualquer adversário.`;
+const REGRA_DO_ROUBO = 'Quem foi roubado perde a rodada: não ganha ponto.';
+
 // ---------------------------------------------------------------- as cartas como objetos (para fazer as contas)
 
 const minuscula = (t) => t.charAt(0).toLowerCase() + t.slice(1);
 const semParenteses = (nome) => nome.replace(/ \(.*\)$/, '');
 const combinaDe = (v) => Object.fromEntries(ORDEM.map((a, i) => [a, v[i]]));
 const M = missoes.map(([codigo, letras, pedido]) => ({ codigo, tipo: 'Missão', nome: pedido, assuntos: [...letras] }));
-const C = contextos.map(([codigo, nome, texto, v]) => ({ codigo, tipo: 'Contexto', nome, texto, combina: combinaDe(v) }));
+const C = contextos.map(([codigo, nome, texto, v]) => ({ codigo, tipo: 'Contexto', nome, texto, ico: IMAGEM[codigo], combina: combinaDe(v) }));
 const P = personas.map(([codigo, nome, texto, v, prompt]) => ({
-  codigo, tipo: 'Persona', nome, texto, prompt: prompt || `Você é ${minuscula(nome)}.`, combina: combinaDe(v),
+  codigo, tipo: 'Persona', nome, texto, prompt: prompt || `Você é ${minuscula(nome)}.`, ico: IMAGEM[codigo], combina: combinaDe(v),
 }));
-const F = formatos.map(([codigo, nome, texto, v]) => ({ codigo, tipo: 'Formato', nome, texto, combina: combinaDe(v) }));
+const F = formatos.map(([codigo, nome, texto, v]) => ({ codigo, tipo: 'Formato', nome, texto, ico: IMAGEM[codigo], combina: combinaDe(v) }));
 const BARALHOS = [['Contexto', C], ['Persona', P], ['Formato', F]];
 const porCodigo = Object.fromEntries([...M, ...C, ...P, ...F].map((c) => [c.codigo, c]));
 const doCodigo = (codigo) => {
@@ -160,8 +184,12 @@ for (const trio of TRIOS) {
     if (somas[0] !== 11 || somas[1] !== 10) throw new Error(`${tipo} para ${trio.join('')}: as 2 melhores somam ${somas[0]} e ${somas[1]}`);
   }
 }
-// Na vez do último lado, cada monte ainda tem cartas para ele comprar (cada lado antes dele guardou 1 de cada)
-if (16 - (MAX_LADOS - 1) < COMPRA) throw new Error('cartas de menos para tantos lados');
+// Toda carta tem a sua imagem, e nenhuma imagem se repete
+for (const [, baralho] of BARALHOS) for (const c of baralho) if (!c.ico) throw new Error(`falta a imagem de ${c.codigo}`);
+if (new Set(Object.values(IMAGEM)).size !== Object.keys(IMAGEM).length) throw new Error('duas cartas com a mesma imagem');
+// Numa rodada, cada monte precisa repor as abertas para todos os lados, mais 1 carta para quem foi roubado
+// (o monte tem 16 cartas + a especial; as abertas ficam fora dele)
+if (16 + 1 - ABERTAS < MAX_LADOS + 1) throw new Error('cartas de menos para tantos lados');
 
 // ---------------------------------------------------------------- desenho das cartas
 
@@ -211,6 +239,17 @@ const EMBLEMA = {
   Formato: '<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h4"/>',
 };
 const emblema = (tipo, cls) => `<svg class="${cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${EMBLEMA[tipo]}</svg>`;
+const imagem = (ico, extra = '') => `<div class="imagem ${extra}" aria-hidden="true">${ico}</div>`;
+
+// A carta especial de cada baralho (fica no mesmo monte, com o mesmo verso)
+const cartaEspecial = (tipo) => {
+  const e = ESPECIAIS[tipo];
+  const html = `<div class="card t-${tipo.toLowerCase()} especial"><div class="hd"><span>${tipo.toUpperCase()}</span><span class="code">★ ESPECIAL</span></div>
+  <div class="body center">${imagem(e.ico, 'grande')}<p class="big">${e.nome}</p><p class="poder">${poderDa(e)}</p><p class="efeito">${e.frase} ${REGRA_DO_ROUBO}</p></div>
+  <div class="ft">Não entra no prompt: depois de usar, vai para o fundo do monte. Ninguém tem ${e.carta} ainda? Ponha no fundo do monte e pegue outra.</div></div>`;
+  cartaPorCodigo[`especial-${tipo}`] = html;
+  return html;
+};
 
 // A frente das cartas, separada por baralho
 const frentes = {
@@ -220,17 +259,17 @@ const frentes = {
   <p class="pense">Pense: quem entende destes 3 assuntos? Que situação junta os 3? Que formato ajuda quem vai ler?</p>
   <div class="ft">Fica no meio da mesa durante a rodada. Vale para todos os lados.</div>`)),
 
-  Contexto: C.map((c) => carta('t-contexto', c.codigo, 'CONTEXTO', `
-  <div class="body center">${emblema('Contexto', 'emblema')}<p class="big">${esc(c.nome)}</p><p class="txt">“${esc(c.texto)}”</p></div>
-  <div class="ft">A situação: onde é e o que está acontecendo.</div>`)),
+  Contexto: [...C.map((c) => carta('t-contexto', c.codigo, 'CONTEXTO', `
+  <div class="body center">${imagem(c.ico)}<p class="big">${esc(c.nome)}</p><p class="txt">“${esc(c.texto)}”</p></div>
+  <div class="ft">A situação: onde é e o que está acontecendo.</div>`)), cartaEspecial('Contexto')],
 
-  Persona: P.map((p) => carta('t-persona', p.codigo, 'PERSONA', `
-  <div class="body center">${emblema('Persona', 'emblema')}<p class="big">${esc(p.nome)}</p><p class="faz">${esc(p.texto)}</p><p class="efeito">No prompt:<br>“${esc(p.prompt)}”</p></div>
-  <div class="ft">Quem a IA vai ser ao responder.</div>`)),
+  Persona: [...P.map((p) => carta('t-persona', p.codigo, 'PERSONA', `
+  <div class="body center">${imagem(p.ico)}<p class="big">${esc(p.nome)}</p><p class="faz">${esc(p.texto)}</p><p class="efeito">No prompt:<br>“${esc(p.prompt)}”</p></div>
+  <div class="ft">Quem a IA vai ser ao responder.</div>`)), cartaEspecial('Persona')],
 
-  Formato: F.map((f) => carta('t-formato', f.codigo, 'FORMATO', `
-  <div class="body center"><p class="big">${esc(f.nome)}</p><div class="desenho">${desenho[f.codigo]}</div><p class="efeito">${esc(f.texto)}</p></div>
-  <div class="ft">Como a resposta chega para quem vai ler.</div>`)),
+  Formato: [...F.map((f) => carta('t-formato', f.codigo, 'FORMATO', `
+  <div class="body center">${imagem(f.ico, 'pequena')}<p class="big">${esc(f.nome)}</p><div class="desenho">${desenho[f.codigo]}</div><p class="efeito">${esc(f.texto)}</p></div>
+  <div class="ft">Como a resposta chega para quem vai ler.</div>`)), cartaEspecial('Formato')],
 };
 const cartas = Object.values(frentes).flat();
 
@@ -274,17 +313,21 @@ const paginasDeCartas = folhas.map((folha, n) => {
 // Se uma carta mudar, o gerador confere de novo se o exemplo ainda faz sentido.
 const exemplo = {
   missao: doCodigo('M04'),
-  // O que o Lado 1 comprou: 3 de cada baralho (a primeira de cada é a escolhida)
-  compra: { Contexto: ['C09', 'C14', 'C16'], Persona: ['P09', 'P02', 'P16'], Formato: ['F03', 'F01', 'F06'] },
+  // As 4 cartas abertas de cada baralho na vez do Lado 1 (a primeira de cada é a que ele pega).
+  // O Lado 2 pega a segunda de cada, que continua aberta na vez dele.
+  abertas: { Contexto: ['C09', 'C02', 'C14', 'C16'], Persona: ['P09', 'P02', 'P14', 'P16'], Formato: ['F03', 'F02', 'F01', 'F06'] },
   lado1: ['C09', 'P09', 'F03'].map(doCodigo),
   lado2: ['C02', 'P02', 'F02'].map(doCodigo),
 };
 {
-  const { missao, compra, lado1, lado2 } = exemplo;
-  for (const [tipo, codigos] of Object.entries(compra)) {
+  const { missao, abertas, lado1, lado2 } = exemplo;
+  for (const [tipo, codigos] of Object.entries(abertas)) {
+    if (codigos.length !== ABERTAS) throw new Error(`exemplo: são ${ABERTAS} cartas abertas de ${tipo}`);
     const somas = codigos.map((c) => NOTA.somaDaCarta(doCodigo(c), missao.assuntos));
-    if (!(somas[0] > somas[1] && somas[0] > somas[2])) throw new Error(`exemplo: a ${tipo} escolhida não é a melhor das 3 compradas`);
+    if (!somas.slice(1).every((s) => somas[0] > s)) throw new Error(`exemplo: a ${tipo} do Lado 1 não é a melhor das abertas`);
   }
+  if (!lado1.every((c, i) => c.codigo === Object.values(abertas)[i][0])) throw new Error('exemplo: o Lado 1 pega a primeira aberta de cada baralho');
+  if (!lado2.every((c, i) => c.codigo === Object.values(abertas)[i][1])) throw new Error('exemplo: o Lado 2 pega a segunda aberta de cada baralho');
   if (!(NOTA.somaDoPrompt(lado1, missao.assuntos) > NOTA.somaDoPrompt(lado2, missao.assuntos))) throw new Error('exemplo: o Lado 1 precisa ganhar');
   // O Lado 2 perde pontos só por causa do assunto que esqueceu
   const perdidos = NOTA.problemas(lado2, missao.assuntos);
@@ -295,30 +338,82 @@ const notaDe = (cartasDoLado) => NOTA.numero(NOTA.mediaDoPrompt(cartasDoLado, ex
 const listaDoLado = (cartasDoLado) => cartasDoLado.map((c) => `<b>${c.codigo}</b> ${esc(semParenteses(c.nome))}`).join(' + ');
 const iconesDaMissao = (m) => m.assuntos.map(icone).join(' ');
 
-// ---------------------------------------------------------------- regras (1 página)
+// ---------------------------------------------------------------- regras (2 páginas: frente e verso)
 
+const nomesDasEspeciais = Object.values(ESPECIAIS).map((e) => `${e.ico} ${e.nome}`).join(' · ');
 const regras = `<section class="page doc regras">
-<h1>${NOME} · Como jogar <small>versão de teste · grupo ${GRUPO} · 2 a ${MAX_LADOS} lados · ${RODADAS} rodadas · cerca de 25 minutos</small></h1>
-<p class="objetivo"><b>Objetivo:</b> em cada rodada, montar o prompt que mais combina com a missão, com 1 contexto, 1 persona e 1 formato. O melhor prompt da rodada ganha <b>1 ponto</b>. Depois de <b>${RODADAS} rodadas</b>, ganha quem tiver mais pontos.</p>
+<h1>${NOME} · Como jogar <small>grupo ${GRUPO} · 2 a ${MAX_LADOS} lados · completa: ${RODADAS} rodadas (cerca de 25 min) · rápida: ${RODADAS_RAPIDA} rodadas (cerca de 15 min)</small></h1>
+<p class="objetivo"><b>Objetivo:</b> em cada rodada, montar o prompt que mais combina com a missão, com 1 contexto, 1 persona e 1 formato. O melhor prompt da rodada ganha <b>1 ponto</b>. No fim da última rodada, ganha quem tiver mais pontos.</p>
 
 <div class="cols">
 <div>
 <h2>No jogo</h2>
-<p>${M.length} missões · ${C.length} contextos · ${P.length} personas · ${F.length} formatos · o celular do professor com o aplicativo.</p>
+<p>${M.length} missões · ${C.length + 1} contextos · ${P.length + 1} personas · ${F.length + 1} formatos (cada um desses 3 baralhos tem 1 carta especial) · o celular do professor com o aplicativo.</p>
 
 <h2>Preparação</h2>
 <ol>
-<li>Divida a turma em 2 a ${MAX_LADOS} lados: cada lado é 1 aluno, uma dupla ou um grupo.</li>
-<li>Embaralhe cada baralho separado (<b>contexto</b>, <b>persona</b> e <b>formato</b>) e ponha os 3 montes virados para baixo no meio da mesa. O verso mostra qual é qual.</li>
+<li>Divida a turma em 2 a ${MAX_LADOS} lados: cada lado é 1 aluno, uma dupla ou um grupo (veja as versões no verso).</li>
+<li>Embaralhe cada baralho separado (<b>contexto</b>, <b>persona</b> e <b>formato</b>) e ponha os 3 montes virados para baixo no meio da mesa.</li>
+<li>Vire as <b>${ABERTAS} cartas de cima</b> de cada monte, lado a lado: são as <b>cartas abertas</b>. Saíram <b>2 ou 3 cartas especiais</b> entre as abertas? Recolha as abertas, embaralhe de novo e vire outras.</li>
 <li>Embaralhe as <b>missões</b> e deixe o montinho ao lado.</li>
-<li>O professor abre a página Partida no aplicativo, cadastra os lados e toca em <b>Sortear</b> para ver quem começa.</li>
+<li><b>Quem começa:</b> o professor cadastra os lados na página Partida do aplicativo e toca em <b>Sortear quem começa</b>. Sem celular: par ou ímpar.</li>
 </ol>
 
 <div class="mesa">
   <p class="mesa-t">A mesa</p>
-  <div class="mesa-fila"><span class="mini m">Missão<small>aberta</small></span></div>
-  <div class="mesa-fila"><span class="mini c">Contexto<small>monte</small></span><span class="mini p">Persona<small>monte</small></span><span class="mini f">Formato<small>monte</small></span></div>
-  <p class="mesa-mao">Na frente de cada lado: as 3 cartas escolhidas, viradas para baixo</p>
+  <div class="mesa-corpo">
+  <span class="mini m">Missão<small>vale para todos</small></span>
+  <div class="mesa-baralhos">${[['c', 'Contexto'], ['p', 'Persona'], ['f', 'Formato']].map(([cls, nome]) => `<div class="mesa-fila baralho"><span class="mini ${cls}">${nome}<small>monte</small></span><span class="abertas">${`<i class="aberta ${cls}"></i>`.repeat(ABERTAS)}<small>${ABERTAS} abertas</small></span></div>`).join('')}</div>
+  </div>
+  <p class="mesa-mao">Na frente de cada lado: as 3 cartas que pegou, viradas para baixo</p>
+</div>
+</div>
+
+<div>
+<h2>Uma rodada</h2>
+<ol class="vez-passos">
+<li><b>Vire 1 missão</b> no meio da mesa. Ela vale para <b>todos os lados</b>: leiam juntos o pedido e os <b>3 assuntos</b>.</li>
+<li><b>Na vez do seu lado</b> (até 1 minuto): pegue <b>1 contexto, 1 persona e 1 formato</b>. De cada baralho, escolha <b>uma das ${ABERTAS} abertas</b> ou pegue a de cima do monte, sem ver.</li>
+<li>Pegou uma aberta? <b>Vire a de cima do monte</b> no lugar dela: sempre ficam ${ABERTAS} abertas.</li>
+<li>Deixe as 3 cartas <b>viradas para baixo</b> na sua frente. A vez passa para o <b>próximo lado</b>, em sentido horário.</li>
+<li>Todos pegaram? <b>Virem as cartas.</b> O professor digita no aplicativo a missão e as cartas de cada lado.</li>
+<li>Depois, as cartas dos lados voltam para os montes (embaralhe), as abertas ficam na mesa e a missão sai do jogo. Na rodada seguinte, <b>começa o próximo lado</b>.</li>
+</ol>
+
+<div class="especiais">
+<p class="especiais-t">As cartas especiais <span>${nomesDasEspeciais}</span></p>
+<p>Só 1 em cada baralho, de propósito: ninguém sabe quando vão aparecer. As 3 têm o mesmo poder: <b>roubar a carta daquele baralho de qualquer adversário</b>. <b>Quem foi roubado perde a rodada</b>: não ganha ponto. A especial não entra no prompt e vai para o fundo do monte (também se ninguém tem aquela carta ainda: pegue outra).</p>
+</div>
+
+<h2>A nota do prompt</h2>
+<p>Cada carta combina mais ou menos com cada assunto, de <b>1</b> (não combina) a <b>4</b> (combina muito). Os números ficam escondidos no aplicativo: leia as cartas e pense. A nota do prompt vai de 1 a 4, e o aplicativo diz <b>por que cada prompt perdeu pontos</b>.</p>
+<table class="nota-tab"><tr><td><b>Melhor prompt da rodada</b></td><td>1 ponto</td></tr><tr><td>Empate no melhor prompt</td><td>1 ponto para cada</td></tr><tr><td>Lado roubado</td><td>sem ponto</td></tr></table>
+<p class="ganha"><b>Na última rodada, ganha quem tiver mais pontos.</b> Empate: ganha quem somou as maiores notas. O aplicativo avisa.</p>
+</div>
+</div>
+<p class="vira">Quem começa, as versões do jogo, um exemplo e os casos especiais: no verso.</p>
+</section>
+<section class="page doc regras regras-verso">
+<h1>${NOME} · Versões do jogo <small>e quem começa, um exemplo de rodada e os casos especiais</small></h1>
+
+<h2>Quem começa</h2>
+<div class="comeca">
+  <div><span class="comeca-n">1</span><p><b>1ª rodada:</b> o aplicativo sorteia. Na página Partida, toque em <b>Sortear quem começa</b>. Sem celular, os lados tiram par ou ímpar.</p></div>
+  <div><span class="comeca-n">2</span><p><b>Durante a rodada:</b> a vez segue a ordem dos lados, em sentido horário. O aplicativo mostra de quem é a vez.</p></div>
+  <div><span class="comeca-n">3</span><p><b>Rodada seguinte:</b> começa o próximo lado. Assim, cada lado tem a chance de ver as abertas primeiro.</p></div>
+</div>
+
+<h2>Quanto tempo</h2>
+<div class="versoes">
+  <div class="versao"><p class="versao-t">Partida completa</p><p class="versao-n">${RODADAS} rodadas · cerca de 25 min</p><p>Para uma aula inteira. Depois, o desafio final.</p></div>
+  <div class="versao"><p class="versao-t">Partida rápida</p><p class="versao-n">${RODADAS_RAPIDA} rodadas · cerca de 15 min</p><p>Mesmas regras, menos rodadas: para o fim da aula ou para a turma aprender o jogo. Na página Partida, escolha <b>Rápida</b>.</p></div>
+</div>
+
+<h2>Quem joga</h2>
+<div class="versoes tres">
+  <div class="versao"><p class="versao-t">Duelo</p><p class="versao-n">2 a 4 alunos · 2 lados</p><p>1 contra 1, ou dupla contra dupla.</p></div>
+  <div class="versao"><p class="versao-t">Mesa</p><p class="versao-n">3 a 10 alunos · 3 a ${MAX_LADOS} lados</p><p>Cada lado é 1 aluno ou 1 dupla, cada um por si.</p></div>
+  <div class="versao destaque"><p class="versao-t">Em grupos</p><p class="versao-n">até 40 alunos · 2 a ${MAX_LADOS} grupos</p><p>Cada grupo é um lado e decide junto. Um <b>porta-voz</b> pega as cartas e lê o prompt, e o porta-voz troca a cada rodada. No aplicativo, escolha <b>Grupos</b>.</p></div>
 </div>
 
 <div class="exemplo">
@@ -326,40 +421,17 @@ const regras = `<section class="page doc regras">
   <p class="exemplo-missao">Missão <b>${exemplo.missao.codigo}</b> ${iconesDaMissao(exemplo.missao)}: “${esc(exemplo.missao.nome)}”</p>
   <p><b>Lado 1:</b> ${listaDoLado(exemplo.lado1)}. Nota <b>${notaDe(exemplo.lado1)}</b>.</p>
   <p><b>Lado 2:</b> ${listaDoLado(exemplo.lado2)}. Nota <b>${notaDe(exemplo.lado2)}</b>. O aplicativo explica: as 3 cartas não têm nada a ver com meio ambiente, e a missão pede meio ambiente (o lixo no parque).</p>
-  <p>O Lado 1 ganha 1 ponto.</p>
+  <p>O Lado 1 ganha 1 ponto. Se o Lado 2 tivesse pegado o ${ESPECIAIS.Persona.ico} ${ESPECIAIS.Persona.nome}, roubaria a persona do Lado 1, e o Lado 1 perderia a rodada.</p>
 </div>
-</div>
-
-<div>
-<h2>Uma rodada</h2>
-<ol class="vez-passos">
-<li><b>Vire 1 missão</b> no meio da mesa. Leiam juntos o pedido e os <b>3 assuntos</b>.</li>
-<li><b>Na vez do seu lado</b> (até 1 minuto): compre <b>${COMPRA} contextos, ${COMPRA} personas e ${COMPRA} formatos</b>.</li>
-<li><b>Escolha 1 de cada</b>, as que mais combinam com os 3 assuntos, e deixe viradas para baixo na sua frente.</li>
-<li><b>Devolva as outras 6</b>, cada uma no seu monte, e embaralhe. A vez passa para o próximo lado.</li>
-<li>Todos escolheram? <b>Virem as cartas.</b> O professor digita no aplicativo a missão e as cartas de cada lado.</li>
-</ol>
-
-<h2>A nota do prompt</h2>
-<div class="formula">
-  <span class="peca t-contexto"><b>Contexto</b>a situação</span><i>+</i>
-  <span class="peca t-persona"><b>Persona</b>quem responde</span><i>+</i>
-  <span class="peca t-formato"><b>Formato</b>como chega</span>
-</div>
-<p>Cada carta combina mais ou menos com cada assunto, de <b>1</b> (não combina) a <b>4</b> (combina muito). Os números ficam escondidos no aplicativo: leia as cartas e pense. A nota do prompt vai de 1 a 4, e o aplicativo diz <b>por que cada prompt perdeu pontos</b>.</p>
-<table class="nota-tab"><tr><td><b>Melhor prompt da rodada</b></td><td>1 ponto</td></tr><tr><td>Empate no melhor prompt</td><td>1 ponto para cada</td></tr></table>
-<p>Depois, as cartas voltam para os seus montes (embaralhe) e a missão sai do jogo. Na rodada seguinte, quem começa é o próximo lado.</p>
-<p class="ganha"><b>Depois de ${RODADAS} rodadas, ganha quem tiver mais pontos.</b> Empate: ganha quem somou as maiores notas. O aplicativo avisa.</p>
 
 <h2>Casos especiais</h2>
-<ul class="pequeno">
-<li>Acabou o tempo da vez: escolha agora as 3 cartas e devolva as outras.</li>
-<li>Mostrou as cartas antes da hora: tudo bem, mas o melhor é guardar segredo até todos escolherem.</li>
-<li>Sem celular: o gabarito do professor tem os números e a conta.</li>
+<ul>
+<li><b>Saíram 2 ou 3 cartas especiais entre as abertas na preparação:</b> recolha as abertas, embaralhe de novo e vire outras.</li>
+<li><b>Acabou o tempo da vez:</b> pegue agora as cartas que faltam, de cima do monte.</li>
+<li><b>Mostrou as cartas antes da hora:</b> tudo bem, mas o melhor é guardar segredo até todos pegarem.</li>
+<li><b>Sem celular:</b> o gabarito do professor tem os números e a conta.</li>
 </ul>
-</div>
-</div>
-<p class="aviso">Números de teste: ${RODADAS} rodadas, ${COMPRA} cartas de cada baralho e 1 minuto por vez. Anotem o que ficou fácil ou difícil demais para ajustar depois da partida de teste.</p>
+<p class="aviso">Números de teste: ${RODADAS} rodadas (rápida: ${RODADAS_RAPIDA}), ${ABERTAS} cartas abertas em cada baralho e 1 minuto por vez. Anotem o que ficou fácil ou difícil demais para ajustar depois.</p>
 </section>`;
 
 // ---------------------------------------------------------------- gabarito do professor (2 páginas)
@@ -389,7 +461,7 @@ const gabarito = `<section class="page doc gab-pag">
 <table class="gab"><tr><th>Missão</th><th>Assuntos</th></tr>
 ${M.map((m) => `<tr><td><b>${m.codigo}</b> ${esc(m.nome)}</td><td class="sem-quebra">${m.assuntos.map((a) => `${ASSUNTO[a].ico} ${ASSUNTO[a].nome}`).join(' · ')}</td></tr>`).join('')}
 </table>
-<p class="legenda">Colunas: ${ORDEM.map((a) => `${ASSUNTO[a].ico} ${ASSUNTO[a].nome}`).join(' · ')}. 4 = combina muito · 3 = combina bem · 2 = combina pouco · 1 = não combina.</p>
+<p class="legenda">Colunas: ${ORDEM.map((a) => `${ASSUNTO[a].ico} ${ASSUNTO[a].nome}`).join(' · ')}. 4 = combina muito · 3 = combina bem · 2 = combina pouco · 1 = não combina. As cartas especiais (${Object.values(ESPECIAIS).map((e) => `${e.ico} ${e.nome}`).join(', ')}) não têm números: não entram no prompt.</p>
 <div class="duas-tabelas">${tabelaDoBaralho('Contexto', C)}${tabelaDoBaralho('Persona', P)}</div>
 </section>
 <section class="page doc gab-pag">
@@ -405,7 +477,7 @@ ${M.map((m) => `<tr><td><b>${m.codigo}</b> ${esc(m.nome)}</td><td class="sem-que
     ${TRIOS.map((trio) => `<p class="small2 trio-gab"><b>${M.filter((m) => m.assuntos.join('') === trio.join('')).map((m) => m.codigo).join(', ')}</b> (${trio.map((a) => ASSUNTO[a].ico).join(' ')})<br>${melhoresDoTrio(trio)}</p>`).join('')}
   </div>
 </div>
-<p class="small2"><b>Para imprimir as cartas:</b> o arquivo de cartas tem ${cartas.length} cartas (${M.length} missões, ${C.length} contextos, ${P.length} personas e ${F.length} formatos) em ${folhas.length} folhas de frente, cada uma seguida da folha do verso. Cole o verso atrás da frente antes de cortar, ou imprima dos dois lados do papel, virando na borda longa. Papel mais grosso ou cartolina deixa as cartas melhores de embaralhar.</p>
+<p class="small2"><b>Para imprimir as cartas:</b> o arquivo de cartas tem ${cartas.length} cartas (${M.length} missões, ${C.length + 1} contextos, ${P.length + 1} personas e ${F.length + 1} formatos, contando as 3 especiais) em ${folhas.length} folhas de frente, cada uma seguida da folha do verso. Cole o verso atrás da frente antes de cortar, ou imprima dos dois lados do papel, virando na borda longa. Papel mais grosso ou cartolina deixa as cartas melhores de embaralhar.</p>
 </section>`;
 
 // ---------------------------------------------------------------- estilo das folhas
@@ -435,10 +507,19 @@ body { margin: 0; font-family: 'Segoe UI', Arial, sans-serif; color: #1b1f2a; -w
 .txt { font-size: 10.6pt; line-height: 1.32; margin: 0; }
 .big { font-size: 12pt; font-weight: 800; margin: 0; line-height: 1.2; }
 .emblema { width: 11mm; height: 11mm; padding: 2mm; margin: 0 auto 1mm; border-radius: 50%; background: var(--claro); color: var(--c); flex: none; }
+/* A imagem de cada carta: um desenho colorido num círculo da cor do baralho */
+.imagem { width: 17mm; height: 17mm; margin: 0 auto .6mm; border-radius: 50%; background: var(--claro); border: .5mm solid var(--c); flex: none;
+  display: flex; align-items: center; justify-content: center; font-size: 27pt; line-height: 1; font-family: 'Segoe UI Emoji', 'Noto Color Emoji', 'Apple Color Emoji', sans-serif; }
+.imagem.pequena { width: 12.5mm; height: 12.5mm; font-size: 19pt; margin-bottom: 0; }
+.imagem.grande { width: 24mm; height: 24mm; font-size: 40pt; border-width: .8mm; }
+.especial .body { background: radial-gradient(circle at 50% 30%, var(--claro) 0 38%, transparent 70%); border-radius: 2mm; }
+.especial .hd { background: linear-gradient(90deg, var(--c), #c98a00); }
+.poder { font-size: 11pt; font-weight: 800; color: var(--c); margin: 0; line-height: 1.25; }
+.especial .efeito { font-size: 8pt; }
 .faz { font-size: 9pt; line-height: 1.32; margin: 0; }
 .efeito { font-size: 8.2pt; margin: 0; line-height: 1.35; color: #2b3245; }
 .t-persona .efeito { background: var(--claro); border-radius: 2mm; padding: 1.2mm 1.6mm; }
-.desenho { color: var(--c); margin: 1mm auto; width: 40mm; }
+.desenho { color: var(--c); margin: .6mm auto; width: 34mm; }
 .desenho svg { width: 100%; height: auto; display: block; }
 .ft { font-size: 6.3pt; line-height: 1.3; color: #4a5368; border-top: 0.3mm solid #d6dbe6; padding: 1mm 1.5mm 0; margin: 0 .5mm .5mm; }
 .ft b { color: var(--c); }
@@ -457,18 +538,14 @@ body { margin: 0; font-family: 'Segoe UI', Arial, sans-serif; color: #1b1f2a; -w
 
 /* Folhas de texto */
 .doc { padding: 10mm 12mm; font-size: 9.2pt; line-height: 1.34; }
-.regras { font-size: 10.2pt; line-height: 1.36; }
+.regras { font-size: 10.3pt; line-height: 1.38; }
 .doc h1 { font-size: 18pt; margin: 0 0 2.5mm; } .doc h1 small { display: block; font-size: 9pt; font-weight: 500; color: #4a5368; }
 .doc h2 { font-size: 11.5pt; margin: 3.2mm 0 1.2mm; color: #1f5fd1; }
 .doc p { margin: 0 0 1.4mm; }
 .doc ul, .doc ol { margin: 0 0 1mm; padding-left: 5mm; } .doc li { margin-bottom: 1mm; }
-.cols { display: grid; grid-template-columns: 1fr 1fr; gap: 7mm; }
+.cols { display: grid; grid-template-columns: 1fr 1fr; gap: 7mm; align-items: start; }
 .objetivo { background: #fff6dc; border: 0.4mm solid #e0b84a; border-radius: 2mm; padding: 2.4mm 3mm; font-size: 10.6pt; }
-.vez-passos { font-size: 10.4pt; } .vez-passos li { margin-bottom: 1.3mm; }
-.formula { display: flex; align-items: stretch; gap: 1.4mm; margin: 1mm 0 1.6mm; }
-.formula i { font-style: normal; font-weight: 800; font-size: 13pt; align-self: center; }
-.peca { flex: 1; border: 0.5mm solid var(--c); background: var(--claro); border-radius: 2mm; padding: 1.4mm 1.6mm; font-size: 7.6pt; line-height: 1.25; text-align: center; }
-.peca b { display: block; color: var(--c); font-size: 9.4pt; }
+.vez-passos { font-size: 10.3pt; } .vez-passos li { margin-bottom: 1.3mm; }
 .sem-quebra { white-space: nowrap; }
 .exemplo { margin-top: 3mm; border-left: 1.2mm solid #c98a00; background: #fff6dc; border-radius: 0 2mm 2mm 0; padding: 2.2mm 3mm; font-size: 9.2pt; line-height: 1.35; }
 .exemplo p { margin: 0 0 1.2mm; } .exemplo p:last-child { margin: 0; }
@@ -485,6 +562,31 @@ body { margin: 0; font-family: 'Segoe UI', Arial, sans-serif; color: #1b1f2a; -w
 .mini small { font-size: 6pt; font-weight: 600; line-height: 1.2; padding: 0 1mm; }
 .mini.m { background: #c98a00; } .mini.c { background: #1f5fd1; } .mini.p { background: #6d3fc0; } .mini.f { background: #e06c00; }
 .mesa-mao { margin: 1.4mm 0 0 !important; font-size: 8.6pt; font-weight: 700; }
+.mesa-fila.baralho { gap: 2mm; margin: 0; align-items: center; justify-content: flex-start; }
+.mesa-corpo { display: flex; align-items: center; justify-content: center; gap: 3mm; }
+.mesa-baralhos { display: flex; flex-direction: column; gap: 1.4mm; }
+.mesa-fila.baralho .mini { width: 16mm; height: 11.5mm; font-size: 7.2pt; }
+.abertas { display: flex; align-items: center; gap: 1mm; font-size: 6.6pt; font-weight: 700; color: #4a5368; }
+.abertas small { width: 9mm; line-height: 1.1; text-align: left; }
+.aberta { width: 7.4mm; height: 10.4mm; border-radius: 1mm; background: #fff; border: .5mm solid; }
+.aberta.c { border-color: #1f5fd1; } .aberta.p { border-color: #6d3fc0; } .aberta.f { border-color: #e06c00; }
+.especiais { margin-top: 1.6mm; border: 0.4mm solid #c98a00; background: #fffaf0; border-radius: 2mm; padding: 1.6mm 2.4mm; font-size: 9.4pt; line-height: 1.36; }
+.especiais p { margin: 0 0 .8mm; } .especiais p:last-child { margin: 0; }
+.especiais-t { font-weight: 800; color: #8a5a00; } .especiais-t span { font-weight: 700; color: #1b1f2a; margin-left: 1.4mm; }
+.vira { margin: 3mm 0 0; text-align: right; font-size: 8.6pt; font-weight: 700; color: #4a5368; }
+.regras-verso h2 { margin-top: 5mm; }
+.comeca { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3mm; }
+.comeca > div { display: flex; gap: 2mm; align-items: flex-start; background: #eef2f8; border-radius: 2mm; padding: 2.4mm 2.6mm; }
+.comeca p { margin: 0; font-size: 9.6pt; }
+.comeca-n { flex: none; width: 6mm; height: 6mm; border-radius: 50%; background: #1f5fd1; color: #fff; font-weight: 800; font-size: 9pt; display: flex; align-items: center; justify-content: center; }
+.versoes { display: grid; grid-template-columns: 1fr 1fr; gap: 3mm; }
+.versoes.tres { grid-template-columns: repeat(3, 1fr); }
+.versao { border: 0.4mm solid #c9cfdb; border-radius: 2mm; padding: 2.4mm 2.8mm; }
+.versao.destaque { border: 0.6mm solid #1f5fd1; background: #f2f6fd; }
+.versao p { margin: 0 0 1mm; font-size: 9.6pt; } .versao p:last-child { margin: 0; }
+.versao-t { font-weight: 800; font-size: 11pt !important; color: #1b1f2a; }
+.versao-n { font-weight: 700; color: #1f5fd1; }
+.regras-verso .exemplo { margin-top: 5mm; font-size: 9.8pt; }
 .aviso { background: #eef2f8; border-radius: 2mm; padding: 2mm 3mm; font-size: 8.4pt; color: #4a5368; margin-top: 3mm; }
 .gab-pag { font-size: 9pt; }
 table.gab { width: 100%; border-collapse: collapse; margin-bottom: 1.6mm; } .gab th, .gab td { border: 0.3mm solid #c9cfdb; padding: 1mm 1.8mm; text-align: left; vertical-align: top; font-size: 8.4pt; } .gab th { background: #eef2f8; }
@@ -509,7 +611,7 @@ console.log(`regras e gabarito: ${(`${regras}${gabarito}`.match(/<section class=
 // ---------------------------------------------------------------- Manual do Professor
 
 const manual = require('./manual.cjs')({
-  NOME, GRUPO, ENDERECO_DO_APP, RODADAS, COMPRA, MAX_LADOS,
+  NOME, GRUPO, ENDERECO_DO_APP, RODADAS, RODADAS_RAPIDA, ABERTAS, MAX_LADOS, ESPECIAIS, poderDa, REGRA_DO_ROUBO,
   ASSUNTO, ORDEM, MINUSCULOS, M, C, P, F, cartas, folhas: folhas.length, cartaPorCodigo, versoPorTipo,
   exemplo, NOTA, esc, icone, semParenteses, minuscula, cssDasCartas: css,
 });
@@ -520,26 +622,31 @@ console.log(`manual: ${manual.paginas} páginas`);
 
 const linhas = [
   ...M.map((m) => ({ codigo: m.codigo, tipo: m.tipo, nome: m.nome, assuntos: m.assuntos })),
-  ...C.map((c) => ({ codigo: c.codigo, tipo: c.tipo, nome: c.nome, texto: c.texto, combina: c.combina })),
-  ...P.map((p) => ({ codigo: p.codigo, tipo: p.tipo, nome: p.nome, texto: p.texto, prompt: p.prompt, combina: p.combina })),
-  ...F.map((f) => ({ codigo: f.codigo, tipo: f.tipo, nome: f.nome, texto: f.texto, combina: f.combina })),
+  ...C.map((c) => ({ codigo: c.codigo, tipo: c.tipo, nome: c.nome, texto: c.texto, ico: c.ico, combina: c.combina })),
+  ...P.map((p) => ({ codigo: p.codigo, tipo: p.tipo, nome: p.nome, texto: p.texto, prompt: p.prompt, ico: p.ico, combina: p.combina })),
+  ...F.map((f) => ({ codigo: f.codigo, tipo: f.tipo, nome: f.nome, texto: f.texto, ico: f.ico, combina: f.combina })),
 ];
+const especiaisDoApp = Object.entries(ESPECIAIS).map(([tipo, e]) => ({ tipo, nome: e.nome, ico: e.ico, poder: poderDa(e) }));
 
-const dadosJs = `// Dados das cartas do ${NOME}, versão "Rodadas" da partida de teste (11/11/2026): ${linhas.length} cartas com código.
+const dadosJs = `// Dados das cartas do ${NOME}, versão "Rodadas" com as cartas abertas (16/11/2026): ${linhas.length} cartas com código.
 // Gerado por cartas/gerar.cjs, a mesma lista das cartas impressas. Para mudar uma carta, edite lá e rode node cartas/gerar.cjs.
 // Missão: "assuntos" são os 3 assuntos dela (S Saúde, E Esporte, T Tecnologia, A Meio ambiente).
 // Contexto, persona e formato: "combina" diz quanto a carta combina com cada assunto, de 1 (nada) a 4 (muito).
-// Esses números ficam escondidos dos alunos: a conta da nota está em js/nota.js.
+// Esses números ficam escondidos dos alunos: a conta da nota está em js/nota.js. "ico" é a imagem da carta.
 const DADOS = {
   nomeDoJogo: ${JSON.stringify(NOME)},
   cartas: [
 ${linhas.map((l) => `    ${JSON.stringify(l)},`).join('\n')}
   ],
+  // A carta especial de cada baralho: sem número, não entra no prompt
+  especiais: ${JSON.stringify(especiaisDoApp)},
+  regraDoRoubo: ${JSON.stringify(REGRA_DO_ROUBO)}, // a mesma frase das cartas especiais
   // Nome, símbolo (igual ao das cartas) e nome no meio da frase de cada assunto
   assuntos: ${JSON.stringify(ASSUNTO)},
   // Números da regra (de teste)
   rodadas: ${RODADAS},
-  cartasCompradas: ${COMPRA}, // de cada baralho
+  rodadasRapida: ${RODADAS_RAPIDA}, // a partida rápida
+  cartasAbertas: ${ABERTAS}, // em cada baralho, na mesa
   duracaoDaVez: ${VEZ_SEGUNDOS}, // segundos
   maximoDeLados: ${MAX_LADOS},
   totalDeMissoes: ${M.length},

@@ -5,7 +5,7 @@
 
 module.exports = function montarManual(d) {
   const {
-    NOME, GRUPO, ENDERECO_DO_APP, RODADAS, COMPRA, MAX_LADOS,
+    NOME, GRUPO, ENDERECO_DO_APP, RODADAS, RODADAS_RAPIDA, ABERTAS, MAX_LADOS, ESPECIAIS, poderDa, REGRA_DO_ROUBO,
     ASSUNTO, ORDEM, MINUSCULOS, M, C, P, F, cartas, folhas, cartaPorCodigo, versoPorTipo,
     exemplo, NOTA, esc, icone, semParenteses, minuscula, cssDasCartas,
   } = d;
@@ -19,7 +19,9 @@ module.exports = function montarManual(d) {
   const nomesDosAssuntos = (m) => NOTA.juntar(m.assuntos.map((a) => ASSUNTO[a].minusculo));
 
   // ------------------------------------------------------------ o exemplo (o mesmo da folha de regras)
-  const { missao, compra, lado1, lado2 } = exemplo;
+  const { missao, abertas, lado1, lado2 } = exemplo;
+  const especial = (tipo, zoom) => `<div class="mini-carta" style="zoom:${zoom}">${cartaPorCodigo[`especial-${tipo}`]}</div>`;
+  const nomesDasEspeciais = Object.values(ESPECIAIS).map((e) => `${e.ico} ${e.nome}`).join(', ');
   const [contexto, persona, formato] = lado1;
   const notaDe = (cartasDoLado) => NOTA.numero(NOTA.mediaDoPrompt(cartasDoLado, missao.assuntos));
   const notaDaCarta = (c, m = missao) => NOTA.numero(NOTA.mediaDaCarta(c, m.assuntos));
@@ -42,8 +44,8 @@ module.exports = function montarManual(d) {
     ${mini(missao.codigo, 0.68, 'gira-1')}${mini(contexto.codigo, 0.68, 'gira-2')}${mini(persona.codigo, 0.68, 'gira-3')}${mini(formato.codigo, 0.68, 'gira-4')}
   </div>
   <div class="numeros">
-    <div><b>2 a ${MAX_LADOS}</b><span>lados na mesa; até 40 alunos no modo Turma</span></div>
-    <div><b>20 a 30 min</b><span>por partida de ${RODADAS} rodadas (estimativa; vamos medir no teste)</span></div>
+    <div><b>2 a ${MAX_LADOS}</b><span>lados na mesa; até 40 alunos em grupos</span></div>
+    <div><b>25 ou 15 min</b><span>partida completa (${RODADAS} rodadas) ou rápida (${RODADAS_RAPIDA}); estimativa, vamos medir no teste</span></div>
     <div><b>2 min</b><span>para explicar as regras</span></div>
     <div><b>${cartas.length}</b><span>cartas em ${folhas} folhas A4, com verso</span></div>
   </div>
@@ -55,7 +57,7 @@ module.exports = function montarManual(d) {
       <h2>O que você precisa</h2>
       <ul>
         <li>As cartas impressas: ${folhas} folhas de frente e ${folhas} de verso (arquivo de cartas).</li>
-        <li>Se quiser, a folha de regras e o gabarito (outro arquivo, 3 folhas).</li>
+        <li>Se quiser, a folha de regras (frente e verso) e o gabarito (outro arquivo, 4 páginas).</li>
         <li>O seu celular com o aplicativo do professor. <b>Os alunos não usam celular.</b></li>
         <li>Sem celular? O gabarito impresso faz o mesmo papel.</li>
         <li>Não precisa saber nada de inteligência artificial: este manual explica tudo.</li>
@@ -118,9 +120,9 @@ module.exports = function montarManual(d) {
   // ------------------------------------------------------------ 3. as cartas
   const explicaCarta = [
     [missao.codigo, 'Missão', `${M.length} cartas`, 'O pedido e os 3 assuntos. Fica aberta no meio da mesa durante a rodada.', 'Uma por rodada. Depois, sai do jogo.'],
-    [contexto.codigo, 'Contexto', `${C.length} cartas`, 'A situação: onde é e o que está acontecendo.', 'Cada lado escolhe 1 por rodada.'],
-    [persona.codigo, 'Persona', `${P.length} cartas`, 'Quem a IA vai ser ao responder, o que essa pessoa faz e como ela entra no prompt.', 'Cada lado escolhe 1 por rodada.'],
-    [formato.codigo, 'Formato', `${F.length} cartas`, 'Como a resposta chega para quem vai ler. O desenho mostra a forma.', 'Cada lado escolhe 1 por rodada.'],
+    [contexto.codigo, 'Contexto', `${C.length} cartas + 1 especial`, 'A situação: onde é e o que está acontecendo. A imagem ajuda a reconhecer a carta de longe.', `Cada lado pega 1 por rodada: das ${ABERTAS} abertas ou do monte.`],
+    [persona.codigo, 'Persona', `${P.length} cartas + 1 especial`, 'Quem a IA vai ser ao responder, o que essa pessoa faz e como ela entra no prompt.', `Cada lado pega 1 por rodada: das ${ABERTAS} abertas ou do monte.`],
+    [formato.codigo, 'Formato', `${F.length} cartas + 1 especial`, 'Como a resposta chega para quem vai ler. O desenho mostra a forma.', `Cada lado pega 1 por rodada: das ${ABERTAS} abertas ou do monte.`],
   ];
   const numerosDaPersona = ORDEM.map((a) => `<td class="v${persona.combina[a]}">${persona.combina[a]}</td>`).join('');
   const conta = (m) => `(${m.assuntos.map((a) => persona.combina[a]).join(' + ')}) ÷ 3 = <b>${notaDaCarta(persona, m)}</b>`;
@@ -147,9 +149,13 @@ module.exports = function montarManual(d) {
         <p>Na ${missao.codigo} (${icones(missao)}): ${conta(missao)}.<br>Na ${outraMissao.codigo} (${icones(outraMissao)}): ${conta(outraMissao)}, porque essa persona ${NOTA.PALAVRAS.Persona[persona.combina.T]} tecnologia.</p>
       </div>
     </div>
+    <div class="carta-explicada especiais-explicadas">
+      <div class="junto">${Object.keys(ESPECIAIS).map((tipo) => especial(tipo, 0.3)).join('')}</div>
+      <div><p class="ce-nome">As cartas especiais</p><p class="ce-qtd">1 em cada baralho, com o mesmo verso das outras</p><p>O mesmo poder nas 3: <b>roubar a carta daquele baralho de qualquer adversário</b>. <b>Quem foi roubado perde a rodada</b>: não ganha ponto.</p><p class="ce-regra">Sem número nem código: não entram no prompt e, depois de usar, vão para o fundo do monte.</p></div>
+    </div>
   </div>
   <div class="caixa imprimir">
-    <p><b>Como imprimir:</b> o arquivo de cartas tem ${folhas} folhas A4 de frente, cada uma seguida da folha do verso. Imprima colorido, de preferência em papel mais grosso (cartolina ou papel de 180 g). Cole cada verso atrás da sua frente antes de cortar, ou imprima dos dois lados do papel, virando na borda longa. Corte nas linhas tracejadas: cada folha tem até 9 cartas do tamanho de uma carta de baralho, todas do mesmo baralho. Guarde cada jogo num envelope.</p>
+    <p><b>Como imprimir:</b> o arquivo de cartas tem ${folhas} folhas A4 de frente, cada uma seguida do verso. Imprima colorido, em papel mais grosso (cartolina ou 180 g), dos dois lados do papel (virando na borda longa) ou colando o verso atrás da frente. Corte nas linhas tracejadas (até 9 cartas por folha) e guarde cada jogo num envelope.</p>
   </div>
   ${rodape()}
 </section>`;
@@ -161,24 +167,30 @@ module.exports = function montarManual(d) {
     <div>
       <ol class="passos-grandes">
         <li><b>Divida a turma em lados.</b> Cada lado é 1 aluno, uma dupla ou um grupo (veja os modos abaixo).</li>
-        <li><b>Os 3 baralhos:</b> embaralhe cada um separado (contexto, persona e formato) e ponha os 3 montes virados para baixo no meio da mesa. O verso mostra qual é qual.</li>
-        <li><b>Missões:</b> embaralhe e deixe o montinho ao lado, virado para baixo.</li>
-        <li><b>Aplicativo:</b> na página Partida, escolha o modo, cadastre os lados e toque em <b>Sortear quem começa</b>. Em cada rodada, quem começa é o próximo lado.</li>
+        <li><b>Os 3 baralhos:</b> embaralhe cada um separado (contexto, persona e formato, cada um com a sua carta especial) e ponha os 3 montes virados para baixo no meio da mesa. O verso mostra qual é qual.</li>
+        <li><b>Cartas abertas:</b> vire as ${ABERTAS} cartas de cima de cada monte, lado a lado. Sempre que alguém pega uma aberta, vira a de cima do monte no lugar dela. Saíram 2 ou 3 cartas especiais entre as abertas? Recolha, embaralhe de novo e vire outras: as especiais são poucas para criar tensão.</li>
+        <li><b>Missões:</b> embaralhe e deixe o montinho ao lado, virado para baixo. A missão da rodada vale para todos os lados.</li>
+        <li><b>Quem começa:</b> na página Partida, escolha a versão e o modo, cadastre os lados e toque em <b>Sortear quem começa</b> (sem celular: par ou ímpar). A vez segue em sentido horário, e na rodada seguinte começa o próximo lado.</li>
       </ol>
+      <div class="caixa versoes-tempo">
+        <p><b>Partida completa:</b> ${RODADAS} rodadas, cerca de 25 minutos.</p>
+        <p><b>Partida rápida:</b> ${RODADAS_RAPIDA} rodadas, cerca de 15 minutos. As mesmas regras, para o fim da aula ou para a turma aprender o jogo.</p>
+      </div>
     </div>
     <figure class="mesa-figura">
       <div class="feltro">
         <div class="lugar"><span class="rot">Lado 2</span>${versos(3, 0.24)}</div>
+        ${[['Contexto', 'c'], ['Persona', 'p'], ['Formato', 'f']].map(([tipo, cor]) => `<div class="fila baralho-fila">
+          ${monte(0.18, cor, tipo.toLowerCase())}
+          <div class="lugar"><span class="rot">${ABERTAS} abertas</span><div class="junto abertas-fig">${abertas[tipo].map((c) => mini(c, 0.175)).join('')}</div></div>
+        </div>`).join('')}
         <div class="fila">
-          ${monte(0.26, 'c', 'contexto')}${monte(0.26, 'p', 'persona')}${monte(0.26, 'f', 'formato')}
-        </div>
-        <div class="fila">
-          <div class="lugar"><span class="rot">missão da rodada</span>${mini(missao.codigo, 0.3)}</div>
-          ${monte(0.26, 'm', 'outras missões')}
+          <div class="lugar"><span class="rot">missão (todos)</span>${mini(missao.codigo, 0.26)}</div>
+          ${monte(0.22, 'm', 'outras missões')}
         </div>
         <div class="lugar"><span class="rot">Lado 1</span>${versos(3, 0.24)}</div>
       </div>
-      <figcaption>A mesa depois que os dois lados escolheram: as 3 cartas de cada um ficam viradas para baixo na frente dele.</figcaption>
+      <figcaption>A mesa durante a rodada: cada baralho com o seu monte e as ${ABERTAS} cartas abertas, a missão no meio e, na frente de cada lado, as 3 cartas que ele pegou, viradas para baixo.</figcaption>
     </figure>
   </div>
 
@@ -187,26 +199,26 @@ module.exports = function montarManual(d) {
     <tr><th>Modo</th><th>Quantos alunos</th><th>Como fica</th></tr>
     <tr><td><b>Duelo</b></td><td>2 a 4</td><td>1 contra 1, ou dupla contra dupla (cada dupla é um lado).</td></tr>
     <tr><td><b>Mesa</b></td><td>3 a 10</td><td>3 a ${MAX_LADOS} lados, cada um por si. Cada lado é 1 aluno ou 1 dupla.</td></tr>
-    <tr><td><b>Turma</b></td><td>até 40</td><td>Até ${MAX_LADOS} grupos, numa mesa grande ou no chão. Cada grupo decide junto, e quem compra as cartas troca a cada rodada. Com uma turma grande, imprima mais de um jogo e faça várias mesas.</td></tr>
+    <tr><td><b>Em grupos</b></td><td>até 40</td><td>Até ${MAX_LADOS} grupos, numa mesa grande ou no chão. Cada grupo é um lado e decide junto; um porta-voz pega as cartas e lê o prompt, e o porta-voz troca a cada rodada. Com uma turma grande, imprima mais de um jogo.</td></tr>
   </table>
-  <p class="nota-pe">Dica: no modo Turma, escreva no quadro a ordem dos grupos. Enquanto um grupo escolhe, os outros podem ir pensando em quem entende dos 3 assuntos da missão.</p>
+  <p class="nota-pe">Dica: em grupos, escreva no quadro a ordem dos grupos. Enquanto um grupo escolhe, os outros podem ir pensando em quem entende dos 3 assuntos da missão.</p>
   ${rodape()}
 </section>`;
 
   // ------------------------------------------------------------ 5. uma rodada, com exemplo
-  const filaDaCompra = (tipo) => `<div class="compra">
+  const filaDasAbertas = (tipo) => `<div class="compra">
     <span class="compra-t">${tipo}</span>
-    <div class="junto">${compra[tipo].map((codigo, i) => mini(codigo, 0.3, i === 0 ? 'destaque' : 'apagada')).join('')}</div>
+    <div class="junto">${abertas[tipo].map((codigo, i) => mini(codigo, 0.28, i === 0 ? 'destaque' : 'apagada')).join('')}</div>
   </div>`;
   const rodada = `<section class="page man">
   <h2 class="secao"><span>4</span>Uma rodada <small>cada lado tem até 1 minuto na sua vez</small></h2>
   <div class="quatro-passos">
-    <div><span class="n">1</span><b>Vire 1 missão</b>Leiam juntos o pedido e os 3 assuntos.</div>
-    <div><span class="n">2</span><b>Compre ${COMPRA} de cada</b>${COMPRA} contextos, ${COMPRA} personas e ${COMPRA} formatos.</div>
-    <div><span class="n">3</span><b>Escolha 1 de cada</b>As que mais combinam com os 3 assuntos, viradas para baixo.</div>
-    <div><span class="n">4</span><b>Devolva as outras 6</b>Cada uma no seu monte. Embaralhe e passe a vez.</div>
+    <div><span class="n">1</span><b>Vire 1 missão</b>Ela vale para todos os lados. Leiam juntos o pedido e os 3 assuntos.</div>
+    <div><span class="n">2</span><b>Pegue 1 de cada</b>1 contexto, 1 persona e 1 formato: uma das ${ABERTAS} abertas ou a de cima do monte, sem ver.</div>
+    <div><span class="n">3</span><b>Reponha as abertas</b>Para cada aberta que pegou, vire a de cima do monte no lugar dela.</div>
+    <div><span class="n">4</span><b>Vire para baixo</b>Deixe as 3 cartas viradas para baixo na sua frente e passe a vez.</div>
   </div>
-  <p class="depois-dos-passos">Todos escolheram? Todos viram as cartas, e o professor confere no aplicativo. O melhor prompt ganha 1 ponto. As cartas voltam para os montes e a missão sai do jogo.</p>
+  <p class="depois-dos-passos">Todos pegaram? Todos viram as cartas, e o professor confere no aplicativo. O melhor prompt ganha 1 ponto. As cartas dos lados voltam para os montes (embaralhe), as abertas ficam na mesa e a missão sai do jogo.</p>
 
   <h3>Exemplo de uma rodada</h3>
   <div class="ex-cols">
@@ -215,17 +227,18 @@ module.exports = function montarManual(d) {
       ${mini(missao.codigo, 0.42)}
     </div>
     <div class="quadro-ex">
-      <p class="ex-t"><span class="n">b</span><span>Na sua vez, o Lado 1 compra ${COMPRA} cartas de cada baralho e fica com as que juntam ${nomesDosAssuntos(missao)} (em verde). As outras 6 voltam para os montes.</span></p>
-      ${filaDaCompra('Contexto')}${filaDaCompra('Persona')}${filaDaCompra('Formato')}
+      <p class="ex-t"><span class="n">b</span><span>Na sua vez, o Lado 1 olha as ${ABERTAS} cartas abertas de cada baralho e pega as que juntam ${nomesDosAssuntos(missao)} (em verde). No lugar de cada uma, vira a de cima do monte.</span></p>
+      ${filaDasAbertas('Contexto')}${filaDasAbertas('Persona')}${filaDasAbertas('Formato')}
     </div>
   </div>
   <div class="quadro-ex">
-    <p class="ex-t"><span class="n">c</span><span>O Lado 2 escolhe 3 cartas de saúde e esporte e esquece o meio ambiente:</span></p>
-    <div class="junto">${lado2.map((c) => mini(c.codigo, 0.3)).join('')}</div>
+    <p class="ex-t"><span class="n">c</span><span>O Lado 2 pega 3 cartas abertas de saúde e esporte e esquece o meio ambiente:</span></p>
+    <div class="junto">${lado2.map((c) => mini(c.codigo, 0.28)).join('')}</div>
   </div>
   <div class="ex-fim">
     <p><span class="n">d</span><span>O professor digita a missão e as cartas de cada lado. O aplicativo dá <b>${notaDe(lado1)}</b> para o Lado 1 e <b>${notaDe(lado2)}</b> para o Lado 2 e explica por que o Lado 2 perdeu pontos: ${problemasDoLado2.join('; ')}. A missão pede meio ambiente (o lixo no parque).</span></p>
-    <p><span class="n">e</span><span>O Lado 1 ganha 1 ponto. As cartas voltam para os montes, embaralhadas, e a ${missao.codigo} sai do jogo. Na próxima rodada, o Lado 2 começa.</span></p>
+    <p><span class="n">e</span><span>O Lado 1 ganha 1 ponto. As cartas dos lados voltam para os montes, embaralhadas, e a ${missao.codigo} sai do jogo. Na próxima rodada, o Lado 2 começa.</span></p>
+    <p><span class="n">f</span><span>E se o Lado 2 tivesse tirado o <b>${ESPECIAIS.Persona.ico} ${ESPECIAIS.Persona.nome}</b>? Ele roubaria a persona do Lado 1 (${persona.codigo}) e o Lado 1 perderia a rodada. Na página Rodada, você toca em <b>Foi roubado</b> no Lado 1.</span></p>
   </div>
   ${rodape()}
 </section>`;
@@ -244,13 +257,13 @@ module.exports = function montarManual(d) {
   <div class="app-cols">
     <ol class="passos-grandes">
       <li><b>Antes da aula, com internet:</b> abra o endereço no celular. Depois da primeira vez, ele funciona sem internet. No menu do navegador, toque em <i>Adicionar à tela inicial</i> para abrir como um aplicativo.</li>
-      <li><b>Partida:</b> escolha o modo, quantos lados e os nomes. Toque em <b>Começar partida</b> e em <b>Sortear quem começa</b>.</li>
+      <li><b>Partida:</b> escolha a versão (completa ou rápida), o modo, quantos lados e os nomes. Toque em <b>Começar partida</b> e em <b>Sortear quem começa</b>.</li>
       <li><b>Cronômetro:</b> toque em <b>Iniciar</b> na vez do primeiro lado e em <b>Próximo lado</b> quando ele terminar.</li>
     </ol>
     <ol class="passos-grandes" start="4">
-      <li><b>Todos escolheram?</b> Toque em <b>Conferir a rodada</b>. Digite o número da missão e o número das 3 cartas de cada lado.</li>
+      <li><b>Todos pegaram?</b> Toque em <b>Conferir a rodada</b>. Digite o número da missão e o número das 3 cartas de cada lado. Lado roubado por uma carta especial? Toque em <b>Foi roubado</b> nele.</li>
       <li><b>Ver o resultado:</b> leia em voz alta a nota e o porquê de cada prompt. Toque em <b>Dar o ponto</b>. Errou? Toque em <b>Desfazer</b>.</li>
-      <li><b>Depois de ${RODADAS} rodadas,</b> o aplicativo mostra o placar final. Toque em <b>Conferir se aprendeu</b> para o desafio final.</li>
+      <li><b>Depois de ${RODADAS} rodadas,</b> o aplicativo mostra o placar final. Toque em <b>Conferir se aprendeu</b> para o desafio final: digite o prompt de cada lado e toque em <b>Ver a nota</b>.</li>
     </ol>
   </div>
   <p class="nota-pe">As páginas <b>Desafio</b> (o desafio final), <b>Cartas</b> (procurar uma carta pelo código ou pelo nome, com os números dela) e <b>Regras</b> (o resumo das regras) também funcionam sem internet. Sem celular, use o gabarito impresso: ele tem os mesmos números e a mesma conta.</p>
@@ -264,7 +277,8 @@ module.exports = function montarManual(d) {
   <table class="tabela casos">
     <tr><th>Se acontecer</th><th>Faça assim</th></tr>
     <tr><td>Dois prompts empatam como o melhor</td><td>Os dois ganham 1 ponto. O aplicativo já dá o ponto para todos os empatados.</td></tr>
-    <tr><td>Acabou o tempo da vez</td><td>O lado escolhe agora as 3 cartas e devolve as outras 6.</td></tr>
+    <tr><td>Acabou o tempo da vez</td><td>O lado pega agora as cartas que faltam, de cima do monte.</td></tr>
+    <tr><td>Saiu uma carta especial (${nomesDasEspeciais})</td><td>Quem pegou rouba a carta daquele baralho de qualquer adversário. Quem foi roubado perde a rodada: na página Rodada, toque em <b>Foi roubado</b> nele. A especial vai para o fundo do monte. Ninguém tem aquela carta ainda? Ponha a especial no fundo do monte e pegue outra.</td></tr>
     <tr><td>A turma não concorda com uma nota</td><td>Peça para o lado explicar a escolha. <b>A palavra final é sua:</b> você pode mudar os pontos com os botões + e − do placar.</td></tr>
     <tr><td>A aula está acabando</td><td>Toque em <b>Encerrar partida</b>: o aplicativo mostra quem está na frente.</td></tr>
     <tr><td>Sem celular ou sem bateria</td><td>Use o gabarito: some os números das cartas nos 3 assuntos da missão. A maior soma ganha o ponto.</td></tr>
@@ -272,9 +286,9 @@ module.exports = function montarManual(d) {
 
   <h2 class="secao"><span>7</span>Como conduzir a aula</h2>
   <div class="aula-cols">
-    <div class="momento"><p class="mom-t">Antes · 2 minutos</p><p>Leia os 4 passos da rodada (estão na página Regras do aplicativo). Depois, faça uma vez de exemplo em voz alta: compre 3 de cada e diga por que escolheu cada carta.</p></div>
+    <div class="momento"><p class="mom-t">Antes · 2 minutos</p><p>Leia os 4 passos da rodada (estão na página Regras do aplicativo). Depois, faça uma vez de exemplo em voz alta: pegue 1 carta de cada baralho e diga por que escolheu cada uma.</p></div>
     <div class="momento"><p class="mom-t">Durante</p><p>Na hora de conferir, leia em voz alta a nota e o porquê de cada prompt. Pergunte: <i>qual assunto ficou de fora? Que carta teria ajudado?</i></p><p>No fim do resultado, o aplicativo mostra as melhores cartas do jogo para aquela missão.</p></div>
-    <div class="momento"><p class="mom-t">Depois · 5 minutos</p><p>O desafio final, sem cartas: na página <b>Desafio</b>, sorteie um problema da escola. Cada lado escreve um prompt com as 4 partes (persona, contexto, tarefa e formato) e lê em voz alta. Toque em Sim ou Não nas 4 perguntas; quem acerta as 4 aprendeu e ganha um prêmio escolhido por você.</p></div>
+    <div class="momento"><p class="mom-t">Depois · 5 minutos</p><p>O desafio final, sem cartas: na página <b>Desafio</b>, sorteie um problema da escola. Cada lado escreve um prompt com persona, contexto e formato e lê em voz alta. Você digita e o aplicativo dá a nota de 1 a 4, sem internet, com o porquê de cada parte. Quem tirar a maior nota ganha um prêmio escolhido por você.</p></div>
   </div>
   <div class="caixa etica">
     <p class="mom-t">Para conversar com a turma: usar a IA com cuidado</p>
@@ -408,6 +422,8 @@ module.exports = function montarManual(d) {
 .ensina td:first-child { border-left: 1.6mm solid var(--c); white-space: nowrap; }
 .ensina td:first-child b { color: var(--c); }
 .caixa { border-radius: 2.6mm; padding: 3mm 3.6mm; }
+.versoes-tempo { margin-top: 3mm; background: #eef2f8; font-size: 9.6pt; line-height: 1.4; }
+.versoes-tempo p { margin: 0 0 1.2mm; } .versoes-tempo p:last-child { margin: 0; }
 .estrelas-caixa { background: #fff6dc; border: .4mm solid #e0b84a; }
 .estrelas-caixa b { color: #8a5a00; }
 
@@ -433,6 +449,10 @@ module.exports = function montarManual(d) {
 .lugar { display: flex; flex-direction: column; align-items: center; gap: 1.2mm; }
 .rot { font-size: 8pt; font-weight: 800; color: #2c5e3f; text-transform: uppercase; letter-spacing: .05em; }
 .mesa-figura figcaption { font-size: 8.6pt; color: #4a5368; margin-top: 1.6mm; text-align: center; }
+.baralho-fila { gap: 3mm; align-items: flex-end; }
+.abertas-fig { gap: 1.4mm; flex-wrap: nowrap; }
+.especiais-explicadas { grid-column: span 2; background: #fffaf0; border: .4mm solid #e0b84a; border-radius: 2.6mm; padding: 2.6mm 3mm; }
+.especiais-explicadas .junto { flex-wrap: nowrap; gap: 1.6mm; }
 
 /* a rodada */
 .quatro-passos { display: grid; grid-template-columns: repeat(4, 1fr); gap: 3mm; }

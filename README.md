@@ -10,8 +10,8 @@ Só o professor usa o celular em sala. O aplicativo do professor foi feito **pri
 
 | Arquivo | O que é |
 | --- | --- |
-| `cartas/cartas.html` | As 57 cartas, frente e verso (14 folhas A4: cada folha de frente vem seguida do seu verso), prontas para imprimir |
-| `cartas/regras-e-gabarito.html` | Folha de regras e gabarito do professor (3 páginas) |
+| `cartas/cartas.html` | As 60 cartas (16 missões, 3 baralhos de 16 e 1 carta especial em cada baralho), frente e verso, com uma imagem em cada carta (14 folhas A4: cada folha de frente vem seguida do seu verso), prontas para imprimir |
+| `cartas/regras-e-gabarito.html` | Folha de regras (frente e verso: como jogar, quem começa e as versões do jogo) e gabarito do professor (4 páginas) |
 | `cartas/manual.html` | Manual do Professor (9 páginas, com imagens das cartas, da mesa e das telas do aplicativo) |
 | `cartas/gerar.cjs` | Lugar único das cartas: gera os arquivos acima e os dados do aplicativo |
 | `cartas/manual.cjs` | Texto e desenho do Manual do Professor |
@@ -19,13 +19,14 @@ Só o professor usa o celular em sala. O aplicativo do professor foi feito **pri
 | `app/` | O aplicativo do professor |
 | `app-vue/` | Versão antiga em Vue 3, ainda com as regras do pacote E |
 
-## O jogo em 5 linhas
+## O jogo em 6 linhas
 
-- Vire 1 missão. Ela tem 3 assuntos (✚ Saúde, ⚽ Esporte, 💻 Tecnologia, 🌳 Meio ambiente).
-- Na sua vez (até 1 minuto): **compre 3 de cada baralho** (contexto, persona e formato), fique com 1 de cada e devolva as outras 6.
+- Vire 1 missão. Ela vale para todos os lados e tem 3 assuntos (✚ Saúde, ⚽ Esporte, 💻 Tecnologia, 🌳 Meio ambiente).
+- Cada baralho (contexto, persona e formato) tem **4 cartas abertas** na mesa (saíram 2 ou 3 especiais entre elas na preparação? embaralhe de novo). O aplicativo sorteia quem começa; a vez segue em sentido horário e, na rodada seguinte, começa o próximo lado. Na sua vez (até 1 minuto), **pegue 1 de cada baralho**: uma aberta ou a de cima do monte, sem ver.
+- Cartas especiais (🎩 Mágico, 🕵️ Espião e 🧲 Ímã, uma em cada baralho): roube a carta daquele baralho de qualquer adversário. Quem foi roubado perde a rodada (não ganha ponto).
 - Cada carta combina de 1 a 4 com cada assunto. Os números ficam escondidos: o aplicativo dá a nota de cada prompt (a média) e diz por que perdeu pontos.
-- O melhor prompt da rodada ganha **1 ponto** (empate: 1 ponto para cada). Depois de **5 rodadas**, ganha quem tiver mais pontos.
-- No fim, o **desafio final**: sem cartas, cada lado escreve um prompt com as 4 partes e o professor confere com 4 perguntas.
+- O melhor prompt da rodada ganha **1 ponto** (empate: 1 ponto para cada). Depois de **5 rodadas** (ou 3, na partida rápida), ganha quem tiver mais pontos. Com a turma toda, jogue **em grupos** (até 5 grupos, cada um com um porta-voz).
+- No fim, o **desafio final**: sem cartas, cada lado escreve um prompt com persona, contexto e formato para um problema da escola. O professor digita e o aplicativo dá a nota de 1 a 4, sem internet. Ganha quem tirar a maior nota.
 
 As regras completas estão na folha de regras, no Manual do Professor e na página Regras do aplicativo.
 
@@ -37,9 +38,9 @@ As regras completas estão na folha de regras, no Manual do Professor e na pági
 
 | Arquivo | Página | O que faz | Histórias |
 | --- | --- | --- | --- |
-| `app/index.html` | Partida | Monta a partida (Duelo, Mesa ou Turma), sorteia quem começa, mostra a rodada, de quem é a vez, os pontos de cada lado, o cronômetro de 1 minuto por vez e quem ganhou | 2.5.1 |
-| `app/rodada.html` | Rodada | O professor digita o número da missão e das 3 cartas de cada lado. O aplicativo dá a nota de cada prompt, diz por que perdeu pontos, mostra o prompt que as cartas formam e dá o ponto ao melhor | 2.1.1, 2.1.2, 2.2.1, 2.2.2 |
-| `app/aprendeu.html` | Desafio | O desafio final: sorteia um problema da escola e confere, com 4 perguntas e exemplos, se cada lado escreveu um prompt com as 4 partes | 2.2.1 |
+| `app/index.html` | Partida | Monta a partida (completa com 5 rodadas ou rápida com 3; Duelo, Mesa ou Grupos), sorteia quem começa, mostra a rodada, de quem é a vez, os pontos de cada lado, o cronômetro de 1 minuto por vez e quem ganhou | 2.5.1 |
+| `app/rodada.html` | Rodada | O professor digita o número da missão e das 3 cartas de cada lado. O aplicativo dá a nota de cada prompt, diz por que perdeu pontos, mostra o prompt que as cartas formam e dá o ponto ao melhor. O botão Foi roubado tira da rodada o lado roubado por uma carta especial | 2.1.1, 2.1.2, 2.2.1, 2.2.2 |
+| `app/aprendeu.html` | Desafio | O desafio final: sorteia um problema da escola, o professor digita o prompt de cada lado e o aplicativo dá a nota de 1 a 4 (persona, contexto e formato), sem internet, com o porquê e quem ganhou | 2.2.1 |
 | `app/cartas.html` | Cartas | Consulta das cartas pelo código ou pelo nome, com o gabarito do professor (os números de cada carta) | 2.3.1 |
 | `app/regras.html` | Regras | Resumo das regras | 2.3.2, 2.3.3 |
 
@@ -53,7 +54,7 @@ Edite `cartas/gerar.cjs` (o nome do jogo fica na constante `NOME`, no começo do
 node cartas/gerar.cjs
 ```
 
-Isso atualiza de uma vez as cartas para imprimir, o Manual do Professor e os dados do aplicativo (`app/js/dados.js` e `app/manifest.webmanifest`). Não edite esses arquivos à mão: o aplicativo e as cartas impressas ficariam diferentes. A conta da nota fica em `app/js/nota.js`, usado pelo aplicativo e pelo gerador do gabarito.
+Isso atualiza de uma vez as cartas para imprimir, o Manual do Professor e os dados do aplicativo (`app/js/dados.js` e `app/manifest.webmanifest`). Não edite esses arquivos à mão: o aplicativo e as cartas impressas ficariam diferentes. A conta da nota fica em `app/js/nota.js`, usado pelo aplicativo e pelo gerador do gabarito. A nota do prompt escrito no desafio final fica em `app/js/avaliar.js` (procura as palavras de cada assunto, sem internet).
 
 Para imprimir: abra `cartas/cartas.html`, `cartas/regras-e-gabarito.html` ou `cartas/manual.html` no Chrome, Ctrl+P, *Salvar como PDF*, margens *Nenhuma*.
 
@@ -67,5 +68,5 @@ Seguimos a regra do professor: se existe palavra em português que diz o mesmo, 
 
 - Testar num celular de verdade: modo sem internet, som e vibração do cronômetro, tela que não apaga.
 - Testar com alguém que não sabe escrever prompts (tarefa da história 2.2.1).
-- Ajustar os números depois da partida de teste: 5 rodadas, 3 cartas de cada baralho e 1 minuto por vez.
+- Ajustar os números depois da partida de teste: 5 rodadas, 4 cartas abertas em cada baralho e 1 minuto por vez.
 - Atualizar o `app-vue` para esta versão.

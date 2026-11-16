@@ -25,13 +25,19 @@
     <section id="tela-nova" hidden>
       <div class="bloco">
         <h2>Nova partida</h2>
-        <p class="sub">Escolha o modo e o nome de cada lado. Só você usa o celular.</p>
+        <p class="sub">Escolha a versão, o modo e o nome de cada lado. Só você usa o celular.</p>
+
+        <span class="rotulo">Versão</span>
+        <div class="modos duas" id="versoes">
+          <button type="button" class="modo" data-rodadas="completa"><b>Completa</b><span><span data-dado="rodadas">5</span> rodadas · 25 min</span></button>
+          <button type="button" class="modo" data-rodadas="rapida"><b>Rápida</b><span><span data-dado="rodadasRapida">3</span> rodadas · 15 min</span></button>
+        </div>
 
         <span class="rotulo">Modo de jogo</span>
         <div class="modos" id="modos">
           <button type="button" class="modo" data-modo="duelo"><b>Duelo</b><span>2 a 4 alunos</span></button>
           <button type="button" class="modo" data-modo="mesa"><b>Mesa</b><span>3 a 10 alunos</span></button>
-          <button type="button" class="modo" data-modo="turma"><b>Turma</b><span>até 40 alunos</span></button>
+          <button type="button" class="modo" data-modo="turma"><b>Grupos</b><span>até 40 alunos</span></button>
         </div>
         <p class="nota" id="explica-modo"></p>
 
@@ -41,7 +47,7 @@
           <div class="valor"><b id="quantos">2</b><span id="nome-quantos">lados</span></div>
           <button type="button" class="mais-menos" id="mais-lados" aria-label="Mais lados">+</button>
         </div>
-        <p class="nota">O melhor prompt de cada rodada vale 1 ponto. Depois de <span data-dado="rodadas">5</span> rodadas, ganha quem tiver mais pontos.</p>
+        <p class="nota" id="nota-rodadas">O melhor prompt de cada rodada vale 1 ponto. Depois de 5 rodadas, ganha quem tiver mais pontos.</p>
 
         <span class="rotulo">Nomes (se quiser)</span>
         <div class="nomes-lados" id="config-lados"></div>
@@ -51,8 +57,10 @@
       <div class="bloco">
         <h2>Antes de começar</h2>
         <ol class="regras" style="margin: 0; padding-left: 20px">
-          <li>Embaralhe cada baralho separado (contexto, persona e formato) e ponha os 3 montes virados para baixo no meio da mesa. O verso mostra qual é qual.</li>
+          <li>Embaralhe cada baralho separado (contexto, persona e formato, cada um com a sua carta especial) e ponha os 3 montes virados para baixo no meio da mesa. O verso mostra qual é qual.</li>
+          <li>Vire as <span data-dado="cartasAbertas">4</span> cartas de cima de cada monte, lado a lado: são as cartas abertas. Saíram 2 ou 3 cartas especiais entre as abertas? Recolha, embaralhe de novo e vire outras.</li>
           <li>Embaralhe as missões e deixe o montinho ao lado.</li>
+          <li>Comece a partida e toque em Sortear quem começa. A vez segue em sentido horário, e na rodada seguinte começa o próximo lado.</li>
         </ol>
         <p class="nota">O passo a passo completo está em <a href="regras.html">Regras</a>.</p>
       </div>
@@ -100,7 +108,7 @@
     <h2 id="fim-titulo">Fim da partida</h2>
     <p class="nota" id="fim-sub"></p>
     <ol class="ranking" id="ranking"></ol>
-    <p class="nota">Para fechar a aula: o desafio final, sem cartas. Cada lado escreve um prompt com as 4 partes e você confere se aprenderam.</p>
+    <p class="nota">Para fechar a aula: o desafio final, sem cartas. Cada lado escreve um prompt com persona, contexto e formato, você digita e o aplicativo dá a nota.</p>
     <a class="botao largo" href="aprendeu.html" style="margin-top: 12px">Conferir se aprendeu</a>
     <div class="acoes" style="margin-top: 8px">
       <button type="button" class="botao secundario" id="voltar-jogo">Voltar ao jogo</button>

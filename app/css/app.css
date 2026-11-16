@@ -371,6 +371,7 @@ a.botao { display: flex; align-items: center; justify-content: center; text-alig
 
 /* Escolha do modo de jogo */
 .modos { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.modos.duas { grid-template-columns: repeat(2, 1fr); }
 .modo {
   border: 2px solid var(--borda);
   border-radius: var(--raio-p);
@@ -423,6 +424,15 @@ a.botao { display: flex; align-items: center; justify-content: center; text-alig
 .prompt-quem { margin: 0 0 8px; display: flex; align-items: center; gap: 8px; font-weight: 800; overflow-wrap: anywhere; }
 .ordem-n { flex: none; display: inline-flex; align-items: center; justify-content: center; min-width: 28px; height: 24px; padding: 0 6px; border-radius: 999px; background: var(--superficie-2); font-size: 12px; font-weight: 800; }
 .trio-campos { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+/* Lado roubado por uma carta especial: perde a rodada */
+.prompt-linha { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
+.prompt-linha .prompt-quem { margin: 0; min-width: 0; }
+.chip.roubo { flex: none; min-height: 36px; padding: 4px 12px; font-size: 13px; user-select: none; -webkit-user-select: none; }
+.chip.roubo[aria-pressed="true"] { background: var(--erro); border-color: var(--erro); color: var(--superficie); }
+.chip.roubo:disabled { opacity: 0.45; }
+.prompt-entrada.roubado .prompt-quem { text-decoration: line-through; color: var(--texto-2); }
+.roubado-aviso { margin: 0; padding: 8px 10px; border-radius: var(--raio-p); background: var(--erro-fundo); color: var(--erro); font-size: 14px; font-weight: 600; }
+.roubados-res { margin: 12px 0 0; padding: 10px 12px; border-radius: var(--raio-p); background: var(--erro-fundo); color: var(--erro); font-size: 14px; font-weight: 600; }
 
 .cartas-digitadas { list-style: none; margin: 8px 0 0; padding: 0; display: flex; flex-direction: column; gap: 4px; font-size: 14px; }
 .cartas-digitadas:empty { display: none; }
@@ -490,17 +500,6 @@ ul.quatro-partes li { margin: 0; padding: 8px 10px; border-radius: 8px; border-l
 .quatro-partes b { display: block; font-size: 15px; }
 .quatro-partes span { display: block; color: var(--texto-2); font-size: 13px; }
 
-.quem-confere { margin: 12px 0 0; font-size: 17px; font-weight: 800; }
-.perguntas { list-style: none; margin: 12px 0 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
-.pergunta { display: flex; flex-direction: column; gap: 10px; padding: 12px; border: 1px solid var(--borda); border-radius: var(--raio-p); }
-.pergunta-topo { display: flex; align-items: flex-start; gap: 8px; }
-.pergunta-topo .passo { margin: 0; }
-.pergunta-topo p { margin: 0; font-size: 16px; font-weight: 700; }
-.pergunta-topo small { display: block; font-size: 13px; font-weight: 500; color: var(--texto-2); }
-.sim-nao { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-.sim-nao .chip { justify-content: center; min-height: 44px; border-radius: var(--raio-p); font-size: 15px; }
-.sim-nao .sim[aria-pressed="true"] { background: var(--ok); border-color: var(--ok); color: var(--superficie); }
-.sim-nao .nao[aria-pressed="true"] { background: var(--erro); border-color: var(--erro); color: var(--superficie); }
 .exemplo-pergunta .ex-rotulo { margin: 4px 0 6px; font-size: 13px; color: var(--texto-2); }
 .ex { margin: 6px 0 0; padding: 8px 10px; border-radius: 8px; font-size: 14px; -webkit-user-select: text; user-select: text; }
 .ex.bom { background: var(--ok-fundo); }
@@ -508,6 +507,20 @@ ul.quatro-partes li { margin: 0; padding: 8px 10px; border-radius: 8px; border-l
 .ex.bom b { color: var(--ok); }
 .ex.ruim b { color: var(--erro); }
 .ex small { display: block; margin-top: 4px; font-size: 13px; color: var(--texto-2); }
+/* Desafio: o prompt digitado e a nota de cada parte */
+.exemplos-partes { margin-top: 10px; }
+.exemplo-parte { margin-top: 10px; padding-left: 10px; border-left: 4px solid var(--c); }
+.exemplo-parte-t { margin: 0; font-size: 12px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; color: var(--texto-2); }
+.campo-prompt { display: block; min-height: 132px; resize: vertical; line-height: 1.45; -webkit-user-select: text; user-select: text; }
+#resultado-desafio:not(:empty) { margin-top: 12px; scroll-margin-top: 12px; }
+#resultado-desafio .pr-cartas li { align-items: center; }
+#resultado-desafio .pr-carta-nota { font-size: 20px; min-width: 20px; text-align: center; }
+.ranking-desafio { list-style: none; margin: 8px 0 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.ranking-desafio li { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 8px 12px; border: 1px solid var(--borda); border-radius: var(--raio-p); }
+.ranking-desafio li.primeiro { border: 2px solid var(--ok); background: var(--ok-fundo); }
+.ranking-desafio li span { min-width: 0; overflow-wrap: anywhere; font-weight: 700; }
+.ranking-desafio small { font-weight: 600; color: var(--ok); }
+.ranking-desafio b { flex: none; font-size: 18px; font-variant-numeric: tabular-nums; }
 
 .veredito-aprendeu { margin-top: 12px; padding: 12px; border: 2px dashed var(--borda); border-radius: var(--raio-p); }
 .veredito-aprendeu p { margin: 0; }

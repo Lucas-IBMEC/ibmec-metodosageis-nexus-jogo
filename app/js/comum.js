@@ -197,9 +197,14 @@ const MP = (() => {
     return partida.lados.filter((l) => l.pontos === primeiro.pontos && l.soma === primeiro.soma);
   }
 
+  // Quantas rodadas tem a partida: completa (5) ou rápida (3)
+  function rodadasDa(partida) {
+    return (partida && partida.rodadas) || RODADAS;
+  }
+
   // Depois do ponto: começa a próxima rodada, ou a partida acaba depois da última
   function avancarRodada(partida) {
-    if (partida.rodada >= RODADAS) {
+    if (partida.rodada >= rodadasDa(partida)) {
       partida.fase = 'fim';
     } else {
       partida.rodada += 1;
@@ -243,6 +248,12 @@ const MP = (() => {
       if (DADOS[el.dataset.dado] !== undefined) el.textContent = DADOS[el.dataset.dado];
     });
     if (DADOS.nomeDoJogo) document.title = `${document.title} · ${DADOS.nomeDoJogo}`;
+    // As cartas especiais também vêm de DADOS, com o mesmo nome e o mesmo poder das impressas
+    const lista = document.getElementById('lista-especiais');
+    if (lista && DADOS.especiais) {
+      lista.innerHTML = DADOS.especiais.map((e) =>
+        `<li><b>${e.ico} ${e.nome}</b> (${e.tipo.toLowerCase()}): ${e.poder.charAt(0).toLowerCase()}${e.poder.slice(1)}</li>`).join('');
+    }
   }
 
   document.addEventListener('DOMContentLoaded', () => {
@@ -252,7 +263,7 @@ const MP = (() => {
   });
 
   return {
-    TIPOS, LETRA, RODADAS, DURACAO_DA_VEZ, VERSAO_DA_PARTIDA, NOMES,
+    TIPOS, LETRA, RODADAS, rodadasDa, DURACAO_DA_VEZ, VERSAO_DA_PARTIDA, NOMES,
     esc, normalizarCodigo, cartaPeloNumero, comSimbolo, semParenteses, minuscula, textoDoPrompt, classeDoTipo,
     melhoresCartas, somaMaxima, ler, salvar, apagar, plural, juntar, aviso,
     lerPartida, salvarPartida, quemComeca, ordemDaRodada, pontoDaRodada, somaDasNotas, ranking, naFrente, avancarRodada,
