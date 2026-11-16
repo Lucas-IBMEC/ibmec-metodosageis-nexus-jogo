@@ -618,6 +618,21 @@ const manual = require('./manual.cjs')({
 fs.writeFileSync(path.join(__dirname, 'manual.html'), manual.html);
 console.log(`manual: ${manual.paginas} páginas`);
 
+// ---------------------------------------------------------------- tabuleiro e manual iconográfico
+
+// O tabuleiro da mesa: o lugar dos montes, das abertas e da missão (2 folhas A4 que formam um A3)
+const tabuleiro = require('./tabuleiro.cjs')({ NOME, GRUPO, ABERTAS, ESPECIAIS, emblema, cssDasCartas: css });
+fs.writeFileSync(path.join(__dirname, 'tabuleiro.html'), tabuleiro.html);
+console.log(`tabuleiro: ${tabuleiro.paginas} folhas`);
+
+// O manual iconográfico: cores, símbolos, imagens das cartas e ícones do aplicativo
+const iconografico = require('./iconografico.cjs')({
+  NOME, GRUPO, ABERTAS, ASSUNTO, ORDEM, C, P, F, ESPECIAIS, poderDa, cartaPorCodigo, versoPorTipo,
+  desenho, emblema, esc, semParenteses, cssDasCartas: css, tabuleiro,
+});
+fs.writeFileSync(path.join(__dirname, 'iconografico.html'), iconografico.html);
+console.log(`manual iconográfico: ${iconografico.paginas} páginas`);
+
 // ---------------------------------------------------------------- dados do aplicativo do professor
 
 const linhas = [

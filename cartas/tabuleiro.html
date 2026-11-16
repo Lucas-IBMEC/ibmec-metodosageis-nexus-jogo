@@ -1,0 +1,180 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><title>Palavra Mágica · tabuleiro</title><style>
+@page { size: A4 portrait; margin: 0; }
+* { box-sizing: border-box; }
+body { margin: 0; font-family: 'Segoe UI', Arial, sans-serif; color: #1b1f2a; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.page { width: 210mm; height: 297mm; page-break-after: always; break-after: page; overflow: hidden; background: #fff; position: relative; }
+.grid { display: grid; grid-template-columns: repeat(3, 63mm); grid-template-rows: repeat(3, 88mm); justify-content: center; align-content: center; }
+
+.t-missao { --c: #c98a00; --claro: #fff6dc; } .t-persona { --c: #6d3fc0; --claro: #f1ebfb; }
+.t-contexto { --c: #1f5fd1; --claro: #e8f0fd; } .t-formato { --c: #e06c00; --claro: #fff0e2; }
+.a-S { color: #c62828; }
+
+.card { width: 63mm; height: 88mm; border: 0.3mm dashed #9aa3b5; padding: 3mm; display: flex; flex-direction: column; gap: 1.6mm; position: relative; }
+.card::before { content: ''; position: absolute; inset: 1.6mm; border: 0.6mm solid var(--c); border-radius: 3mm; pointer-events: none; }
+.hd { background: var(--c); color: #fff; border-radius: 2mm; padding: 1.2mm 2.4mm; display: flex; justify-content: space-between; font-weight: 800; font-size: 8.5pt; letter-spacing: .06em; position: relative; }
+.code { font-weight: 700; background: rgba(255,255,255,.25); border-radius: 1mm; padding: 0 1.4mm; }
+.assuntos-missao { display: flex; flex-wrap: wrap; gap: 1mm; margin: 0 1mm; }
+.chip-assunto { display: inline-flex; align-items: center; gap: 1mm; padding: .5mm 1.8mm .5mm .5mm; background: var(--claro); border-radius: 5mm; font-size: 7.8pt; font-weight: 800; }
+.chip-assunto .ico { width: 5.4mm; height: 5.4mm; border-radius: 50%; background: #fff; display: inline-flex; align-items: center; justify-content: center; font-size: 8.6pt; line-height: 1; }
+.body { flex: 1; padding: 0 1.5mm; display: flex; flex-direction: column; justify-content: flex-start; gap: 1.4mm; }
+.body.center { justify-content: center; text-align: center; }
+.pedido { font-size: 12.4pt; font-weight: 800; line-height: 1.28; margin: .5mm 0 0; }
+.pense { font-size: 7.4pt; color: #4a5368; font-style: italic; margin: 0 1.5mm; line-height: 1.3; }
+.txt { font-size: 10.6pt; line-height: 1.32; margin: 0; }
+.big { font-size: 12pt; font-weight: 800; margin: 0; line-height: 1.2; }
+.emblema { width: 11mm; height: 11mm; padding: 2mm; margin: 0 auto 1mm; border-radius: 50%; background: var(--claro); color: var(--c); flex: none; }
+/* A imagem de cada carta: um desenho colorido num círculo da cor do baralho */
+.imagem { width: 17mm; height: 17mm; margin: 0 auto .6mm; border-radius: 50%; background: var(--claro); border: .5mm solid var(--c); flex: none;
+  display: flex; align-items: center; justify-content: center; font-size: 27pt; line-height: 1; font-family: 'Segoe UI Emoji', 'Noto Color Emoji', 'Apple Color Emoji', sans-serif; }
+.imagem.pequena { width: 12.5mm; height: 12.5mm; font-size: 19pt; margin-bottom: 0; }
+.imagem.grande { width: 24mm; height: 24mm; font-size: 40pt; border-width: .8mm; }
+.especial .body { background: radial-gradient(circle at 50% 30%, var(--claro) 0 38%, transparent 70%); border-radius: 2mm; }
+.especial .hd { background: linear-gradient(90deg, var(--c), #c98a00); }
+.poder { font-size: 11pt; font-weight: 800; color: var(--c); margin: 0; line-height: 1.25; }
+.especial .efeito { font-size: 8pt; }
+.faz { font-size: 9pt; line-height: 1.32; margin: 0; }
+.efeito { font-size: 8.2pt; margin: 0; line-height: 1.35; color: #2b3245; }
+.t-persona .efeito { background: var(--claro); border-radius: 2mm; padding: 1.2mm 1.6mm; }
+.desenho { color: var(--c); margin: .6mm auto; width: 34mm; }
+.desenho svg { width: 100%; height: auto; display: block; }
+.ft { font-size: 6.3pt; line-height: 1.3; color: #4a5368; border-top: 0.3mm solid #d6dbe6; padding: 1mm 1.5mm 0; margin: 0 .5mm .5mm; }
+.ft b { color: var(--c); }
+
+/* Verso: o nome do baralho, com listras claras (gasta pouca tinta) */
+.verso-carta::before { display: none; }
+.verso-miolo { flex: 1; border: 1mm solid var(--c); border-radius: 3mm; color: var(--c); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.6mm; text-align: center;
+  background: repeating-linear-gradient(45deg, var(--claro) 0 2.6mm, #fff 2.6mm 5.2mm); }
+.verso-ico { width: 20mm; height: 20mm; background: #fff; border-radius: 50%; padding: 3mm; border: .6mm solid var(--c); }
+.verso-nome { margin: 1mm 0 0; font-size: 17pt; font-weight: 900; letter-spacing: .08em; background: #fff; padding: 0 2.4mm; border-radius: 1.4mm; }
+.verso-sub { margin: 0; font-size: 9pt; font-weight: 700; background: #fff; padding: 0 2mm; border-radius: 1.4mm; color: #2b3245; }
+.verso-jogo { margin: 3mm 0 0; font-size: 8pt; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; background: var(--c); color: #fff; padding: .6mm 2.4mm; border-radius: 1.4mm; }
+.vaga { width: 63mm; height: 88mm; }
+.rotulo-folha { position: absolute; top: 6mm; left: 0; right: 0; margin: 0; text-align: center; font-size: 8pt; color: #6b7489; }
+.rotulo-folha b { color: #1b1f2a; }
+
+/* Folhas de texto */
+.doc { padding: 10mm 12mm; font-size: 9.2pt; line-height: 1.34; }
+.regras { font-size: 10.3pt; line-height: 1.38; }
+.doc h1 { font-size: 18pt; margin: 0 0 2.5mm; } .doc h1 small { display: block; font-size: 9pt; font-weight: 500; color: #4a5368; }
+.doc h2 { font-size: 11.5pt; margin: 3.2mm 0 1.2mm; color: #1f5fd1; }
+.doc p { margin: 0 0 1.4mm; }
+.doc ul, .doc ol { margin: 0 0 1mm; padding-left: 5mm; } .doc li { margin-bottom: 1mm; }
+.cols { display: grid; grid-template-columns: 1fr 1fr; gap: 7mm; align-items: start; }
+.objetivo { background: #fff6dc; border: 0.4mm solid #e0b84a; border-radius: 2mm; padding: 2.4mm 3mm; font-size: 10.6pt; }
+.vez-passos { font-size: 10.3pt; } .vez-passos li { margin-bottom: 1.3mm; }
+.sem-quebra { white-space: nowrap; }
+.exemplo { margin-top: 3mm; border-left: 1.2mm solid #c98a00; background: #fff6dc; border-radius: 0 2mm 2mm 0; padding: 2.2mm 3mm; font-size: 9.2pt; line-height: 1.35; }
+.exemplo p { margin: 0 0 1.2mm; } .exemplo p:last-child { margin: 0; }
+.exemplo-t { font-weight: 800; font-size: 9pt; letter-spacing: .06em; text-transform: uppercase; color: #8a5a00; }
+.exemplo-missao { font-style: italic; }
+.nota-tab { width: 100%; border-collapse: collapse; margin: 1mm 0 1.6mm; } .nota-tab td { border: 0.3mm solid #e0c27a; padding: 1.2mm 2mm; font-size: 9.6pt; } .nota-tab td:last-child { text-align: right; font-weight: 700; white-space: nowrap; }
+.nota-tab b { color: #8a5a00; }
+.ganha { background: #e3f4ea; border: 0.4mm solid #7cc49c; border-radius: 2mm; padding: 1.8mm 2.6mm; }
+.pequeno { font-size: 9pt; }
+.mesa { margin-top: 3mm; border: 0.4mm dashed #9aa3b5; border-radius: 3mm; padding: 2.4mm 3mm 2.6mm; background: #f6f8fc; text-align: center; }
+.mesa-t { font-weight: 800; font-size: 9pt; margin: 0 0 1mm !important; color: #4a5368; letter-spacing: .06em; text-transform: uppercase; }
+.mesa-fila { display: flex; justify-content: center; gap: 3mm; margin: 1.6mm 0; }
+.mini { width: 19mm; height: 26mm; border-radius: 1.6mm; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .6mm; font-size: 8pt; font-weight: 800; color: #fff; }
+.mini small { font-size: 6pt; font-weight: 600; line-height: 1.2; padding: 0 1mm; }
+.mini.m { background: #c98a00; } .mini.c { background: #1f5fd1; } .mini.p { background: #6d3fc0; } .mini.f { background: #e06c00; }
+.mesa-mao { margin: 1.4mm 0 0 !important; font-size: 8.6pt; font-weight: 700; }
+.mesa-fila.baralho { gap: 2mm; margin: 0; align-items: center; justify-content: flex-start; }
+.mesa-corpo { display: flex; align-items: center; justify-content: center; gap: 3mm; }
+.mesa-baralhos { display: flex; flex-direction: column; gap: 1.4mm; }
+.mesa-fila.baralho .mini { width: 16mm; height: 11.5mm; font-size: 7.2pt; }
+.abertas { display: flex; align-items: center; gap: 1mm; font-size: 6.6pt; font-weight: 700; color: #4a5368; }
+.abertas small { width: 9mm; line-height: 1.1; text-align: left; }
+.aberta { width: 7.4mm; height: 10.4mm; border-radius: 1mm; background: #fff; border: .5mm solid; }
+.aberta.c { border-color: #1f5fd1; } .aberta.p { border-color: #6d3fc0; } .aberta.f { border-color: #e06c00; }
+.especiais { margin-top: 1.6mm; border: 0.4mm solid #c98a00; background: #fffaf0; border-radius: 2mm; padding: 1.6mm 2.4mm; font-size: 9.4pt; line-height: 1.36; }
+.especiais p { margin: 0 0 .8mm; } .especiais p:last-child { margin: 0; }
+.especiais-t { font-weight: 800; color: #8a5a00; } .especiais-t span { font-weight: 700; color: #1b1f2a; margin-left: 1.4mm; }
+.vira { margin: 3mm 0 0; text-align: right; font-size: 8.6pt; font-weight: 700; color: #4a5368; }
+.regras-verso h2 { margin-top: 5mm; }
+.comeca { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3mm; }
+.comeca > div { display: flex; gap: 2mm; align-items: flex-start; background: #eef2f8; border-radius: 2mm; padding: 2.4mm 2.6mm; }
+.comeca p { margin: 0; font-size: 9.6pt; }
+.comeca-n { flex: none; width: 6mm; height: 6mm; border-radius: 50%; background: #1f5fd1; color: #fff; font-weight: 800; font-size: 9pt; display: flex; align-items: center; justify-content: center; }
+.versoes { display: grid; grid-template-columns: 1fr 1fr; gap: 3mm; }
+.versoes.tres { grid-template-columns: repeat(3, 1fr); }
+.versao { border: 0.4mm solid #c9cfdb; border-radius: 2mm; padding: 2.4mm 2.8mm; }
+.versao.destaque { border: 0.6mm solid #1f5fd1; background: #f2f6fd; }
+.versao p { margin: 0 0 1mm; font-size: 9.6pt; } .versao p:last-child { margin: 0; }
+.versao-t { font-weight: 800; font-size: 11pt !important; color: #1b1f2a; }
+.versao-n { font-weight: 700; color: #1f5fd1; }
+.regras-verso .exemplo { margin-top: 5mm; font-size: 9.8pt; }
+.aviso { background: #eef2f8; border-radius: 2mm; padding: 2mm 3mm; font-size: 8.4pt; color: #4a5368; margin-top: 3mm; }
+.gab-pag { font-size: 9pt; }
+table.gab { width: 100%; border-collapse: collapse; margin-bottom: 1.6mm; } .gab th, .gab td { border: 0.3mm solid #c9cfdb; padding: 1mm 1.8mm; text-align: left; vertical-align: top; font-size: 8.4pt; } .gab th { background: #eef2f8; }
+.gab.num td, .gab.num th { padding: .8mm 1.4mm; font-size: 8.2pt; vertical-align: middle; }
+.gab .n { width: 7mm; text-align: center; font-variant-numeric: tabular-nums; }
+.gab .v4 { font-weight: 800; background: #e3f4ea; } .gab .v1 { color: #b42318; background: #fde8e7; }
+.duas-tabelas { display: grid; grid-template-columns: 1fr 1fr; gap: 5mm; align-items: start; }
+.legenda { font-size: 8.4pt; color: #4a5368; }
+.small2 { font-size: 8.6pt; line-height: 1.45; }
+.conversao { font-size: 8.8pt; line-height: 1.7; display: flex; flex-wrap: wrap; gap: 0 3mm; }
+.trio-gab { border-top: 0.3mm solid #d6dbe6; padding-top: 1.2mm; }
+
+.tab-folha { width: 210mm; height: 297mm; }
+.tab-rotulo, .tab-pe { position: absolute; left: 8mm; right: 8mm; margin: 0; font-size: 8pt; color: #4a5368; text-align: center; }
+.tab-rotulo { top: 6mm; } .tab-rotulo b { color: #1b1f2a; }
+.tab-pe { bottom: 6mm; font-size: 7.4pt; }
+.tab-janela { position: absolute; left: 6mm; top: 15mm; width: 198mm; height: 267mm; overflow: hidden; }
+.tab-mover { position: absolute; top: 0; }
+.tabuleiro { position: relative; }
+.corte { position: absolute; top: 0; bottom: 0; left: 204mm; border-left: .4mm dashed #6b7489; }
+.corte span { position: absolute; top: 9mm; left: -2.4mm; font-size: 11pt; color: #4a5368; background: #fff; }
+.cola { position: absolute; top: 0; bottom: 0; left: 0; width: 6mm; background: #e6e9f0; }
+.cola span { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-90deg); white-space: nowrap; font-size: 6.6pt; color: #6b7489; font-weight: 700; letter-spacing: .06em; }
+
+.faixa { position: absolute; border-radius: 4mm; background: var(--claro); opacity: .55; }
+.espaco { position: absolute; width: 62mm; height: 87mm; border: .7mm dashed var(--c); border-radius: 3.4mm; background: #fff;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.4mm; text-align: center; color: var(--c); padding: 3mm; }
+.espaco p { margin: 0; }
+.espaco.monte { border-style: solid; background: repeating-linear-gradient(45deg, var(--claro) 0 2.6mm, #fff 2.6mm 5.2mm); }
+.esp-ico { width: 17mm; height: 17mm; background: #fff; border-radius: 50%; padding: 2.6mm; border: .6mm solid var(--c); }
+.esp-nome { font-size: 12pt; font-weight: 900; letter-spacing: .08em; background: #fff; padding: 0 2mm; border-radius: 1.4mm; }
+.esp-sub { font-size: 8pt; font-weight: 700; color: #2b3245; background: #fff; padding: 0 1.6mm; border-radius: 1.4mm; }
+.esp-o-que { font-size: 7.6pt; font-weight: 800; color: #fff; background: var(--c); padding: .4mm 2mm; border-radius: 1.4mm; text-transform: uppercase; letter-spacing: .08em; }
+.esp-num { font-size: 40pt; font-weight: 900; line-height: 1; opacity: .28; }
+.esp-todos { font-size: 8pt; font-weight: 800; color: #fff; background: var(--c); padding: .6mm 2.2mm; border-radius: 1.4mm; }
+.missao-da-rodada { border-width: 1mm; border-style: solid; background: var(--claro); }
+.missao-da-rodada .esp-nome { font-size: 11pt; background: none; }
+.missao-da-rodada .esp-sub { background: none; }
+
+.lembrete { position: absolute; width: 62mm; height: 87mm; border-radius: 3.4mm; background: #16274f; color: #fff; padding: 3.6mm 3.4mm; display: flex; flex-direction: column; gap: 1.6mm; }
+.lembrete p { margin: 0; }
+.lem-nome { font-size: 12.5pt; font-weight: 900; color: #f2c14e; line-height: 1.1; }
+.lem-t { font-size: 8.4pt; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: #dfe5f3; }
+.lembrete ol { margin: 0; padding-left: 4.4mm; font-size: 8.4pt; line-height: 1.32; } .lembrete li { margin-bottom: 1.2mm; }
+.lem-esp { font-size: 7.6pt; line-height: 1.32; color: #dfe5f3; border-top: .3mm solid rgba(255,255,255,.3); padding-top: 1.6mm; }
+.lem-esp span { font-size: 10pt; margin-right: 1mm; font-family: 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif; }
+</style></head><body><section class="page tab-folha">
+  <p class="tab-rotulo"><b>Tabuleiro · folha 1 de 2 (esquerda)</b> · corte na linha tracejada ✂ e cole esta folha por cima da faixa cinza da folha 2</p>
+  <div class="tab-janela"><div class="tab-mover" style="left:0mm"><div class="tabuleiro" style="width:396mm;height:267mm"><div class="espaco t-missao monte" style="left:0mm;top:0mm"><svg class="esp-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><circle cx="12" cy="12" r="5.5"/><circle cx="12" cy="12" r="1.6" fill="currentColor"/></svg><p class="esp-nome">MISSÕES</p><p class="esp-sub">o montinho, virado para baixo</p></div><div class="espaco t-missao missao-da-rodada" style="left:0mm;top:90mm"><p class="esp-nome">MISSÃO DA RODADA</p><p class="esp-sub">virada para cima</p><p class="esp-todos">vale para todos os lados</p></div><div class="lembrete" style="left:0mm;top:180mm">
+    <p class="lem-nome">Palavra Mágica</p>
+    <p class="lem-t">Na vez do seu lado</p>
+    <ol>
+      <li>Pegue <b>1 contexto, 1 persona e 1 formato</b>.</li>
+      <li>De cada baralho: <b>uma das 4 abertas</b> ou a de cima do monte, sem ver.</li>
+      <li>Pegou uma aberta? <b>Vire a de cima do monte</b> no lugar dela.</li>
+    </ol>
+    <p class="lem-esp"><span>🎩 🕵️ 🧲</span> Especial: roube a carta daquele baralho de um adversário.</p>
+  </div><div class="faixa t-contexto" style="left:66mm;top:-1mm;width:327mm;height:89mm"></div><div class="espaco t-contexto monte" style="left:68mm;top:0mm"><svg class="esp-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.6"/></svg><p class="esp-nome">CONTEXTO</p><p class="esp-sub">monte, virado para baixo</p><p class="esp-o-que">a situação</p></div><div class="espaco t-contexto aberta" style="left:134mm;top:0mm"><p class="esp-num">1</p><p class="esp-nome">ABERTA</p><p class="esp-sub">carta virada para cima</p></div><div class="espaco t-contexto aberta" style="left:199mm;top:0mm"><p class="esp-num">2</p><p class="esp-nome">ABERTA</p><p class="esp-sub">carta virada para cima</p></div><div class="espaco t-contexto aberta" style="left:264mm;top:0mm"><p class="esp-num">3</p><p class="esp-nome">ABERTA</p><p class="esp-sub">carta virada para cima</p></div><div class="espaco t-contexto aberta" style="left:329mm;top:0mm"><p class="esp-num">4</p><p class="esp-nome">ABERTA</p><p class="esp-sub">carta virada para cima</p></div><div class="faixa t-persona" style="left:66mm;top:89mm;width:327mm;height:89mm"></div><div class="espaco t-persona monte" style="left:68mm;top:90mm"><svg class="esp-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg><p class="esp-nome">PERSONA</p><p class="esp-sub">monte, virado para baixo</p><p class="esp-o-que">quem responde</p></div><div class="espaco t-persona aberta" style="left:134mm;top:90mm"><p class="esp-num">1</p><p class="esp-nome">ABERTA</p><p class="esp-sub">carta virada para cima</p></div><div class="espaco t-persona aberta" style="left:199mm;top:90mm"><p class="esp-num">2</p><p class="esp-nome">ABERTA</p><p class="esp-sub">carta virada para cima</p></div><div class="espaco t-persona aberta" style="left:264mm;top:90mm"><p class="esp-num">3</p><p class="esp-nome">ABERTA</p><p class="esp-sub">carta virada para cima</p></div><div class="espaco t-persona aberta" style="left:329mm;top:90mm"><p class="esp-num">4</p><p class="esp-nome">ABERTA</p><p class="esp-sub">carta virada para cima</p></div><div class="faixa t-formato" style="left:66mm;top:179mm;width:327mm;height:89mm"></div><div class="espaco t-formato monte" style="left:68mm;top:180mm"><svg class="esp-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h4"/></svg><p class="esp-nome">FORMATO</p><p class="esp-sub">monte, virado para baixo</p><p class="esp-o-que">como a resposta chega</p></div><div class="espaco t-formato aberta" style="left:134mm;top:180mm"><p class="esp-num">1</p><p class="esp-nome">ABERTA</p><p class="esp-sub">carta virada para cima</p></div><div class="espaco t-formato aberta" style="left:199mm;top:180mm"><p class="esp-num">2</p><p class="esp-nome">ABERTA</p><p class="esp-sub">carta virada para cima</p></div><div class="espaco t-formato aberta" style="left:264mm;top:180mm"><p class="esp-num">3</p><p class="esp-nome">ABERTA</p><p class="esp-sub">carta virada para cima</p></div><div class="espaco t-formato aberta" style="left:329mm;top:180mm"><p class="esp-num">4</p><p class="esp-nome">ABERTA</p><p class="esp-sub">carta virada para cima</p></div></div></div></div>
+  <div class="corte"><span>✂</span></div>
+  <p class="tab-pe">Palavra Mágica · grupo NEXUS · as cartas (63 x 88 mm) cobrem a linha de cada espaço · juntas, as 2 folhas têm o tamanho de uma folha A3</p>
+</section><section class="page tab-folha">
+  <p class="tab-rotulo"><b>Tabuleiro · folha 2 de 2 (direita)</b> · a faixa cinza da esquerda fica embaixo da folha 1</p>
+  <div class="tab-janela"><div class="tab-mover" style="left:-198mm"><div class="tabuleiro" style="width:396mm;height:267mm"><div class="espaco t-missao monte" style="left:0mm;top:0mm"><svg class="esp-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><circle cx="12" cy="12" r="5.5"/><circle cx="12" cy="12" r="1.6" fill="currentColor"/></svg><p class="esp-nome">MISSÕES</p><p class="esp-sub">o montinho, virado para baixo</p></div><div class="espaco t-missao missao-da-rodada" style="left:0mm;top:90mm"><p class="esp-nome">MISSÃO DA RODADA</p><p class="esp-sub">virada para cima</p><p class="esp-todos">vale para todos os lados</p></div><div class="lembrete" style="left:0mm;top:180mm">
+    <p class="lem-nome">Palavra Mágica</p>
+    <p class="lem-t">Na vez do seu lado</p>
+    <ol>
+      <li>Pegue <b>1 contexto, 1 persona e 1 formato</b>.</li>
+      <li>De cada baralho: <b>uma das 4 abertas</b> ou a de cima do monte, sem ver.</li>
+      <li>Pegou uma aberta? <b>Vire a de cima do monte</b> no lugar dela.</li>
+    </ol>
+    <p class="lem-esp"><span>🎩 🕵️ 🧲</span> Especial: roube a carta daquele baralho de um adversário.</p>
+  </div><div class="faixa t-contexto" style="left:66mm;top:-1mm;width:327mm;height:89mm"></div><div class="espaco t-contexto monte" style="left:68mm;top:0mm"><svg class="esp-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.6"/></svg><p class="esp-nome">CONTEXTO</p><p class="esp-sub">monte, virado para baixo</p><p class="esp-o-que">a situação</p></div><div class="espaco t-contexto aberta" style="left:134mm;top:0mm"><p class="esp-num">1</p><p class="esp-nome">ABERTA</p><p class="esp-sub">carta virada para cima</p></div><div class="espaco t-contexto aberta" style="left:199mm;top:0mm"><p class="esp-num">2</p><p class="esp-nome">ABERTA</p><p class="esp-sub">carta virada para cima</p></div><div class="espaco t-contexto aberta" style="left:264mm;top:0mm"><p class="esp-num">3</p><p class="esp-nome">ABERTA</p><p class="esp-sub">carta virada para cima</p></div><div class="espaco t-contexto aberta" style="left:329mm;top:0mm"><p class="esp-num">4</p><p class="esp-nome">ABERTA</p><p class="esp-sub">carta virada para cima</p></div><div class="faixa t-persona" style="left:66mm;top:89mm;width:327mm;height:89mm"></div><div class="espaco t-persona monte" style="left:68mm;top:90mm"><svg class="esp-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg><p class="esp-nome">PERSONA</p><p class="esp-sub">monte, virado para baixo</p><p class="esp-o-que">quem responde</p></div><div class="espaco t-persona aberta" style="left:134mm;top:90mm"><p class="esp-num">1</p><p class="esp-nome">ABERTA</p><p class="esp-sub">carta virada para cima</p></div><div class="espaco t-persona aberta" style="left:199mm;top:90mm"><p class="esp-num">2</p><p class="esp-nome">ABERTA</p><p class="esp-sub">carta virada para cima</p></div><div class="espaco t-persona aberta" style="left:264mm;top:90mm"><p class="esp-num">3</p><p class="esp-nome">ABERTA</p><p class="esp-sub">carta virada para cima</p></div><div class="espaco t-persona aberta" style="left:329mm;top:90mm"><p class="esp-num">4</p><p class="esp-nome">ABERTA</p><p class="esp-sub">carta virada para cima</p></div><div class="faixa t-formato" style="left:66mm;top:179mm;width:327mm;height:89mm"></div><div class="espaco t-formato monte" style="left:68mm;top:180mm"><svg class="esp-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h4"/></svg><p class="esp-nome">FORMATO</p><p class="esp-sub">monte, virado para baixo</p><p class="esp-o-que">como a resposta chega</p></div><div class="espaco t-formato aberta" style="left:134mm;top:180mm"><p class="esp-num">1</p><p class="esp-nome">ABERTA</p><p class="esp-sub">carta virada para cima</p></div><div class="espaco t-formato aberta" style="left:199mm;top:180mm"><p class="esp-num">2</p><p class="esp-nome">ABERTA</p><p class="esp-sub">carta virada para cima</p></div><div class="espaco t-formato aberta" style="left:264mm;top:180mm"><p class="esp-num">3</p><p class="esp-nome">ABERTA</p><p class="esp-sub">carta virada para cima</p></div><div class="espaco t-formato aberta" style="left:329mm;top:180mm"><p class="esp-num">4</p><p class="esp-nome">ABERTA</p><p class="esp-sub">carta virada para cima</p></div></div></div></div>
+  <div class="cola"><span>cole aqui, embaixo da folha 1</span></div>
+  <p class="tab-pe">Palavra Mágica · grupo NEXUS · as cartas (63 x 88 mm) cobrem a linha de cada espaço · juntas, as 2 folhas têm o tamanho de uma folha A3</p>
+</section></body></html>

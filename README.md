@@ -13,8 +13,11 @@ Só o professor usa o celular em sala. O aplicativo do professor foi feito **pri
 | `cartas/cartas.html` | As 60 cartas (16 missões, 3 baralhos de 16 e 1 carta especial em cada baralho), frente e verso, com uma imagem em cada carta (14 folhas A4: cada folha de frente vem seguida do seu verso), prontas para imprimir |
 | `cartas/regras-e-gabarito.html` | Folha de regras (frente e verso: como jogar, quem começa e as versões do jogo) e gabarito do professor (4 páginas) |
 | `cartas/manual.html` | Manual do Professor (9 páginas, com imagens das cartas, da mesa e das telas do aplicativo) |
+| `cartas/tabuleiro.html` | Tabuleiro da mesa: o lugar da missão, dos 3 montes e das 4 cartas abertas de cada baralho. São 2 folhas A4 que, coladas, têm o tamanho de uma folha A3 |
+| `cartas/iconografico.html` | Manual iconográfico (4 páginas): as cores dos baralhos, as partes de uma carta, os assuntos, as cartas especiais, o tabuleiro, os ícones do aplicativo, a imagem de cada carta e os desenhos dos formatos |
 | `cartas/gerar.cjs` | Lugar único das cartas: gera os arquivos acima e os dados do aplicativo |
 | `cartas/manual.cjs` | Texto e desenho do Manual do Professor |
+| `cartas/tabuleiro.cjs` e `cartas/iconografico.cjs` | Desenho do tabuleiro e do manual iconográfico (usam as mesmas cartas, cores e ícones) |
 | `cartas/imagens/` | Fotos das telas do aplicativo usadas no manual |
 | `app/` | O aplicativo do professor |
 | `app-vue/` | Versão antiga em Vue 3, feita pelo Frederico Queiroz em 28/10 (Sprint 3). Fica só como histórico: o aplicativo que vale é o da pasta `app/` |
@@ -56,7 +59,7 @@ node cartas/gerar.cjs
 
 Isso atualiza de uma vez as cartas para imprimir, o Manual do Professor e os dados do aplicativo (`app/js/dados.js` e `app/manifest.webmanifest`). Não edite esses arquivos à mão: o aplicativo e as cartas impressas ficariam diferentes. A conta da nota fica em `app/js/nota.js`, usado pelo aplicativo e pelo gerador do gabarito. A nota do prompt escrito no desafio final fica em `app/js/avaliar.js` (procura as palavras de cada assunto, sem internet).
 
-Para imprimir: abra `cartas/cartas.html`, `cartas/regras-e-gabarito.html` ou `cartas/manual.html` no Chrome, Ctrl+P, *Salvar como PDF*, margens *Nenhuma*.
+Para imprimir: abra `cartas/cartas.html`, `cartas/regras-e-gabarito.html`, `cartas/manual.html`, `cartas/tabuleiro.html` ou `cartas/iconografico.html` no Chrome, Ctrl+P, *Salvar como PDF*, margens *Nenhuma*.
 
 Ao **criar um arquivo novo** no aplicativo, coloque o nome dele na lista `ARQUIVOS` de `app/sw.js` e aumente a `VERSAO`, para os celulares guardarem o arquivo novo.
 

@@ -1,0 +1,385 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><title>Palavra Mágica · manual iconográfico</title><style>
+@page { size: A4 portrait; margin: 0; }
+* { box-sizing: border-box; }
+body { margin: 0; font-family: 'Segoe UI', Arial, sans-serif; color: #1b1f2a; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.page { width: 210mm; height: 297mm; page-break-after: always; break-after: page; overflow: hidden; background: #fff; position: relative; }
+.grid { display: grid; grid-template-columns: repeat(3, 63mm); grid-template-rows: repeat(3, 88mm); justify-content: center; align-content: center; }
+
+.t-missao { --c: #c98a00; --claro: #fff6dc; } .t-persona { --c: #6d3fc0; --claro: #f1ebfb; }
+.t-contexto { --c: #1f5fd1; --claro: #e8f0fd; } .t-formato { --c: #e06c00; --claro: #fff0e2; }
+.a-S { color: #c62828; }
+
+.card { width: 63mm; height: 88mm; border: 0.3mm dashed #9aa3b5; padding: 3mm; display: flex; flex-direction: column; gap: 1.6mm; position: relative; }
+.card::before { content: ''; position: absolute; inset: 1.6mm; border: 0.6mm solid var(--c); border-radius: 3mm; pointer-events: none; }
+.hd { background: var(--c); color: #fff; border-radius: 2mm; padding: 1.2mm 2.4mm; display: flex; justify-content: space-between; font-weight: 800; font-size: 8.5pt; letter-spacing: .06em; position: relative; }
+.code { font-weight: 700; background: rgba(255,255,255,.25); border-radius: 1mm; padding: 0 1.4mm; }
+.assuntos-missao { display: flex; flex-wrap: wrap; gap: 1mm; margin: 0 1mm; }
+.chip-assunto { display: inline-flex; align-items: center; gap: 1mm; padding: .5mm 1.8mm .5mm .5mm; background: var(--claro); border-radius: 5mm; font-size: 7.8pt; font-weight: 800; }
+.chip-assunto .ico { width: 5.4mm; height: 5.4mm; border-radius: 50%; background: #fff; display: inline-flex; align-items: center; justify-content: center; font-size: 8.6pt; line-height: 1; }
+.body { flex: 1; padding: 0 1.5mm; display: flex; flex-direction: column; justify-content: flex-start; gap: 1.4mm; }
+.body.center { justify-content: center; text-align: center; }
+.pedido { font-size: 12.4pt; font-weight: 800; line-height: 1.28; margin: .5mm 0 0; }
+.pense { font-size: 7.4pt; color: #4a5368; font-style: italic; margin: 0 1.5mm; line-height: 1.3; }
+.txt { font-size: 10.6pt; line-height: 1.32; margin: 0; }
+.big { font-size: 12pt; font-weight: 800; margin: 0; line-height: 1.2; }
+.emblema { width: 11mm; height: 11mm; padding: 2mm; margin: 0 auto 1mm; border-radius: 50%; background: var(--claro); color: var(--c); flex: none; }
+/* A imagem de cada carta: um desenho colorido num círculo da cor do baralho */
+.imagem { width: 17mm; height: 17mm; margin: 0 auto .6mm; border-radius: 50%; background: var(--claro); border: .5mm solid var(--c); flex: none;
+  display: flex; align-items: center; justify-content: center; font-size: 27pt; line-height: 1; font-family: 'Segoe UI Emoji', 'Noto Color Emoji', 'Apple Color Emoji', sans-serif; }
+.imagem.pequena { width: 12.5mm; height: 12.5mm; font-size: 19pt; margin-bottom: 0; }
+.imagem.grande { width: 24mm; height: 24mm; font-size: 40pt; border-width: .8mm; }
+.especial .body { background: radial-gradient(circle at 50% 30%, var(--claro) 0 38%, transparent 70%); border-radius: 2mm; }
+.especial .hd { background: linear-gradient(90deg, var(--c), #c98a00); }
+.poder { font-size: 11pt; font-weight: 800; color: var(--c); margin: 0; line-height: 1.25; }
+.especial .efeito { font-size: 8pt; }
+.faz { font-size: 9pt; line-height: 1.32; margin: 0; }
+.efeito { font-size: 8.2pt; margin: 0; line-height: 1.35; color: #2b3245; }
+.t-persona .efeito { background: var(--claro); border-radius: 2mm; padding: 1.2mm 1.6mm; }
+.desenho { color: var(--c); margin: .6mm auto; width: 34mm; }
+.desenho svg { width: 100%; height: auto; display: block; }
+.ft { font-size: 6.3pt; line-height: 1.3; color: #4a5368; border-top: 0.3mm solid #d6dbe6; padding: 1mm 1.5mm 0; margin: 0 .5mm .5mm; }
+.ft b { color: var(--c); }
+
+/* Verso: o nome do baralho, com listras claras (gasta pouca tinta) */
+.verso-carta::before { display: none; }
+.verso-miolo { flex: 1; border: 1mm solid var(--c); border-radius: 3mm; color: var(--c); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.6mm; text-align: center;
+  background: repeating-linear-gradient(45deg, var(--claro) 0 2.6mm, #fff 2.6mm 5.2mm); }
+.verso-ico { width: 20mm; height: 20mm; background: #fff; border-radius: 50%; padding: 3mm; border: .6mm solid var(--c); }
+.verso-nome { margin: 1mm 0 0; font-size: 17pt; font-weight: 900; letter-spacing: .08em; background: #fff; padding: 0 2.4mm; border-radius: 1.4mm; }
+.verso-sub { margin: 0; font-size: 9pt; font-weight: 700; background: #fff; padding: 0 2mm; border-radius: 1.4mm; color: #2b3245; }
+.verso-jogo { margin: 3mm 0 0; font-size: 8pt; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; background: var(--c); color: #fff; padding: .6mm 2.4mm; border-radius: 1.4mm; }
+.vaga { width: 63mm; height: 88mm; }
+.rotulo-folha { position: absolute; top: 6mm; left: 0; right: 0; margin: 0; text-align: center; font-size: 8pt; color: #6b7489; }
+.rotulo-folha b { color: #1b1f2a; }
+
+/* Folhas de texto */
+.doc { padding: 10mm 12mm; font-size: 9.2pt; line-height: 1.34; }
+.regras { font-size: 10.3pt; line-height: 1.38; }
+.doc h1 { font-size: 18pt; margin: 0 0 2.5mm; } .doc h1 small { display: block; font-size: 9pt; font-weight: 500; color: #4a5368; }
+.doc h2 { font-size: 11.5pt; margin: 3.2mm 0 1.2mm; color: #1f5fd1; }
+.doc p { margin: 0 0 1.4mm; }
+.doc ul, .doc ol { margin: 0 0 1mm; padding-left: 5mm; } .doc li { margin-bottom: 1mm; }
+.cols { display: grid; grid-template-columns: 1fr 1fr; gap: 7mm; align-items: start; }
+.objetivo { background: #fff6dc; border: 0.4mm solid #e0b84a; border-radius: 2mm; padding: 2.4mm 3mm; font-size: 10.6pt; }
+.vez-passos { font-size: 10.3pt; } .vez-passos li { margin-bottom: 1.3mm; }
+.sem-quebra { white-space: nowrap; }
+.exemplo { margin-top: 3mm; border-left: 1.2mm solid #c98a00; background: #fff6dc; border-radius: 0 2mm 2mm 0; padding: 2.2mm 3mm; font-size: 9.2pt; line-height: 1.35; }
+.exemplo p { margin: 0 0 1.2mm; } .exemplo p:last-child { margin: 0; }
+.exemplo-t { font-weight: 800; font-size: 9pt; letter-spacing: .06em; text-transform: uppercase; color: #8a5a00; }
+.exemplo-missao { font-style: italic; }
+.nota-tab { width: 100%; border-collapse: collapse; margin: 1mm 0 1.6mm; } .nota-tab td { border: 0.3mm solid #e0c27a; padding: 1.2mm 2mm; font-size: 9.6pt; } .nota-tab td:last-child { text-align: right; font-weight: 700; white-space: nowrap; }
+.nota-tab b { color: #8a5a00; }
+.ganha { background: #e3f4ea; border: 0.4mm solid #7cc49c; border-radius: 2mm; padding: 1.8mm 2.6mm; }
+.pequeno { font-size: 9pt; }
+.mesa { margin-top: 3mm; border: 0.4mm dashed #9aa3b5; border-radius: 3mm; padding: 2.4mm 3mm 2.6mm; background: #f6f8fc; text-align: center; }
+.mesa-t { font-weight: 800; font-size: 9pt; margin: 0 0 1mm !important; color: #4a5368; letter-spacing: .06em; text-transform: uppercase; }
+.mesa-fila { display: flex; justify-content: center; gap: 3mm; margin: 1.6mm 0; }
+.mini { width: 19mm; height: 26mm; border-radius: 1.6mm; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .6mm; font-size: 8pt; font-weight: 800; color: #fff; }
+.mini small { font-size: 6pt; font-weight: 600; line-height: 1.2; padding: 0 1mm; }
+.mini.m { background: #c98a00; } .mini.c { background: #1f5fd1; } .mini.p { background: #6d3fc0; } .mini.f { background: #e06c00; }
+.mesa-mao { margin: 1.4mm 0 0 !important; font-size: 8.6pt; font-weight: 700; }
+.mesa-fila.baralho { gap: 2mm; margin: 0; align-items: center; justify-content: flex-start; }
+.mesa-corpo { display: flex; align-items: center; justify-content: center; gap: 3mm; }
+.mesa-baralhos { display: flex; flex-direction: column; gap: 1.4mm; }
+.mesa-fila.baralho .mini { width: 16mm; height: 11.5mm; font-size: 7.2pt; }
+.abertas { display: flex; align-items: center; gap: 1mm; font-size: 6.6pt; font-weight: 700; color: #4a5368; }
+.abertas small { width: 9mm; line-height: 1.1; text-align: left; }
+.aberta { width: 7.4mm; height: 10.4mm; border-radius: 1mm; background: #fff; border: .5mm solid; }
+.aberta.c { border-color: #1f5fd1; } .aberta.p { border-color: #6d3fc0; } .aberta.f { border-color: #e06c00; }
+.especiais { margin-top: 1.6mm; border: 0.4mm solid #c98a00; background: #fffaf0; border-radius: 2mm; padding: 1.6mm 2.4mm; font-size: 9.4pt; line-height: 1.36; }
+.especiais p { margin: 0 0 .8mm; } .especiais p:last-child { margin: 0; }
+.especiais-t { font-weight: 800; color: #8a5a00; } .especiais-t span { font-weight: 700; color: #1b1f2a; margin-left: 1.4mm; }
+.vira { margin: 3mm 0 0; text-align: right; font-size: 8.6pt; font-weight: 700; color: #4a5368; }
+.regras-verso h2 { margin-top: 5mm; }
+.comeca { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3mm; }
+.comeca > div { display: flex; gap: 2mm; align-items: flex-start; background: #eef2f8; border-radius: 2mm; padding: 2.4mm 2.6mm; }
+.comeca p { margin: 0; font-size: 9.6pt; }
+.comeca-n { flex: none; width: 6mm; height: 6mm; border-radius: 50%; background: #1f5fd1; color: #fff; font-weight: 800; font-size: 9pt; display: flex; align-items: center; justify-content: center; }
+.versoes { display: grid; grid-template-columns: 1fr 1fr; gap: 3mm; }
+.versoes.tres { grid-template-columns: repeat(3, 1fr); }
+.versao { border: 0.4mm solid #c9cfdb; border-radius: 2mm; padding: 2.4mm 2.8mm; }
+.versao.destaque { border: 0.6mm solid #1f5fd1; background: #f2f6fd; }
+.versao p { margin: 0 0 1mm; font-size: 9.6pt; } .versao p:last-child { margin: 0; }
+.versao-t { font-weight: 800; font-size: 11pt !important; color: #1b1f2a; }
+.versao-n { font-weight: 700; color: #1f5fd1; }
+.regras-verso .exemplo { margin-top: 5mm; font-size: 9.8pt; }
+.aviso { background: #eef2f8; border-radius: 2mm; padding: 2mm 3mm; font-size: 8.4pt; color: #4a5368; margin-top: 3mm; }
+.gab-pag { font-size: 9pt; }
+table.gab { width: 100%; border-collapse: collapse; margin-bottom: 1.6mm; } .gab th, .gab td { border: 0.3mm solid #c9cfdb; padding: 1mm 1.8mm; text-align: left; vertical-align: top; font-size: 8.4pt; } .gab th { background: #eef2f8; }
+.gab.num td, .gab.num th { padding: .8mm 1.4mm; font-size: 8.2pt; vertical-align: middle; }
+.gab .n { width: 7mm; text-align: center; font-variant-numeric: tabular-nums; }
+.gab .v4 { font-weight: 800; background: #e3f4ea; } .gab .v1 { color: #b42318; background: #fde8e7; }
+.duas-tabelas { display: grid; grid-template-columns: 1fr 1fr; gap: 5mm; align-items: start; }
+.legenda { font-size: 8.4pt; color: #4a5368; }
+.small2 { font-size: 8.6pt; line-height: 1.45; }
+.conversao { font-size: 8.8pt; line-height: 1.7; display: flex; flex-wrap: wrap; gap: 0 3mm; }
+.trio-gab { border-top: 0.3mm solid #d6dbe6; padding-top: 1.2mm; }
+
+
+.tab-folha { width: 210mm; height: 297mm; }
+.tab-rotulo, .tab-pe { position: absolute; left: 8mm; right: 8mm; margin: 0; font-size: 8pt; color: #4a5368; text-align: center; }
+.tab-rotulo { top: 6mm; } .tab-rotulo b { color: #1b1f2a; }
+.tab-pe { bottom: 6mm; font-size: 7.4pt; }
+.tab-janela { position: absolute; left: 6mm; top: 15mm; width: 198mm; height: 267mm; overflow: hidden; }
+.tab-mover { position: absolute; top: 0; }
+.tabuleiro { position: relative; }
+.corte { position: absolute; top: 0; bottom: 0; left: 204mm; border-left: .4mm dashed #6b7489; }
+.corte span { position: absolute; top: 9mm; left: -2.4mm; font-size: 11pt; color: #4a5368; background: #fff; }
+.cola { position: absolute; top: 0; bottom: 0; left: 0; width: 6mm; background: #e6e9f0; }
+.cola span { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-90deg); white-space: nowrap; font-size: 6.6pt; color: #6b7489; font-weight: 700; letter-spacing: .06em; }
+
+.faixa { position: absolute; border-radius: 4mm; background: var(--claro); opacity: .55; }
+.espaco { position: absolute; width: 62mm; height: 87mm; border: .7mm dashed var(--c); border-radius: 3.4mm; background: #fff;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.4mm; text-align: center; color: var(--c); padding: 3mm; }
+.espaco p { margin: 0; }
+.espaco.monte { border-style: solid; background: repeating-linear-gradient(45deg, var(--claro) 0 2.6mm, #fff 2.6mm 5.2mm); }
+.esp-ico { width: 17mm; height: 17mm; background: #fff; border-radius: 50%; padding: 2.6mm; border: .6mm solid var(--c); }
+.esp-nome { font-size: 12pt; font-weight: 900; letter-spacing: .08em; background: #fff; padding: 0 2mm; border-radius: 1.4mm; }
+.esp-sub { font-size: 8pt; font-weight: 700; color: #2b3245; background: #fff; padding: 0 1.6mm; border-radius: 1.4mm; }
+.esp-o-que { font-size: 7.6pt; font-weight: 800; color: #fff; background: var(--c); padding: .4mm 2mm; border-radius: 1.4mm; text-transform: uppercase; letter-spacing: .08em; }
+.esp-num { font-size: 40pt; font-weight: 900; line-height: 1; opacity: .28; }
+.esp-todos { font-size: 8pt; font-weight: 800; color: #fff; background: var(--c); padding: .6mm 2.2mm; border-radius: 1.4mm; }
+.missao-da-rodada { border-width: 1mm; border-style: solid; background: var(--claro); }
+.missao-da-rodada .esp-nome { font-size: 11pt; background: none; }
+.missao-da-rodada .esp-sub { background: none; }
+
+.lembrete { position: absolute; width: 62mm; height: 87mm; border-radius: 3.4mm; background: #16274f; color: #fff; padding: 3.6mm 3.4mm; display: flex; flex-direction: column; gap: 1.6mm; }
+.lembrete p { margin: 0; }
+.lem-nome { font-size: 12.5pt; font-weight: 900; color: #f2c14e; line-height: 1.1; }
+.lem-t { font-size: 8.4pt; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: #dfe5f3; }
+.lembrete ol { margin: 0; padding-left: 4.4mm; font-size: 8.4pt; line-height: 1.32; } .lembrete li { margin-bottom: 1.2mm; }
+.lem-esp { font-size: 7.6pt; line-height: 1.32; color: #dfe5f3; border-top: .3mm solid rgba(255,255,255,.3); padding-top: 1.6mm; }
+.lem-esp span { font-size: 10pt; margin-right: 1mm; font-family: 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif; }
+
+.ico-pag { padding: 13mm 14mm 16mm; font-size: 10pt; line-height: 1.4; display: flex; flex-direction: column; gap: 2.4mm; }
+.ico-pag p { margin: 0; }
+.ico-pag h2 { display: flex; align-items: center; gap: 2.6mm; font-size: 14pt; margin: 2mm 0 0; color: #16274f; }
+.ico-pag h2 > span { width: 8mm; height: 8mm; border-radius: 50%; background: #16274f; color: #fff; display: inline-flex; align-items: center; justify-content: center; font-size: 11pt; flex: none; }
+.ico-rodape { position: absolute; left: 14mm; right: 14mm; bottom: 7mm; display: flex; justify-content: space-between; font-size: 8pt; color: #6b7489; border-top: .3mm solid #d6dbe6; padding-top: 1.6mm; }
+.ico-topo { background: #16274f; color: #fff; margin: -13mm -14mm 1mm; padding: 13mm 14mm 7mm; }
+.ico-rotulo { font-size: 10pt; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: #f2c14e; }
+.ico-topo h1 { font-size: 32pt; line-height: 1.05; margin: 1.6mm 0 2mm; }
+.ico-sub { font-size: 11.5pt; color: #dfe5f3; max-width: 160mm; }
+.mini-carta { display: inline-block; flex: none; }
+.mini-carta .card { border-color: transparent; background: #fff; border-radius: 3.6mm; box-shadow: 0 .5mm 2mm rgba(22, 39, 79, .22); }
+
+.cores { display: grid; grid-template-columns: 1fr 1fr; gap: 3mm 5mm; }
+.cor { display: flex; gap: 3mm; align-items: center; border-left: 1.4mm solid var(--c); background: var(--claro); border-radius: 0 2.4mm 2.4mm 0; padding: 2mm 3mm; font-size: 9.2pt; line-height: 1.35; }
+.cor-nome { font-weight: 900; font-size: 11.5pt; color: var(--c); }
+.cor-qual { font-weight: 700; font-size: 8.4pt; color: #4a5368; margin-bottom: .6mm !important; }
+
+.partes { display: grid; grid-template-columns: auto 1fr; gap: 6mm; align-items: center; background: #f6f8fc; border-radius: 3mm; padding: 4mm 5mm; }
+.partes-carta { position: relative; margin-left: 4mm; }
+.marca { position: absolute; left: -5.4mm; width: 6.4mm; height: 6.4mm; border-radius: 50%; background: #16274f; color: #fff; font-size: 9pt; font-weight: 800; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 0 .6mm #fff; }
+.marca.m1 { top: 3mm; } .marca.m2 { top: 23.5mm; } .marca.m3 { top: 34mm; } .marca.m4 { top: 43mm; } .marca.m5 { top: 63mm; }
+.partes-lista { margin: 0; padding-left: 5mm; font-size: 9.8pt; } .partes-lista li { margin-bottom: 1.8mm; }
+
+.assuntos-ico { display: grid; grid-template-columns: repeat(4, 1fr); gap: 3mm; }
+.assuntos-ico div { display: flex; align-items: center; gap: 2.4mm; background: #f3f5f9; border-radius: 6mm; padding: 1.6mm 3mm 1.6mm 1.6mm; font-size: 10.4pt; }
+.assunto-bola { width: 10mm; height: 10mm; border-radius: 50%; background: #fff; display: inline-flex; align-items: center; justify-content: center; font-size: 15pt; line-height: 1; border: .4mm solid #d6dbe6; font-family: 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif; }
+.assunto-bola.a-S { font-family: 'Segoe UI', Arial, sans-serif; font-weight: 900; }
+
+.especiais-ico { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4mm; }
+.especial-ico { display: flex; flex-direction: column; align-items: center; gap: 1.2mm; text-align: center; font-size: 9pt; line-height: 1.3; }
+.especial-ico .mini-carta { margin-bottom: 1mm; }
+.tab-mini { border-radius: 2mm; align-self: center; margin: 1mm 0; }
+.menu-ico { display: grid; grid-template-columns: repeat(5, 1fr); gap: 3mm; }
+.menu-ico div { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 1mm; font-size: 8.4pt; line-height: 1.32; }
+.menu-bola { width: 13mm; height: 13mm; border-radius: 50%; background: #16274f; color: #fff; display: inline-flex; align-items: center; justify-content: center; }
+.menu-bola svg { width: 7mm; height: 7mm; }
+.menu-nome { font-weight: 800; font-size: 10pt; color: #16274f; }
+
+.tres-colunas { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4mm; }
+.col-imagens { display: flex; flex-direction: column; gap: 1.2mm; }
+.col-t { font-weight: 900; font-size: 11pt; color: #fff; background: var(--c); border-radius: 1.6mm; padding: 1mm 2.4mm; letter-spacing: .06em; text-transform: uppercase; margin-bottom: .6mm !important; }
+.linha-imagem { display: flex; align-items: center; gap: 2mm; font-size: 8.8pt; line-height: 1.2; min-height: 12.2mm; border-bottom: .3mm solid #e6e9f0; }
+.bola-imagem { width: 10.5mm; height: 10.5mm; flex: none; border-radius: 50%; background: var(--claro); border: .45mm solid var(--c); display: inline-flex; align-items: center; justify-content: center; font-size: 16pt; line-height: 1; font-family: 'Segoe UI Emoji', 'Noto Color Emoji', 'Apple Color Emoji', sans-serif; }
+.cod { font-weight: 800; color: var(--c); font-size: 8.4pt; flex: none; }
+.nome-imagem { font-weight: 600; }
+
+.grade-formatos { display: grid; grid-template-columns: repeat(4, 1fr); gap: 3mm; }
+.formato-ico { border: .4mm solid #f0d2b4; border-radius: 2.4mm; padding: 2.4mm; display: flex; flex-direction: column; gap: 1.2mm; font-size: 8pt; line-height: 1.3; background: #fffaf5; }
+.formato-desenho { color: var(--c); background: #fff; border-radius: 1.6mm; padding: 2mm; }
+.formato-desenho svg { width: 100%; height: auto; display: block; }
+.formato-nome { font-weight: 800; font-size: 8.8pt; color: #1b1f2a; }
+.dicas { margin-top: 4mm; background: #e9edf6; border-radius: 3mm; padding: 3.4mm 4.4mm; font-size: 9.8pt; }
+.dicas-t { font-weight: 800; color: #16274f; font-size: 11pt; margin-bottom: 1.4mm !important; }
+.dicas ul { margin: 0; padding-left: 5mm; } .dicas li { margin-bottom: 1.4mm; }
+</style></head><body><section class="page ico-pag">
+  <header class="ico-topo">
+    <p class="ico-rotulo">Manual iconográfico</p>
+    <h1>Palavra Mágica</h1>
+    <p class="ico-sub">O que quer dizer cada cor, cada símbolo e cada imagem das cartas, do tabuleiro e do aplicativo do professor.</p>
+  </header>
+
+  <h2><span>1</span>As 4 cores: uma para cada baralho</h2>
+  <p>O verso diz de que baralho é a carta, com a cor e o símbolo. A mesma cor aparece na frente da carta, no tabuleiro e no aplicativo.</p>
+  <div class="cores"><div class="cor t-missao">
+    <div class="mini-carta " style="zoom:0.34"><div class="card verso-carta t-missao"><div class="verso-miolo">
+    <svg class="verso-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><circle cx="12" cy="12" r="5.5"/><circle cx="12" cy="12" r="1.6" fill="currentColor"/></svg>
+    <p class="verso-nome">MISSÃO</p><p class="verso-sub">o pedido da rodada</p><p class="verso-jogo">Palavra Mágica</p>
+  </div></div></div>
+    <div><p class="cor-nome">Missão</p><p class="cor-qual">Amarelo · alvo</p><p>O pedido da rodada. Fica no meio da mesa e vale para todos os lados.</p></div>
+  </div><div class="cor t-contexto">
+    <div class="mini-carta " style="zoom:0.34"><div class="card verso-carta t-contexto"><div class="verso-miolo">
+    <svg class="verso-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.6"/></svg>
+    <p class="verso-nome">CONTEXTO</p><p class="verso-sub">a situação</p><p class="verso-jogo">Palavra Mágica</p>
+  </div></div></div>
+    <div><p class="cor-nome">Contexto</p><p class="cor-qual">Azul · alfinete de mapa</p><p>A situação: onde é e o que está acontecendo.</p></div>
+  </div><div class="cor t-persona">
+    <div class="mini-carta " style="zoom:0.34"><div class="card verso-carta t-persona"><div class="verso-miolo">
+    <svg class="verso-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+    <p class="verso-nome">PERSONA</p><p class="verso-sub">quem responde</p><p class="verso-jogo">Palavra Mágica</p>
+  </div></div></div>
+    <div><p class="cor-nome">Persona</p><p class="cor-qual">Roxo · pessoa</p><p>Quem a IA vai ser ao responder.</p></div>
+  </div><div class="cor t-formato">
+    <div class="mini-carta " style="zoom:0.34"><div class="card verso-carta t-formato"><div class="verso-miolo">
+    <svg class="verso-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h4"/></svg>
+    <p class="verso-nome">FORMATO</p><p class="verso-sub">como a resposta chega</p><p class="verso-jogo">Palavra Mágica</p>
+  </div></div></div>
+    <div><p class="cor-nome">Formato</p><p class="cor-qual">Laranja · folha</p><p>Como a resposta chega para quem vai ler.</p></div>
+  </div></div>
+
+  <h2><span>2</span>As partes de uma carta</h2>
+  <div class="partes">
+    <div class="partes-carta"><div class="mini-carta " style="zoom:0.8"><div class="card t-contexto"><div class="hd"><span>CONTEXTO</span><span class="code">C09</span></div>
+  <div class="body center"><div class="imagem " aria-hidden="true">🌡️</div><p class="big">Calor na corrida do Rio</p><p class="txt">“No Rio de Janeiro, a corrida da escola vai ser no parque, num dia de calor forte.”</p></div>
+  <div class="ft">A situação: onde é e o que está acontecendo.</div></div></div>
+      <span class="marca m1">1</span><span class="marca m2">2</span><span class="marca m3">3</span><span class="marca m4">4</span><span class="marca m5">5</span>
+    </div>
+    <ol class="partes-lista"><li><b>Faixa de cima:</b> o nome do baralho e o <b>código</b> da carta. O professor digita só o número do código no aplicativo.</li><li><b>Imagem:</b> ajuda a reconhecer a carta de longe. Ela <b>não diz o assunto</b>: para saber se a carta combina com a missão, leia o texto.</li><li><b>Nome:</b> o jeito curto de chamar a carta na mesa.</li><li><b>Texto:</b> é o que vai para o prompt. Cada palavra é uma pista de quais assuntos a carta ajuda.</li><li><b>Rodapé:</b> lembra o que esse baralho faz no prompt.</li></ol>
+  </div>
+
+  <h2><span>3</span>Os 4 assuntos</h2>
+  <p>Cada missão tem 3 dos 4 assuntos. Eles aparecem só nas missões, no gabarito e no aplicativo. Nenhuma imagem de carta usa estes 4 símbolos, para ninguém achar que a imagem diz o assunto.</p>
+  <div class="assuntos-ico"><div><span class="assunto-bola a-S">✚</span><b>Saúde</b></div><div><span class="assunto-bola a-E">⚽</span><b>Esporte</b></div><div><span class="assunto-bola a-T">💻</span><b>Tecnologia</b></div><div><span class="assunto-bola a-A">🌳</span><b>Meio ambiente</b></div></div>
+  <footer class="ico-rodape"><span>Palavra Mágica · Manual iconográfico</span><span>grupo NEXUS · página 1 de 4</span></footer>
+</section>
+<section class="page ico-pag">
+  <h2><span>4</span>As cartas especiais</h2>
+  <p>Há só 1 em cada baralho, com uma estrela ★ no lugar do código. As 3 têm o mesmo poder, cada uma com a sua imagem. Não entram no prompt, então o professor nunca digita.</p>
+  <div class="especiais-ico"><div class="especial-ico">
+    <div class="mini-carta " style="zoom:0.44"><div class="card t-contexto especial"><div class="hd"><span>CONTEXTO</span><span class="code">★ ESPECIAL</span></div>
+  <div class="body center"><div class="imagem grande" aria-hidden="true">🎩</div><p class="big">Mágico</p><p class="poder">Roube o contexto de qualquer adversário.</p><p class="efeito">Num passe de mágica, o contexto de um adversário aparece no seu prompt. Quem foi roubado perde a rodada: não ganha ponto.</p></div>
+  <div class="ft">Não entra no prompt: depois de usar, vai para o fundo do monte. Ninguém tem contexto ainda? Ponha no fundo do monte e pegue outra.</div></div></div>
+    <p><b>🎩 Mágico</b> · baralho de contexto</p><p>Roube o contexto de qualquer adversário.</p>
+  </div><div class="especial-ico">
+    <div class="mini-carta " style="zoom:0.44"><div class="card t-persona especial"><div class="hd"><span>PERSONA</span><span class="code">★ ESPECIAL</span></div>
+  <div class="body center"><div class="imagem grande" aria-hidden="true">🕵️</div><p class="big">Espião</p><p class="poder">Roube a persona de qualquer adversário.</p><p class="efeito">O espião se infiltra e traz para você a persona de um adversário. Quem foi roubado perde a rodada: não ganha ponto.</p></div>
+  <div class="ft">Não entra no prompt: depois de usar, vai para o fundo do monte. Ninguém tem persona ainda? Ponha no fundo do monte e pegue outra.</div></div></div>
+    <p><b>🕵️ Espião</b> · baralho de persona</p><p>Roube a persona de qualquer adversário.</p>
+  </div><div class="especial-ico">
+    <div class="mini-carta " style="zoom:0.44"><div class="card t-formato especial"><div class="hd"><span>FORMATO</span><span class="code">★ ESPECIAL</span></div>
+  <div class="body center"><div class="imagem grande" aria-hidden="true">🧲</div><p class="big">Ímã</p><p class="poder">Roube o formato de qualquer adversário.</p><p class="efeito">O ímã puxa para você o formato de um adversário. Quem foi roubado perde a rodada: não ganha ponto.</p></div>
+  <div class="ft">Não entra no prompt: depois de usar, vai para o fundo do monte. Ninguém tem formato ainda? Ponha no fundo do monte e pegue outra.</div></div></div>
+    <p><b>🧲 Ímã</b> · baralho de formato</p><p>Roube o formato de qualquer adversário.</p>
+  </div></div>
+
+  <h2><span>5</span>O tabuleiro</h2>
+  <p>As cartas vão nos espaços da mesma cor. <b>Listrado</b> = monte, virado para baixo. <b>Número de 1 a 4</b> = carta aberta, virada para cima. O espaço amarelo de fundo cheio, na coluna da esquerda, é a missão da rodada.</p>
+  <div class="tab-mini" style="width:142.56mm;height:96.11999999999999mm"><div style="zoom:0.36"><div class="tabuleiro" style="width:396mm;height:267mm"><div class="espaco t-missao monte" style="left:0mm;top:0mm"><svg class="esp-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><circle cx="12" cy="12" r="5.5"/><circle cx="12" cy="12" r="1.6" fill="currentColor"/></svg><p class="esp-nome">MISSÕES</p><p class="esp-sub">o montinho, virado para baixo</p></div><div class="espaco t-missao missao-da-rodada" style="left:0mm;top:90mm"><p class="esp-nome">MISSÃO DA RODADA</p><p class="esp-sub">virada para cima</p><p class="esp-todos">vale para todos os lados</p></div><div class="lembrete" style="left:0mm;top:180mm">
+    <p class="lem-nome">Palavra Mágica</p>
+    <p class="lem-t">Na vez do seu lado</p>
+    <ol>
+      <li>Pegue <b>1 contexto, 1 persona e 1 formato</b>.</li>
+      <li>De cada baralho: <b>uma das 4 abertas</b> ou a de cima do monte, sem ver.</li>
+      <li>Pegou uma aberta? <b>Vire a de cima do monte</b> no lugar dela.</li>
+    </ol>
+    <p class="lem-esp"><span>🎩 🕵️ 🧲</span> Especial: roube a carta daquele baralho de um adversário.</p>
+  </div><div class="faixa t-contexto" style="left:66mm;top:-1mm;width:327mm;height:89mm"></div><div class="espaco t-contexto monte" style="left:68mm;top:0mm"><svg class="esp-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.6"/></svg><p class="esp-nome">CONTEXTO</p><p class="esp-sub">monte, virado para baixo</p><p class="esp-o-que">a situação</p></div><div class="espaco t-contexto aberta" style="left:134mm;top:0mm"><p class="esp-num">1</p><p class="esp-nome">ABERTA</p><p class="esp-sub">carta virada para cima</p></div><div class="espaco t-contexto aberta" style="left:199mm;top:0mm"><p class="esp-num">2</p><p class="esp-nome">ABERTA</p><p class="esp-sub">carta virada para cima</p></div><div class="espaco t-contexto aberta" style="left:264mm;top:0mm"><p class="esp-num">3</p><p class="esp-nome">ABERTA</p><p class="esp-sub">carta virada para cima</p></div><div class="espaco t-contexto aberta" style="left:329mm;top:0mm"><p class="esp-num">4</p><p class="esp-nome">ABERTA</p><p class="esp-sub">carta virada para cima</p></div><div class="faixa t-persona" style="left:66mm;top:89mm;width:327mm;height:89mm"></div><div class="espaco t-persona monte" style="left:68mm;top:90mm"><svg class="esp-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg><p class="esp-nome">PERSONA</p><p class="esp-sub">monte, virado para baixo</p><p class="esp-o-que">quem responde</p></div><div class="espaco t-persona aberta" style="left:134mm;top:90mm"><p class="esp-num">1</p><p class="esp-nome">ABERTA</p><p class="esp-sub">carta virada para cima</p></div><div class="espaco t-persona aberta" style="left:199mm;top:90mm"><p class="esp-num">2</p><p class="esp-nome">ABERTA</p><p class="esp-sub">carta virada para cima</p></div><div class="espaco t-persona aberta" style="left:264mm;top:90mm"><p class="esp-num">3</p><p class="esp-nome">ABERTA</p><p class="esp-sub">carta virada para cima</p></div><div class="espaco t-persona aberta" style="left:329mm;top:90mm"><p class="esp-num">4</p><p class="esp-nome">ABERTA</p><p class="esp-sub">carta virada para cima</p></div><div class="faixa t-formato" style="left:66mm;top:179mm;width:327mm;height:89mm"></div><div class="espaco t-formato monte" style="left:68mm;top:180mm"><svg class="esp-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h4"/></svg><p class="esp-nome">FORMATO</p><p class="esp-sub">monte, virado para baixo</p><p class="esp-o-que">como a resposta chega</p></div><div class="espaco t-formato aberta" style="left:134mm;top:180mm"><p class="esp-num">1</p><p class="esp-nome">ABERTA</p><p class="esp-sub">carta virada para cima</p></div><div class="espaco t-formato aberta" style="left:199mm;top:180mm"><p class="esp-num">2</p><p class="esp-nome">ABERTA</p><p class="esp-sub">carta virada para cima</p></div><div class="espaco t-formato aberta" style="left:264mm;top:180mm"><p class="esp-num">3</p><p class="esp-nome">ABERTA</p><p class="esp-sub">carta virada para cima</p></div><div class="espaco t-formato aberta" style="left:329mm;top:180mm"><p class="esp-num">4</p><p class="esp-nome">ABERTA</p><p class="esp-sub">carta virada para cima</p></div></div></div></div>
+
+  <h2><span>6</span>Os ícones do aplicativo</h2>
+  <p>O menu fica embaixo da tela do celular. Cada ícone abre uma página.</p>
+  <div class="menu-ico"><div><span class="menu-bola"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 8v5l3 2"/><circle cx="12" cy="13" r="8"/><path d="M9 2h6"/></svg></span><p class="menu-nome">Partida</p><p>Monta a partida (completa ou rápida), sorteia quem começa, mostra de quem é a vez, o placar e o cronômetro de 1 minuto.</p></div><div><span class="menu-bola"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16v16H4z"/><path d="m8 12 3 3 5-6"/></svg></span><p class="menu-nome">Rodada</p><p>O professor digita a missão e as 3 cartas de cada lado. O aplicativo dá a nota de cada prompt e o ponto ao melhor.</p></div><div><span class="menu-bola"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.4l-5.2 2.7 1-5.8-4.3-4.1 5.9-.9z"/></svg></span><p class="menu-nome">Desafio</p><p>O desafio final: cada lado escreve um prompt sem cartas, e o aplicativo dá a nota de 1 a 4, sem internet.</p></div><div><span class="menu-bola"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="12" height="16" rx="2"/><path d="M9 3h10a2 2 0 0 1 2 2v12"/></svg></span><p class="menu-nome">Cartas</p><p>Consulta de qualquer carta pelo código ou pelo nome, com o gabarito do professor.</p></div><div><span class="menu-bola"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M8 7h7M8 11h7"/></svg></span><p class="menu-nome">Regras</p><p>O resumo das regras, para tirar dúvidas durante a partida.</p></div></div>
+  <footer class="ico-rodape"><span>Palavra Mágica · Manual iconográfico</span><span>grupo NEXUS · página 2 de 4</span></footer>
+</section>
+<section class="page ico-pag">
+  <h2><span>7</span>As imagens das cartas</h2>
+  <p>Cada carta de contexto, persona e formato tem uma imagem só dela (nenhuma se repete), pensada para o aluno do 6º ano achar a carta rápido na mesa e na hora de dizer o código ao professor.</p>
+  <div class="tres-colunas"><div class="col-imagens t-contexto"><p class="col-t">Contexto</p>
+    <div class="linha-imagem"><span class="bola-imagem">⌚</span><span class="cod">C01</span><span class="nome-imagem">Relógio no campeonato</span></div><div class="linha-imagem"><span class="bola-imagem">🏐</span><span class="cod">C02</span><span class="nome-imagem">Vôlei com dor nas costas</span></div><div class="linha-imagem"><span class="bola-imagem">🏞️</span><span class="cod">C03</span><span class="nome-imagem">Campo perto do rio</span></div><div class="linha-imagem"><span class="bola-imagem">🔬</span><span class="cod">C04</span><span class="nome-imagem">Feira de ciências</span></div><div class="linha-imagem"><span class="bola-imagem">🦟</span><span class="cod">C05</span><span class="nome-imagem">Dengue depois da chuva</span></div><div class="linha-imagem"><span class="bola-imagem">🤧</span><span class="cod">C06</span><span class="nome-imagem">Gripe em Nova York</span></div><div class="linha-imagem"><span class="bola-imagem">♻️</span><span class="cod">C07</span><span class="nome-imagem">Gincana de reciclagem em Seul</span></div><div class="linha-imagem"><span class="bola-imagem">📱</span><span class="cod">C08</span><span class="nome-imagem">Celulares velhos na gaveta</span></div><div class="linha-imagem"><span class="bola-imagem">🌡️</span><span class="cod">C09</span><span class="nome-imagem">Calor na corrida do Rio</span></div><div class="linha-imagem"><span class="bola-imagem">🔥</span><span class="cod">C10</span><span class="nome-imagem">Fumaça em Manaus</span></div><div class="linha-imagem"><span class="bola-imagem">👵</span><span class="cod">C11</span><span class="nome-imagem">Avós que caminham em Tóquio</span></div><div class="linha-imagem"><span class="bola-imagem">🏫</span><span class="cod">C12</span><span class="nome-imagem">Sábado na escola</span></div><div class="linha-imagem"><span class="bola-imagem">🏟️</span><span class="cod">C13</span><span class="nome-imagem">Estádio verde em Copenhague</span></div><div class="linha-imagem"><span class="bola-imagem">📹</span><span class="cod">C14</span><span class="nome-imagem">Árbitro de vídeo</span></div><div class="linha-imagem"><span class="bola-imagem">🏥</span><span class="cod">C15</span><span class="nome-imagem">Posto de saúde com sol</span></div><div class="linha-imagem"><span class="bola-imagem">🏢</span><span class="cod">C16</span><span class="nome-imagem">Vale do Silício</span></div>
+  </div><div class="col-imagens t-persona"><p class="col-t">Persona</p>
+    <div class="linha-imagem"><span class="bola-imagem">👩‍💻</span><span class="cod">P01</span><span class="nome-imagem">Criadora de aplicativos de exercício</span></div><div class="linha-imagem"><span class="bola-imagem">🦵</span><span class="cod">P02</span><span class="nome-imagem">Fisioterapeuta de um time</span></div><div class="linha-imagem"><span class="bola-imagem">🤸</span><span class="cod">P03</span><span class="nome-imagem">Professor de Educação Física</span></div><div class="linha-imagem"><span class="bola-imagem">📰</span><span class="cod">P04</span><span class="nome-imagem">Jornalista de ciência</span></div><div class="linha-imagem"><span class="bola-imagem">👩‍🔬</span><span class="cod">P05</span><span class="nome-imagem">Cientista que mapeia a dengue</span></div><div class="linha-imagem"><span class="bola-imagem">🫀</span><span class="cod">P06</span><span class="nome-imagem">Médica do coração</span></div><div class="linha-imagem"><span class="bola-imagem">🏄</span><span class="cod">P07</span><span class="nome-imagem">Organizador de campeonatos de surfe</span></div><div class="linha-imagem"><span class="bola-imagem">👷‍♀️</span><span class="cod">P08</span><span class="nome-imagem">Engenheira de energia solar</span></div><div class="linha-imagem"><span class="bola-imagem">🥾</span><span class="cod">P09</span><span class="nome-imagem">Guia de trilhas</span></div><div class="linha-imagem"><span class="bola-imagem">👨‍⚕️</span><span class="cod">P10</span><span class="nome-imagem">Enfermeiro na Amazônia</span></div><div class="linha-imagem"><span class="bola-imagem">🥅</span><span class="cod">P11</span><span class="nome-imagem">Técnica de futebol</span></div><div class="linha-imagem"><span class="bola-imagem">🧑‍💼</span><span class="cod">P12</span><span class="nome-imagem">Diretor da escola</span></div><div class="linha-imagem"><span class="bola-imagem">🏗️</span><span class="cod">P13</span><span class="nome-imagem">Engenheiro de estádios</span></div><div class="linha-imagem"><span class="bola-imagem">🎙️</span><span class="cod">P14</span><span class="nome-imagem">Narradora de jogos na internet</span></div><div class="linha-imagem"><span class="bola-imagem">🏘️</span><span class="cod">P15</span><span class="nome-imagem">Agente comunitária de saúde</span></div><div class="linha-imagem"><span class="bola-imagem">🏦</span><span class="cod">P16</span><span class="nome-imagem">Programador de banco</span></div>
+  </div><div class="col-imagens t-formato"><p class="col-t">Formato</p>
+    <div class="linha-imagem"><span class="bola-imagem">📲</span><span class="cod">F01</span><span class="nome-imagem">Tela de aplicativo</span></div><div class="linha-imagem"><span class="bola-imagem">🏋️</span><span class="cod">F02</span><span class="nome-imagem">Ficha de treino</span></div><div class="linha-imagem"><span class="bola-imagem">🎒</span><span class="cod">F03</span><span class="nome-imagem">Lista do que levar</span></div><div class="linha-imagem"><span class="bola-imagem">📝</span><span class="cod">F04</span><span class="nome-imagem">Lista curta</span></div><div class="linha-imagem"><span class="bola-imagem">🚨</span><span class="cod">F05</span><span class="nome-imagem">Alerta no celular</span></div><div class="linha-imagem"><span class="bola-imagem">✂️</span><span class="cod">F06</span><span class="nome-imagem">Resumo em 2 frases</span></div><div class="linha-imagem"><span class="bola-imagem">📊</span><span class="cod">F07</span><span class="nome-imagem">Gráfico de barras</span></div><div class="linha-imagem"><span class="bola-imagem">🍽️</span><span class="cod">F08</span><span class="nome-imagem">Cardápio da semana</span></div><div class="linha-imagem"><span class="bola-imagem">🗺️</span><span class="cod">F09</span><span class="nome-imagem">Mapa do percurso</span></div><div class="linha-imagem"><span class="bola-imagem">❓</span><span class="cod">F10</span><span class="nome-imagem">Pergunta e resposta</span></div><div class="linha-imagem"><span class="bola-imagem">👣</span><span class="cod">F11</span><span class="nome-imagem">Passo a passo com as telas</span></div><div class="linha-imagem"><span class="bola-imagem">🪧</span><span class="cod">F12</span><span class="nome-imagem">Cartaz</span></div><div class="linha-imagem"><span class="bola-imagem">🔢</span><span class="cod">F13</span><span class="nome-imagem">Placar no telão</span></div><div class="linha-imagem"><span class="bola-imagem">💬</span><span class="cod">F14</span><span class="nome-imagem">História em quadrinhos</span></div><div class="linha-imagem"><span class="bola-imagem">📬</span><span class="cod">F15</span><span class="nome-imagem">Folheto para as casas</span></div><div class="linha-imagem"><span class="bola-imagem">⏳</span><span class="cod">F16</span><span class="nome-imagem">Linha do tempo</span></div>
+  </div></div>
+  <footer class="ico-rodape"><span>Palavra Mágica · Manual iconográfico</span><span>grupo NEXUS · página 3 de 4</span></footer>
+</section>
+<section class="page ico-pag">
+  <h2><span>8</span>Os desenhos dos formatos</h2>
+  <p>Além da imagem, cada carta de formato tem um desenho de como a resposta fica. Assim o aluno vê a forma da resposta antes de ler.</p>
+  <div class="grade-formatos t-formato"><div class="formato-ico">
+    <div class="formato-desenho"><svg viewBox="0 0 100 36" aria-hidden="true"><rect x="36" y="1" width="28" height="34" rx="3" fill="none" stroke="currentColor" stroke-width="2"/><line x1="47" y1="32.4" x2="53" y2="32.4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="50" cy="13" r="6.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-dasharray="30 11"/><rect x="41" y="23" width="18" height="5" rx="2.5" fill="currentColor"/></svg></div>
+    <p class="formato-nome"><span class="cod">F01</span> 📲 Tela de aplicativo</p>
+    <p>Como a tela de um aplicativo: a meta do dia, um botão e um aviso.</p>
+  </div><div class="formato-ico">
+    <div class="formato-desenho"><svg viewBox="0 0 100 36" aria-hidden="true"><text x="4" y="10" font-size="7" font-weight="800" fill="currentColor" font-family="Segoe UI, Arial">10x</text><text x="4" y="21" font-size="7" font-weight="800" fill="currentColor" font-family="Segoe UI, Arial">20s</text><text x="4" y="32" font-size="6.4" font-weight="800" fill="currentColor" font-family="Segoe UI, Arial">água</text><line x1="22" y1="8" x2="70" y2="8" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><line x1="22" y1="19" x2="62" y2="19" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><line x1="22" y1="30" x2="66" y2="30" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><g fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="84" cy="8" r="4"/><circle cx="84" cy="19" r="4"/></g><line x1="84" y1="8" x2="84" y2="6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><line x1="84" y1="19" x2="86" y2="19" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M84 25.5c2.4 3 3.6 4.6 3.6 6a3.6 3.6 0 0 1-7.2 0c0-1.4 1.2-3 3.6-6z" fill="currentColor"/></svg></div>
+    <p class="formato-nome"><span class="cod">F02</span> 🏋️ Ficha de treino</p>
+    <p>Os exercícios do dia, o tempo de cada um e a pausa para beber água.</p>
+  </div><div class="formato-ico">
+    <div class="formato-desenho"><svg viewBox="0 0 100 36" aria-hidden="true"><rect x="8" y="3" width="7" height="7" rx="1.4" fill="none" stroke="currentColor" stroke-width="2"/><rect x="8" y="14.5" width="7" height="7" rx="1.4" fill="none" stroke="currentColor" stroke-width="2"/><rect x="8" y="26" width="7" height="7" rx="1.4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M9.4 6.6l2 2 3.4-4.2M9.4 18.1l2 2 3.4-4.2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><line x1="22" y1="6.5" x2="80" y2="6.5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><line x1="22" y1="18" x2="70" y2="18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><line x1="22" y1="29.5" x2="76" y2="29.5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></div>
+    <p class="formato-nome"><span class="cod">F03</span> 🎒 Lista do que levar</p>
+    <p>Coisas para marcar antes de sair: água, protetor solar, boné e saco para o lixo.</p>
+  </div><div class="formato-ico">
+    <div class="formato-desenho"><svg viewBox="0 0 100 36" aria-hidden="true"><g fill="currentColor"><circle cx="10" cy="8" r="2.6"/><circle cx="10" cy="18" r="2.6"/><circle cx="10" cy="28" r="2.6"/></g><line x1="18" y1="8" x2="84" y2="8" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><line x1="18" y1="18" x2="70" y2="18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><line x1="18" y1="28" x2="78" y2="28" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></div>
+    <p class="formato-nome"><span class="cod">F04</span> 📝 Lista curta</p>
+    <p>3 tópicos curtos, um em cada linha.</p>
+  </div><div class="formato-ico">
+    <div class="formato-desenho"><svg viewBox="0 0 100 36" aria-hidden="true"><rect x="34" y="1" width="32" height="34" rx="3" fill="none" stroke="currentColor" stroke-width="2"/><line x1="47" y1="32.4" x2="53" y2="32.4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><rect x="27" y="6" width="46" height="11" rx="3" fill="currentColor"/><text x="31.5" y="14.6" font-size="9" font-weight="800" fill="#fff" font-family="Segoe UI, Arial">!</text><line x1="38" y1="11.5" x2="66" y2="11.5" stroke="#fff" stroke-width="2" stroke-linecap="round"/><line x1="40" y1="24" x2="60" y2="24" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><line x1="40" y1="28.5" x2="56" y2="28.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+    <p class="formato-nome"><span class="cod">F05</span> 🚨 Alerta no celular</p>
+    <p>Uma mensagem curta e urgente que aparece na tela do celular.</p>
+  </div><div class="formato-ico">
+    <div class="formato-desenho"><svg viewBox="0 0 100 36" aria-hidden="true"><line x1="8" y1="10" x2="92" y2="10" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><line x1="8" y1="19" x2="52" y2="19" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><circle cx="58" cy="19" r="1.8" fill="currentColor"/><line x1="8" y1="28" x2="80" y2="28" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><circle cx="86" cy="28" r="1.8" fill="currentColor"/></svg></div>
+    <p class="formato-nome"><span class="cod">F06</span> ✂️ Resumo em 2 frases</p>
+    <p>Só o mais importante, em 2 frases.</p>
+  </div><div class="formato-ico">
+    <div class="formato-desenho"><svg viewBox="0 0 100 36" aria-hidden="true"><line x1="10" y1="2" x2="10" y2="33" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="10" y1="33" x2="92" y2="33" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><rect x="18" y="18" width="12" height="15" rx="1" fill="currentColor"/><rect x="36" y="8" width="12" height="25" rx="1" fill="currentColor"/><rect x="54" y="22" width="12" height="11" rx="1" fill="currentColor"/><rect x="72" y="13" width="12" height="20" rx="1" fill="currentColor"/></svg></div>
+    <p class="formato-nome"><span class="cod">F07</span> 📊 Gráfico de barras</p>
+    <p>Barras que comparam números: quem reciclou mais, quem correu mais.</p>
+  </div><div class="formato-ico">
+    <div class="formato-desenho"><svg viewBox="0 0 100 36" aria-hidden="true"><circle cx="50" cy="18" r="14" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="50" cy="18" r="9" fill="none" stroke="currentColor" stroke-width="1.4"/><line x1="26" y1="6" x2="26" y2="30" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><line x1="23" y1="6" x2="23" y2="13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><line x1="29" y1="6" x2="29" y2="13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M74 6c3 0 3 9 0 11v13" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></div>
+    <p class="formato-nome"><span class="cod">F08</span> 🍽️ Cardápio da semana</p>
+    <p>O que comer em cada dia, do café da manhã ao jantar.</p>
+  </div><div class="formato-ico">
+    <div class="formato-desenho"><svg viewBox="0 0 100 36" aria-hidden="true"><path d="M8 29C24 29 26 8 44 13S70 31 88 9" fill="none" stroke="currentColor" stroke-width="2.4" stroke-dasharray="4 3.4" stroke-linecap="round"/><circle cx="8" cy="29" r="3.4" fill="currentColor"/><line x1="88" y1="9" x2="88" y2="1.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M88 1.5l8 3-8 3z" fill="currentColor"/><path d="M44 6.5c2 2.5 3 3.8 3 5a3 3 0 0 1-6 0c0-1.2 1-2.5 3-5z" fill="currentColor"/></svg></div>
+    <p class="formato-nome"><span class="cod">F09</span> 🗺️ Mapa do percurso</p>
+    <p>O caminho desenhado, com as paradas para água e sombra.</p>
+  </div><div class="formato-ico">
+    <div class="formato-desenho"><svg viewBox="0 0 100 36" aria-hidden="true"><text x="6" y="13" font-size="8" font-weight="800" fill="currentColor" font-family="Segoe UI, Arial">P</text><line x1="18" y1="10" x2="76" y2="10" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><text x="80" y="13" font-size="8" font-weight="800" fill="currentColor" font-family="Segoe UI, Arial">?</text><text x="6" y="29" font-size="8" font-weight="800" fill="currentColor" font-family="Segoe UI, Arial">R</text><line x1="18" y1="26" x2="88" y2="26" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></div>
+    <p class="formato-nome"><span class="cod">F10</span> ❓ Pergunta e resposta</p>
+    <p>As dúvidas de quem lê, cada uma com a resposta.</p>
+  </div><div class="formato-ico">
+    <div class="formato-desenho"><svg viewBox="0 0 100 36" aria-hidden="true"><rect x="4" y="4" width="20" height="30" rx="3" fill="none" stroke="currentColor" stroke-width="2"/><line x1="11" y1="31.4" x2="17" y2="31.4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><rect x="40" y="4" width="20" height="30" rx="3" fill="none" stroke="currentColor" stroke-width="2"/><line x1="47" y1="31.4" x2="53" y2="31.4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><rect x="76" y="4" width="20" height="30" rx="3" fill="none" stroke="currentColor" stroke-width="2"/><line x1="83" y1="31.4" x2="89" y2="31.4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><text x="11.2" y="22" font-size="10" font-weight="800" fill="currentColor" font-family="Segoe UI, Arial">1</text><text x="47.2" y="22" font-size="10" font-weight="800" fill="currentColor" font-family="Segoe UI, Arial">2</text><text x="83.2" y="22" font-size="10" font-weight="800" fill="currentColor" font-family="Segoe UI, Arial">3</text><path d="M28 19h8m-3-3 3 3-3 3M64 19h8m-3-3 3 3-3 3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <p class="formato-nome"><span class="cod">F11</span> 👣 Passo a passo com as telas</p>
+    <p>Etapas numeradas mostrando onde tocar em cada tela do celular.</p>
+  </div><div class="formato-ico">
+    <div class="formato-desenho"><svg viewBox="0 0 100 36" aria-hidden="true"><rect x="24" y="1" width="52" height="34" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><rect x="30" y="6" width="40" height="7" rx="1.5" fill="currentColor"/><line x1="31" y1="19" x2="69" y2="19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="31" y1="25" x2="64" y2="25" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="31" y1="31" x2="67" y2="31" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>
+    <p class="formato-nome"><span class="cod">F12</span> 🪧 Cartaz</p>
+    <p>Um título que chama atenção e 3 frases curtas, para o mural.</p>
+  </div><div class="formato-ico">
+    <div class="formato-desenho"><svg viewBox="0 0 100 36" aria-hidden="true"><rect x="14" y="1" width="72" height="25" rx="2.4" fill="none" stroke="currentColor" stroke-width="2"/><text x="31" y="20" font-size="15" font-weight="800" fill="currentColor" font-family="Segoe UI, Arial">3 x 2</text><line x1="30" y1="26" x2="26" y2="35" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="70" y1="26" x2="74" y2="35" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>
+    <p class="formato-nome"><span class="cod">F13</span> 🔢 Placar no telão</p>
+    <p>Números grandes que todos veem de longe, como no estádio ou na gincana.</p>
+  </div><div class="formato-ico">
+    <div class="formato-desenho"><svg viewBox="0 0 100 36" aria-hidden="true"><rect x="4" y="3" width="28" height="30" rx="1.6" fill="none" stroke="currentColor" stroke-width="2"/><rect x="36" y="3" width="28" height="30" rx="1.6" fill="none" stroke="currentColor" stroke-width="2"/><rect x="68" y="3" width="28" height="30" rx="1.6" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 8h18v7H14l-3 3v-3H8z" fill="currentColor"/><path d="M42 8h18v7H50l-3 3v-3h-5z" fill="currentColor"/><g fill="currentColor"><circle cx="18" cy="25" r="3.6"/><circle cx="50" cy="25" r="3.6"/><circle cx="82" cy="20" r="3.6"/></g><line x1="73" y1="29" x2="91" y2="29" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+    <p class="formato-nome"><span class="cod">F14</span> 💬 História em quadrinhos</p>
+    <p>3 quadrinhos com desenhos e falas curtas.</p>
+  </div><div class="formato-ico">
+    <div class="formato-desenho"><svg viewBox="0 0 100 36" aria-hidden="true"><path d="M28 1h36l8 8v26H28z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M64 1v8h8" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M34 15l7-6 7 6v8H34z" fill="currentColor"/><line x1="52" y1="13" x2="66" y2="13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="52" y1="19" x2="63" y2="19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="34" y1="29" x2="66" y2="29" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>
+    <p class="formato-nome"><span class="cod">F15</span> 📬 Folheto para as casas</p>
+    <p>Uma folha com desenhos e poucas palavras, para entregar de casa em casa.</p>
+  </div><div class="formato-ico">
+    <div class="formato-desenho"><svg viewBox="0 0 100 36" aria-hidden="true"><line x1="6" y1="20" x2="94" y2="20" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><g fill="currentColor"><circle cx="14" cy="20" r="4"/><circle cx="38" cy="20" r="4"/><circle cx="62" cy="20" r="4"/><circle cx="86" cy="20" r="4"/></g><text x="8" y="34" font-size="7" font-weight="800" fill="currentColor" font-family="Segoe UI, Arial">1890</text><text x="32" y="34" font-size="7" font-weight="800" fill="currentColor" font-family="Segoe UI, Arial">1950</text><text x="56" y="34" font-size="7" font-weight="800" fill="currentColor" font-family="Segoe UI, Arial">2000</text><text x="79" y="34" font-size="7" font-weight="800" fill="currentColor" font-family="Segoe UI, Arial">hoje</text></svg></div>
+    <p class="formato-nome"><span class="cod">F16</span> ⏳ Linha do tempo</p>
+    <p>Os fatos em ordem, do mais antigo ao mais novo.</p>
+  </div></div>
+  <div class="dicas">
+    <p class="dicas-t">Como usar este manual</p>
+    <ul>
+      <li><b>Antes da 1ª partida:</b> mostre à turma as páginas 1 e 2. Assim, todos ficam sabendo de que baralho é cada carta e onde ela fica no tabuleiro.</li>
+      <li><b>Durante a partida:</b> a página 3 ajuda o aluno a achar a carta pela imagem e dizer o código ao professor.</li>
+      <li><b>Para imprimir:</b> abra o arquivo no Chrome, Ctrl+P, Salvar como PDF, margens Nenhuma. O tabuleiro tem o arquivo dele, em 2 folhas A4.</li>
+    </ul>
+  </div>
+  <footer class="ico-rodape"><span>Palavra Mágica · Manual iconográfico</span><span>grupo NEXUS · página 4 de 4</span></footer>
+</section></body></html>
