@@ -251,7 +251,7 @@ module.exports = function montarManual(d) {
   <p class="endereco">${ENDERECO_DO_APP}</p>
   <div class="telas">
     ${tela('app-partida.png', '<b>Partida:</b> a rodada, os pontos de cada lado, de quem é a vez e o cronômetro.')}
-    ${tela('app-rodada.png', '<b>Rodada:</b> o número da missão e as 3 cartas de cada lado.')}
+    ${tela('app-rodada.png', '<b>Rodada:</b> o número da missão e depois as 3 cartas de cada lado, um lado por vez.')}
     ${tela('app-resultado.png', '<b>Resultado:</b> a nota de cada prompt, por que perdeu pontos e quem ganha o ponto.')}
   </div>
   <div class="app-cols">
@@ -261,12 +261,12 @@ module.exports = function montarManual(d) {
       <li><b>Cronômetro:</b> toque em <b>Iniciar</b> na vez do primeiro lado e em <b>Próximo lado</b> quando ele terminar.</li>
     </ol>
     <ol class="passos-grandes" start="4">
-      <li><b>Todos pegaram?</b> Toque em <b>Conferir a rodada</b>. Digite o número da missão e o número das 3 cartas de cada lado. Lado roubado por uma carta especial? Toque em <b>Foi roubado</b> nele.</li>
+      <li><b>Todos pegaram?</b> Toque em <b>Conferir a rodada</b>. Digite o número da missão e toque em <b>OK</b>. Depois aparece um lado por vez, na ordem da rodada: digite o número das 3 cartas dele e toque em <b>OK</b>. Lado roubado por uma carta especial? Toque em <b>Foi roubado</b> nele.</li>
       <li><b>Ver o resultado:</b> leia em voz alta a nota e o porquê de cada prompt. Toque em <b>Dar o ponto</b>. Errou? Toque em <b>Desfazer</b>.</li>
       <li><b>Depois de ${RODADAS} rodadas,</b> o aplicativo mostra o placar final. Toque em <b>Conferir se aprendeu</b> para o desafio final: digite o prompt de cada lado e toque em <b>Ver a nota</b>.</li>
     </ol>
   </div>
-  <p class="nota-pe">As páginas <b>Desafio</b> (o desafio final), <b>Cartas</b> (procurar uma carta pelo código ou pelo nome, com os números dela) e <b>Regras</b> (o resumo das regras) também funcionam sem internet. Sem celular, use o gabarito impresso: ele tem os mesmos números e a mesma conta.</p>
+  <p class="nota-pe">As páginas <b>Desafio</b> (o desafio final) e <b>Regras</b> (o resumo das regras, com imagens) também funcionam sem internet. Sem celular, use o gabarito impresso: ele tem os mesmos números e a mesma conta.</p>
   ${rodape()}
 </section>`;
 

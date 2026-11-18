@@ -678,7 +678,7 @@ console.log(`dados.js: ${linhas.length} códigos`);
 const manifesto = {
   name: `${NOME} · aplicativo do professor`,
   short_name: NOME,
-  description: `Placar das rodadas, nota dos prompts e consulta das cartas do jogo ${NOME}. Funciona sem internet.`,
+  description: `Placar das rodadas, nota dos prompts e desafio final do jogo ${NOME}. Funciona sem internet.`,
   lang: 'pt-BR',
   start_url: './index.html',
   scope: './',

@@ -7,7 +7,6 @@ const MP = (() => {
     partida: '<path d="M12 8v5l3 2"/><circle cx="12" cy="13" r="8"/><path d="M9 2h6"/>',
     rodada: '<path d="M4 4h16v16H4z"/><path d="m8 12 3 3 5-6"/>',
     desafio: '<path d="M12 3l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.4l-5.2 2.7 1-5.8-4.3-4.1 5.9-.9z"/>',
-    cartas: '<rect x="3" y="5" width="12" height="16" rx="2"/><path d="M9 3h10a2 2 0 0 1 2 2v12"/>',
     regras: '<path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M8 7h7M8 11h7"/>',
   };
 
@@ -15,7 +14,6 @@ const MP = (() => {
     { id: 'partida', arquivo: 'index.html', nome: 'Partida' },
     { id: 'rodada', arquivo: 'rodada.html', nome: 'Rodada' },
     { id: 'aprendeu', arquivo: 'aprendeu.html', nome: 'Desafio', icone: 'desafio' },
-    { id: 'cartas', arquivo: 'cartas.html', nome: 'Cartas' },
     { id: 'regras', arquivo: 'regras.html', nome: 'Regras' },
   ];
 

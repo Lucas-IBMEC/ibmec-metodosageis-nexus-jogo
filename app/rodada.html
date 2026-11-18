@@ -22,32 +22,11 @@
   <main class="conteudo">
     <p class="aviso" id="aviso-rodada" hidden style="margin: 0"></p>
 
-    <section class="bloco">
-      <h2><span class="passo">1</span>A missão da rodada</h2>
-      <label class="campo-codigo t-missao missao-campo">
-        <span class="letra" aria-hidden="true">M</span>
-        <input class="campo" id="missao" inputmode="numeric" pattern="[0-9]*" maxlength="2" autocomplete="off"
-          enterkeyhint="next" aria-label="Número da missão" placeholder="Número, ex.: 4">
-      </label>
-      <div id="missao-info" aria-live="polite"></div>
-    </section>
+    <!-- Os passos da rodada: a missão e depois cada lado, na ordem. Tocar num passo já feito volta para corrigir. -->
+    <ol class="etapas" id="etapas" aria-label="Passos da rodada"></ol>
 
-    <section class="bloco">
-      <h2><span class="passo">2</span>As 3 cartas de cada lado</h2>
-      <p class="sub">Digite só o número de cada carta. O aplicativo passa sozinho para o próximo campo.</p>
-      <div class="quantos-prompts" id="quantos-prompts" hidden>
-        <span class="rotulo" style="margin: 0">Quantos prompts</span>
-        <div class="contador">
-          <button type="button" class="mais-menos" id="menos-prompts" aria-label="Menos prompts">−</button>
-          <div class="valor"><b id="quantos">2</b><span>prompts</span></div>
-          <button type="button" class="mais-menos" id="mais-prompts" aria-label="Mais prompts">+</button>
-        </div>
-      </div>
-      <div class="prompts" id="prompts"></div>
-    </section>
-
-    <button type="button" class="botao largo" id="ver">Ver o resultado</button>
-    <p class="aviso" id="falta" hidden style="margin: 0"></p>
+    <!-- O passo de agora: a missão, ou as 3 cartas de um lado -->
+    <section class="bloco etapa" id="etapa"></section>
 
     <section class="bloco resultado-rodada" id="resultado" hidden aria-live="polite"></section>
 

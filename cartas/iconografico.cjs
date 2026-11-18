@@ -17,9 +17,8 @@ module.exports = function montarIconografico(d) {
   const ICONES = Object.fromEntries([...bloco.matchAll(/(\w+): '([^']*)'/g)].map((m) => [m[1], m[2]]));
   const MENU = [
     ['partida', 'Partida', 'Monta a partida (completa ou rápida), sorteia quem começa, mostra de quem é a vez, o placar e o cronômetro de 1 minuto.'],
-    ['rodada', 'Rodada', 'O professor digita a missão e as 3 cartas de cada lado. O aplicativo dá a nota de cada prompt e o ponto ao melhor.'],
+    ['rodada', 'Rodada', 'O professor digita a missão e depois as 3 cartas de cada lado, um lado por vez. O aplicativo dá a nota de cada prompt e o ponto ao melhor.'],
     ['desafio', 'Desafio', 'O desafio final: cada lado escreve um prompt sem cartas, e o aplicativo dá a nota de 1 a 4, sem internet.'],
-    ['cartas', 'Cartas', 'Consulta de qualquer carta pelo código ou pelo nome, com o gabarito do professor.'],
     ['regras', 'Regras', 'O resumo das regras, para tirar dúvidas durante a partida.'],
   ];
   for (const [id] of MENU) if (!ICONES[id]) throw new Error(`iconográfico: falta o ícone ${id} do aplicativo`);
@@ -161,7 +160,7 @@ ${tabuleiro.css}
 .especial-ico { display: flex; flex-direction: column; align-items: center; gap: 1.2mm; text-align: center; font-size: 9pt; line-height: 1.3; }
 .especial-ico .mini-carta { margin-bottom: 1mm; }
 .tab-mini { border-radius: 2mm; align-self: center; margin: 1mm 0; }
-.menu-ico { display: grid; grid-template-columns: repeat(5, 1fr); gap: 3mm; }
+.menu-ico { display: grid; grid-template-columns: repeat(${MENU.length}, 1fr); gap: 3mm; }
 .menu-ico div { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 1mm; font-size: 8.4pt; line-height: 1.32; }
 .menu-bola { width: 13mm; height: 13mm; border-radius: 50%; background: #16274f; color: #fff; display: inline-flex; align-items: center; justify-content: center; }
 .menu-bola svg { width: 7mm; height: 7mm; }

@@ -1,7 +1,9 @@
-// Página Rodada: o professor digita a missão e as 3 cartas de cada lado (contexto, persona e formato).
-// O aplicativo dá a nota de cada prompt (a média dos números escondidos nos 3 assuntos da missão),
-// diz por que cada um perdeu pontos e dá 1 ponto para o melhor (empate: 1 ponto para cada).
-// Lado roubado por uma carta especial perde a rodada: não precisa digitar as cartas e não ganha ponto.
+// Página Rodada, um passo por vez: o professor digita o número da missão e toca em OK. Depois aparece
+// o 1º lado da rodada: ele digita as 3 cartas desse lado (contexto, persona e formato), toca em OK
+// e aparece o próximo lado, na ordem da rodada. Lado roubado por uma carta especial: toque em Foi roubado.
+// Ele perde a rodada (não ganha ponto) e não precisa digitar as cartas.
+// Depois do último lado, o aplicativo dá a nota de cada prompt (a média dos números escondidos nos 3 assuntos
+// da missão), diz por que cada um perdeu pontos e dá 1 ponto para o melhor (empate: 1 ponto para cada).
 // Histórias: 2.1.1, 2.1.2, 2.2.1 e 2.2.2.
 
 const $ = (seletor) => document.querySelector(seletor);
@@ -13,6 +15,9 @@ const TOTAL = Object.fromEntries(['Missão', ...TIPOS].map((tipo) => [tipo, DADO
 let partida = MP.lerPartida();
 let estado;
 
+// O passo guardado pode ser 'missao', 'resultado' ou o número de um lado (que volta do armazenamento como número)
+const mesmo = (a, b) => String(a) === String(b);
+
 // ---------- Estado da página ----------
 
 // As cartas digitadas valem para uma rodada só: quando a rodada muda, a página começa limpa
@@ -20,8 +25,10 @@ function chaveAtual() {
   return partida ? `${partida.inicio}-${partida.rodada}` : 'sem-partida';
 }
 
+// etapa: o passo de agora ('missao', o número do lado em partida.lados ou 'resultado')
+// feitos: os lados em que o professor já tocou em OK
 function estadoVazio() {
-  return { chave: chaveAtual(), missao: '', prompts: {}, roubados: {}, quantos: 2, revelado: false };
+  return { chave: chaveAtual(), missao: '', prompts: {}, roubados: {}, feitos: {}, quantos: 2, etapa: 'missao' };
 }
 
 function pontoDado() {
@@ -32,15 +39,17 @@ function lerEstado() {
   partida = MP.lerPartida();
   const guardado = MP.ler('mp-rodada', null);
   estado = guardado && guardado.chave === chaveAtual() ? { ...estadoVazio(), ...guardado } : estadoVazio();
-  // Ponto já dado: a página mostra as cartas que valeram o ponto
+  // Ponto já dado: a página mostra as cartas que valeram o ponto e o resultado
   const ponto = partida && MP.pontoDaRodada(partida);
   if (ponto) {
     estado.missao = String(Number(ponto.missao.slice(1)));
+    estado.prompts = {};
     ponto.prompts.forEach((p) => {
       estado.prompts[p.lado] = Object.fromEntries(TIPOS.map((tipo, k) => [tipo, String(Number(p.cartas[k].slice(1)))]));
     });
     estado.roubados = Object.fromEntries((ponto.roubados || []).map((i) => [i, true]));
-    estado.revelado = true;
+    estado.feitos = Object.fromEntries(quem().map(({ i }) => [i, true]));
+    estado.etapa = 'resultado';
   }
 }
 
@@ -66,20 +75,24 @@ function maiuscula(texto) {
   return texto.charAt(0).toUpperCase() + texto.slice(1);
 }
 
-// A missão, as cartas de cada prompt e o que falta
+// A missão, as cartas de cada lado e o que falta
 function lerTudo() {
   const missao = MP.cartaPeloNumero('Missão', estado.missao);
-  const todas = quem().map(({ i, nome }) => {
+  const todas = quem().map(({ i, nome }, posicao) => {
     const digitado = estado.prompts[i] || {};
     const cartas = TIPOS.map((tipo) => {
       const numero = String(digitado[tipo] || '');
       return { tipo, numero, carta: MP.cartaPeloNumero(tipo, numero) };
     });
-    return { i, nome, cartas, completo: cartas.every((c) => c.carta) };
+    const completo = cartas.every((c) => c.carta);
+    const roubado = Boolean(estado.roubados[i]);
+    // Pronto: o professor tocou em OK com as 3 cartas certas, ou o lado foi roubado
+    const pronto = roubado || (Boolean(estado.feitos[i]) && completo);
+    return { i, nome, posicao, cartas, completo, roubado, pronto };
   });
   // Quem foi roubado fica de fora da conta
-  const roubados = todas.filter((linha) => estado.roubados[linha.i]);
-  const linhas = todas.filter((linha) => !estado.roubados[linha.i]);
+  const roubados = todas.filter((linha) => linha.roubado);
+  const linhas = todas.filter((linha) => !linha.roubado);
   // Só existe uma carta de cada: a mesma carta em dois prompts quer dizer que alguém digitou errado
   const donos = {};
   linhas.forEach((linha) => linha.cartas.forEach((c) => {
@@ -87,80 +100,153 @@ function lerTudo() {
     donos[c.carta.codigo] = donos[c.carta.codigo] || [];
     donos[c.carta.codigo].push(linha);
   }));
-  const falta = [];
-  if (!missao) falta.push('a missão');
-  linhas.forEach((linha) => { if (!linha.completo) falta.push(`as cartas de ${linha.nome}`); });
-  return { missao, linhas, roubados, donos, falta, completo: falta.length === 0 };
+  const completo = Boolean(missao) && todas.every((linha) => linha.pronto);
+  return { missao, todas, linhas, roubados, donos, completo };
 }
 
-// ---------- Campos ----------
+// ---------- Passos ----------
+
+// O primeiro passo que ainda falta (a missão ou um lado). Nada falta: o resultado
+function proximaEtapa(tudo) {
+  if (!tudo.missao) return 'missao';
+  const falta = tudo.todas.find((linha) => !linha.pronto);
+  return falta ? falta.i : 'resultado';
+}
 
 // Só vale o roubo de quem está na rodada, e sempre sobra pelo menos 1 lado que não foi roubado
 function ajustarRoubados() {
   const naRodada = new Set(quem().map(({ i }) => String(i)));
-  Object.keys(estado.roubados).forEach((i) => { if (!naRodada.has(i)) delete estado.roubados[i]; });
+  [estado.roubados, estado.feitos].forEach((lista) => {
+    Object.keys(lista).forEach((i) => { if (!naRodada.has(i)) delete lista[i]; });
+  });
   if (Object.keys(estado.roubados).length >= naRodada.size) estado.roubados = {};
 }
 
-function montarCampos() {
-  ajustarRoubados();
+// O passo guardado ainda existe? (sem partida, o número de prompts pode mudar)
+function ajustarEtapa(tudo) {
+  if (estado.etapa === 'missao') return;
+  if (estado.etapa === 'resultado') {
+    if (!tudo.completo) estado.etapa = proximaEtapa(tudo);
+    return;
+  }
+  if (!tudo.todas.some((linha) => mesmo(linha.i, estado.etapa))) estado.etapa = proximaEtapa(tudo);
+}
+
+function linhaDaEtapa(tudo) {
+  return tudo.todas.find((linha) => mesmo(linha.i, estado.etapa)) || null;
+}
+
+// A faixa de cima: Missão → Lucas → Bernardo → Igor → Resultado. Toque num passo feito para corrigir.
+function htmlDasEtapas(tudo) {
   const travado = pontoDado();
-  $('#missao').value = estado.missao;
-  $('#missao').disabled = travado;
-  $('#quantos-prompts').hidden = Boolean(partida);
-  $('#quantos').textContent = estado.quantos;
-  $('#menos-prompts').disabled = estado.quantos <= 2;
-  $('#mais-prompts').disabled = estado.quantos >= MAX_PROMPTS;
-  const comOrdem = partida && partida.primeiro !== null;
-  const todos = quem();
-  const livres = todos.filter(({ i }) => !estado.roubados[i]).length;
-  $('#prompts').innerHTML = todos.map(({ i, nome }, posicao) => {
-    const roubado = Boolean(estado.roubados[i]);
-    // Sempre sobra pelo menos 1 lado que não foi roubado
-    const bloqueado = travado || (!roubado && livres <= 1);
-    return `
-    <div class="prompt-entrada ${roubado ? 'roubado' : ''}" data-prompt="${i}">
-      <div class="prompt-linha">
-        <p class="prompt-quem">${comOrdem ? `<span class="ordem-n">${posicao + 1}º</span>` : ''}${MP.esc(nome)}</p>
-        <button type="button" class="chip roubo" data-roubado="${i}" aria-pressed="${roubado}" ${bloqueado ? 'disabled' : ''}>Foi roubado</button>
-      </div>
-      <p class="roubado-aviso" ${roubado ? '' : 'hidden'}>Perdeu a rodada: não ganha ponto e não precisa digitar as cartas.</p>
-      <div class="trio-campos" ${roubado ? 'hidden' : ''}>
-        ${TIPOS.map((tipo) => `<label class="campo-codigo ${MP.classeDoTipo(tipo)}">
-          <span class="letra" aria-hidden="true">${MP.LETRA[tipo]}</span>
-          <input class="campo" data-tipo="${tipo}" inputmode="numeric" pattern="[0-9]*" maxlength="2"
-            autocomplete="off" enterkeyhint="next" placeholder="nº" aria-label="${tipo} de ${MP.esc(nome)}"
-            value="${MP.esc((estado.prompts[i] || {})[tipo] || '')}" ${travado || roubado ? 'disabled' : ''}>
-        </label>`).join('')}
-      </div>
-      <ul class="cartas-digitadas" aria-live="polite" ${roubado ? 'hidden' : ''}></ul>
-    </div>`;
+  const proxima = proximaEtapa(tudo);
+  const passos = [
+    { etapa: 'missao', nome: tudo.missao ? tudo.missao.codigo : 'Missão', feito: Boolean(tudo.missao) },
+    ...tudo.todas.map((linha) => ({ etapa: linha.i, nome: linha.nome, feito: linha.pronto, roubado: linha.roubado })),
+    { etapa: 'resultado', nome: 'Resultado', feito: false },
+  ];
+  return passos.map((p) => {
+    const agora = mesmo(p.etapa, estado.etapa);
+    const pode = !travado && (p.feito || p.etapa === 'missao' || mesmo(p.etapa, proxima));
+    const classe = p.roubado ? 'roubado' : (p.feito ? 'feito' : '');
+    const marca = p.roubado ? '✕ ' : (p.feito ? '✓ ' : '');
+    return `<li><button type="button" class="etapa-chip ${classe}" data-etapa="${p.etapa}"
+      ${agora ? 'aria-current="step"' : ''} ${agora || pode ? '' : 'disabled'}>${marca}${MP.esc(p.nome)}</button></li>`;
   }).join('');
 }
 
-// Embaixo de cada campo: o nome da carta digitada, ou o erro
-function atualizarDigitadas(tudo) {
-  const info = $('#missao-info');
-  if (!estado.missao) {
-    info.innerHTML = '';
-  } else if (!tudo.missao) {
-    info.innerHTML = `<p class="erro-campo">Não existe ${codigoDe('Missão', estado.missao)}. As missões vão de 1 a ${TOTAL['Missão']}.</p>`;
-  } else {
-    const saiu = partida && partida.historico.find((h) => h.missao === tudo.missao.codigo && h.rodada !== partida.rodada);
-    info.innerHTML = `<div class="assuntos-missao">${tudo.missao.assuntos.map((a) => `<span class="assunto-tag">${MP.esc(MP.comSimbolo(a))}</span>`).join('')}</div>
-      <p class="pedido-missao">“${MP.esc(tudo.missao.nome)}”</p>
-      ${saiu ? `<p class="alerta-campo">A ${tudo.missao.codigo} já saiu na rodada ${saiu.rodada}.</p>` : ''}`;
-  }
+// Passo 1: a missão (sem partida, também quantos prompts)
+function htmlDaMissao() {
+  return `<div class="etapa-topo"><h2><span class="passo">1</span>A missão da rodada</h2></div>
+    <p class="sub">Digite o número da carta de missão e toque em OK.</p>
+    <label class="campo-codigo t-missao missao-campo">
+      <span class="letra" aria-hidden="true">M</span>
+      <input class="campo" id="missao" inputmode="numeric" pattern="[0-9]*" maxlength="2" autocomplete="off"
+        enterkeyhint="done" aria-label="Número da missão" placeholder="Número, ex.: 4" value="${MP.esc(estado.missao)}">
+    </label>
+    <div id="missao-info" aria-live="polite"></div>
+    ${partida ? '' : `<div class="quantos-prompts">
+      <span class="rotulo" style="margin: 0">Quantos prompts</span>
+      <div class="contador">
+        <button type="button" class="mais-menos" data-acao="menos" aria-label="Menos prompts" ${estado.quantos <= 2 ? 'disabled' : ''}>−</button>
+        <div class="valor"><b>${estado.quantos}</b><span>prompts</span></div>
+        <button type="button" class="mais-menos" data-acao="mais" aria-label="Mais prompts" ${estado.quantos >= MAX_PROMPTS ? 'disabled' : ''}>+</button>
+      </div>
+    </div>`}
+    <button type="button" class="botao largo" id="ok" data-acao="ok">OK</button>`;
+}
 
-  tudo.linhas.forEach((linha) => {
-    const lista = document.querySelector(`[data-prompt="${linha.i}"] .cartas-digitadas`);
-    if (!lista) return;
-    lista.innerHTML = linha.cartas.filter((c) => c.numero).map((c) => {
-      if (!c.carta) return `<li class="erro-campo">Não existe ${codigoDe(c.tipo, c.numero)}. Os números vão de 1 a ${TOTAL[c.tipo]}.</li>`;
-      const outros = tudo.donos[c.carta.codigo].filter((l) => l !== linha);
-      return `<li class="${MP.classeDoTipo(c.tipo)}"><span class="cod">${c.carta.codigo}</span>
-        <span>${MP.esc(c.carta.nome)}${outros.length ? `<small class="alerta-campo">Também está com ${MP.esc(MP.juntar(outros.map((o) => o.nome)))}: confira o número.</small>` : ''}</span></li>`;
-    }).join('');
+// Os outros passos: as 3 cartas de um lado
+function htmlDoLado(tudo, linha) {
+  const nome = MP.esc(linha.nome);
+  const livres = tudo.todas.filter((l) => !l.roubado).length;
+  // Sempre sobra pelo menos 1 lado que não foi roubado
+  const podeRoubar = linha.roubado || livres > 1;
+  const comOrdem = partida && partida.primeiro !== null;
+  const ordem = comOrdem ? `${linha.posicao + 1}º lado de ${tudo.todas.length}. ` : '';
+  const miolo = linha.roubado
+    ? `<p class="roubado-aviso">Roubo: ${nome} perdeu a rodada e não ganha ponto. Não precisa digitar as cartas. Foi engano? Toque de novo em Foi roubado.</p>`
+    : `<div class="cartas-lado">${TIPOS.map((tipo) => `
+      <div class="carta-linha ${MP.classeDoTipo(tipo)}">
+        <label class="campo-codigo">
+          <span class="letra" aria-hidden="true">${MP.LETRA[tipo]}</span>
+          <input class="campo" data-tipo="${tipo}" inputmode="numeric" pattern="[0-9]*" maxlength="2" autocomplete="off"
+            enterkeyhint="${tipo === 'Formato' ? 'done' : 'next'}" placeholder="nº" aria-label="${tipo} de ${nome}"
+            value="${MP.esc((estado.prompts[linha.i] || {})[tipo] || '')}">
+        </label>
+        <div class="carta-nome" data-nome="${tipo}" aria-live="polite"></div>
+      </div>`).join('')}</div>`;
+  return `<div class="etapa-topo">
+      <h2><span class="passo">${linha.posicao + 2}</span><span class="etapa-nome">${nome}</span></h2>
+      <button type="button" class="chip roubo" data-acao="roubo" aria-pressed="${linha.roubado}" ${podeRoubar ? '' : 'disabled'}>Foi roubado</button>
+    </div>
+    <p class="sub">${ordem}${linha.roubado ? '' : `Digite o número das 3 cartas de ${nome} e toque em OK.`}</p>
+    ${miolo}
+    <div class="acoes">
+      <button type="button" class="botao secundario" data-acao="voltar">Voltar</button>
+      <button type="button" class="botao" id="ok" data-acao="ok">OK</button>
+    </div>`;
+}
+
+// Embaixo do campo da missão: os assuntos e o pedido, ou o erro
+function htmlDaMissaoInfo(tudo) {
+  if (!estado.missao) return '';
+  if (!tudo.missao) {
+    return `<p class="erro-campo">Não existe ${codigoDe('Missão', estado.missao)}. As missões vão de 1 a ${TOTAL['Missão']}.</p>`;
+  }
+  const saiu = partida && partida.historico.find((h) => h.missao === tudo.missao.codigo && h.rodada !== partida.rodada);
+  return `<div class="assuntos-missao">${tudo.missao.assuntos.map((a) => `<span class="assunto-tag">${MP.esc(MP.comSimbolo(a))}</span>`).join('')}</div>
+    <p class="pedido-missao">“${MP.esc(tudo.missao.nome)}”</p>
+    ${saiu ? `<p class="alerta-campo">A ${tudo.missao.codigo} já saiu na rodada ${saiu.rodada}.</p>` : ''}`;
+}
+
+// Ao lado de cada campo: o nome da carta digitada, ou o erro
+function htmlDoNome(tudo, linha, c) {
+  if (!c.numero) return `<small>${c.tipo}</small>`;
+  if (!c.carta) {
+    return `<small>${c.tipo}</small><span class="erro-campo">Não existe ${codigoDe(c.tipo, c.numero)}. Vai de 1 a ${TOTAL[c.tipo]}.</span>`;
+  }
+  const outros = (tudo.donos[c.carta.codigo] || []).filter((l) => l !== linha);
+  return `<small>${c.tipo} · ${c.carta.codigo}</small><b>${MP.esc(c.carta.nome)}</b>
+    ${outros.length ? `<span class="alerta-campo">Também está com ${MP.esc(MP.juntar(outros.map((o) => o.nome)))}: confira o número.</span>` : ''}`;
+}
+
+// Atualiza o que muda enquanto o professor digita, sem refazer os campos (o teclado continua aberto)
+function atualizarEtapa(tudo = lerTudo()) {
+  $('#etapas').innerHTML = htmlDasEtapas(tudo);
+  const ok = $('#ok');
+  if (estado.etapa === 'missao') {
+    $('#missao-info').innerHTML = htmlDaMissaoInfo(tudo);
+    if (ok) ok.disabled = !tudo.missao;
+    return;
+  }
+  const linha = linhaDaEtapa(tudo);
+  if (!linha) return;
+  if (ok) ok.disabled = !(linha.completo || linha.roubado);
+  if (linha.roubado) return;
+  linha.cartas.forEach((c) => {
+    const alvo = document.querySelector(`[data-nome="${c.tipo}"]`);
+    if (alvo) alvo.innerHTML = htmlDoNome(tudo, linha, c);
   });
 }
 
@@ -223,13 +309,14 @@ function htmlDoResultado(tudo, resultados) {
       const posicao = 1 + resultados.filter((outro) => outro.soma > r.soma).length;
       return htmlDoPrompt(tudo.missao, r, posicao, maxima);
     }).join('')}</ol>
-    ${tudo.roubados.length ? `<p class="roubados-res">Roubado: ${MP.esc(MP.juntar(tudo.roubados.map((l) => l.nome)))} perdeu a rodada e não ganha ponto.</p>` : ''}`;
+    ${tudo.roubados.length ? `<p class="roubados-res">Roubo: ${MP.esc(MP.juntar(tudo.roubados.map((l) => l.nome)))} perdeu a rodada e não ganha ponto.</p>` : ''}`;
 }
 
 // ---------- Ponto ----------
 
 function htmlDoPonto(tudo, resultados) {
   const nomes = MP.juntar(resultados.filter((r) => r.ganhou).map((r) => r.nome));
+  const corrigir = '<p class="sub">Digitou um número errado? Toque no nome do lado, lá em cima, para corrigir.</p>';
   if (!partida) {
     return `<h2>Melhor prompt: ${MP.esc(nomes)}</h2>
       <p class="sub">Para somar os pontos das rodadas, comece uma partida na página <a href="index.html">Partida</a>.</p>
@@ -256,6 +343,7 @@ function htmlDoPonto(tudo, resultados) {
   const repetida = Object.values(tudo.donos).some((lista) => lista.length > 1);
   return `<h2>Dar o ponto</h2>
     <p class="sub">O melhor prompt ganha 1 ponto. Empate: 1 ponto para cada.</p>
+    ${corrigir}
     ${repetida ? '<p class="alerta-campo">Tem carta repetida em dois prompts: confira os números antes de dar o ponto.</p>' : ''}
     <button type="button" class="botao largo" data-acao="dar">Dar o ponto para ${MP.esc(nomes)}</button>`;
 }
@@ -295,7 +383,7 @@ function desfazer() {
   partida.fimMostrado = false;
   MP.salvarPartida(partida);
   salvarEstado();
-  MP.aviso('Ponto desfeito: pode mudar as cartas');
+  MP.aviso('Ponto desfeito: toque num lado para mudar as cartas');
   mostrarTudo();
 }
 
@@ -309,8 +397,7 @@ function avancar() {
 function limpar() {
   estado = { ...estadoVazio(), quantos: estado.quantos };
   salvarEstado();
-  mostrarTudo();
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  mostrarEtapa(true);
 }
 
 // ---------- As melhores cartas da missão ----------
@@ -340,39 +427,118 @@ function textoDoAviso() {
   return '';
 }
 
-function atualizar() {
+// Monta o passo de agora. focar: leva o cursor para o primeiro campo vazio (depois de um toque do professor)
+function mostrarEtapa(focar) {
+  ajustarRoubados();
   const tudo = lerTudo();
+  ajustarEtapa(tudo);
   $('#titulo').textContent = partida ? `Rodada ${partida.rodada} de ${MP.rodadasDa(partida)}` : 'Conferir prompts';
   const aviso = textoDoAviso();
   $('#aviso-rodada').hidden = !aviso;
   $('#aviso-rodada').innerHTML = aviso;
-  atualizarDigitadas(tudo);
 
-  const mostra = estado.revelado && tudo.completo;
-  $('#ver').hidden = mostra;
-  $('#falta').hidden = !(estado.revelado && !tudo.completo);
-  $('#falta').textContent = `Ainda falta digitar ${MP.juntar(tudo.falta)}.`;
-  ['#resultado', '#ponto', '#melhores'].forEach((s) => { $(s).hidden = !mostra; });
-  if (!mostra) return;
-  const resultados = calcular(tudo);
-  $('#resultado').innerHTML = htmlDoResultado(tudo, resultados);
-  $('#ponto').innerHTML = htmlDoPonto(tudo, resultados);
-  $('#melhores-corpo').innerHTML = htmlDasMelhores(tudo.missao);
+  const noResultado = estado.etapa === 'resultado';
+  $('#etapa').hidden = noResultado;
+  ['#resultado', '#ponto', '#melhores'].forEach((s) => { $(s).hidden = !noResultado; });
+  if (noResultado) {
+    $('#etapas').innerHTML = htmlDasEtapas(tudo);
+    const resultados = calcular(tudo);
+    $('#resultado').innerHTML = htmlDoResultado(tudo, resultados);
+    $('#ponto').innerHTML = htmlDoPonto(tudo, resultados);
+    $('#melhores-corpo').innerHTML = htmlDasMelhores(tudo.missao);
+    if (focar) $('#resultado').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    return;
+  }
+  $('#etapa').innerHTML = estado.etapa === 'missao' ? htmlDaMissao() : htmlDoLado(tudo, linhaDaEtapa(tudo));
+  atualizarEtapa(tudo);
+  if (focar) {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    const vazio = [...$('#etapa').querySelectorAll('input.campo')].find((campo) => !campo.value);
+    if (vazio) vazio.focus({ preventScroll: true });
+  }
 }
 
 function mostrarTudo() {
   lerEstado();
-  montarCampos();
-  atualizar();
+  mostrarEtapa(false);
+}
+
+// ---------- Botões ----------
+
+function irPara(etapa) {
+  if (pontoDado()) return;
+  estado.etapa = etapa === 'missao' || etapa === 'resultado' ? etapa : Number(etapa);
+  salvarEstado();
+  mostrarEtapa(true);
+}
+
+// OK: guarda o passo e mostra o próximo que falta (depois do último lado, o resultado)
+function confirmar() {
+  const tudo = lerTudo();
+  if (estado.etapa === 'missao') {
+    if (!tudo.missao) return;
+  } else {
+    const linha = linhaDaEtapa(tudo);
+    if (!linha || !(linha.completo || linha.roubado)) return;
+    estado.feitos[linha.i] = true;
+    if (!linha.roubado) MP.aviso(`Cartas de ${linha.nome} salvas`);
+  }
+  estado.etapa = proximaEtapa(lerTudo());
+  salvarEstado();
+  mostrarEtapa(true);
+}
+
+// Foi roubado: o lado perde a rodada e o aplicativo já passa para o próximo. Tocar de novo desfaz.
+function alternarRoubo() {
+  const tudo = lerTudo();
+  const linha = linhaDaEtapa(tudo);
+  if (!linha) return;
+  if (linha.roubado) {
+    delete estado.roubados[linha.i];
+    salvarEstado();
+    mostrarEtapa(true);
+    return;
+  }
+  if (tudo.todas.filter((l) => !l.roubado).length <= 1) return;
+  estado.roubados[linha.i] = true;
+  estado.feitos[linha.i] = true;
+  MP.aviso(`Roubo: ${linha.nome} perdeu a rodada`);
+  estado.etapa = proximaEtapa(lerTudo());
+  salvarEstado();
+  mostrarEtapa(true);
+}
+
+// Volta para o passo anterior (a missão ou o lado de antes)
+function voltar() {
+  const passos = ['missao', ...quem().map(({ i }) => i)];
+  const k = passos.findIndex((p) => mesmo(p, estado.etapa));
+  if (k > 0) irPara(passos[k - 1]);
+}
+
+function mudarQuantos(delta) {
+  estado.quantos = Math.min(MAX_PROMPTS, Math.max(2, estado.quantos + delta));
+  salvarEstado();
+  mostrarEtapa(false);
 }
 
 // ---------- Digitação ----------
 
-// Todos os campos, na ordem: missão, depois C, P e F de cada lado
+// Os campos do passo, na ordem: C, P e F. Depois do último, o cursor vai para o OK
 function proximoCampo(campo) {
-  const campos = [...document.querySelectorAll('#missao, #prompts input')].filter((c) => !c.disabled);
+  const campos = [...$('#etapa').querySelectorAll('input.campo')];
   const k = campos.indexOf(campo);
-  if (k >= 0 && k < campos.length - 1) campos[k + 1].focus();
+  if (k >= 0 && k < campos.length - 1) {
+    campos[k + 1].focus();
+    return;
+  }
+  const ok = $('#ok');
+  if (ok && !ok.disabled) {
+    ok.focus();
+    return;
+  }
+  // Ainda falta um campo antes: volta para ele
+  const vazio = campos.find((c) => !c.value);
+  if (vazio) vazio.focus();
   else campo.blur();
 }
 
@@ -395,58 +561,49 @@ principal.addEventListener('input', (evento) => {
   if (campo.id === 'missao') {
     estado.missao = limpo;
   } else {
-    const i = campo.closest('[data-prompt]').dataset.prompt;
+    const i = estado.etapa;
     estado.prompts[i] = { ...(estado.prompts[i] || {}), [campo.dataset.tipo]: limpo };
   }
   salvarEstado();
-  atualizar();
+  atualizarEtapa();
   if ((evento.inputType || '').startsWith('insert') && numeroCompleto(campo)) proximoCampo(campo);
 });
 // Tocar num campo já preenchido seleciona o número, para digitar o novo por cima
+// (só se o campo ainda estiver com o cursor: o select() puxaria o cursor de volta depois de ele ir para o OK)
 principal.addEventListener('focusin', (evento) => {
-  if (evento.target.tagName === 'INPUT') setTimeout(() => evento.target.select(), 0);
+  const campo = evento.target;
+  if (campo.tagName === 'INPUT') setTimeout(() => { if (document.activeElement === campo) campo.select(); }, 0);
 });
+// Enter: vai para o próximo campo; no último, é o mesmo que tocar em OK
 principal.addEventListener('keydown', (evento) => {
-  if (evento.key === 'Enter' && evento.target.tagName === 'INPUT') {
-    evento.preventDefault();
-    proximoCampo(evento.target);
-  }
+  if (evento.key !== 'Enter' || evento.target.tagName !== 'INPUT') return;
+  evento.preventDefault();
+  const campos = [...$('#etapa').querySelectorAll('input.campo')];
+  const ok = $('#ok');
+  if (campos.indexOf(evento.target) === campos.length - 1 && ok && !ok.disabled) confirmar();
+  else proximoCampo(evento.target);
 });
 
-// Foi roubado: o lado perde a rodada, os campos dele somem e ele sai da conta
-$('#prompts').addEventListener('click', (evento) => {
-  const botao = evento.target.closest('[data-roubado]');
+$('#etapa').addEventListener('click', (evento) => {
+  const botao = evento.target.closest('[data-acao]');
   if (!botao || botao.disabled) return;
-  const i = botao.dataset.roubado;
-  if (estado.roubados[i]) delete estado.roubados[i];
-  else estado.roubados[i] = true;
-  salvarEstado();
-  montarCampos();
-  atualizar();
+  ({
+    ok: confirmar,
+    voltar,
+    roubo: alternarRoubo,
+    menos: () => mudarQuantos(-1),
+    mais: () => mudarQuantos(1),
+  })[botao.dataset.acao]();
 });
-
-$('#ver').addEventListener('click', () => {
-  estado.revelado = true;
-  salvarEstado();
-  atualizar();
-  if (!$('#resultado').hidden) $('#resultado').scrollIntoView({ behavior: 'smooth', block: 'start' });
+$('#etapas').addEventListener('click', (evento) => {
+  const botao = evento.target.closest('[data-etapa]');
+  if (!botao || botao.disabled || botao.getAttribute('aria-current') === 'step') return;
+  irPara(botao.dataset.etapa);
 });
 $('#ponto').addEventListener('click', (evento) => {
   const botao = evento.target.closest('[data-acao]');
   if (!botao) return;
   ({ dar: darPonto, desfazer, avancar, limpar })[botao.dataset.acao]();
-});
-$('#menos-prompts').addEventListener('click', () => {
-  estado.quantos = Math.max(2, estado.quantos - 1);
-  salvarEstado();
-  montarCampos();
-  atualizar();
-});
-$('#mais-prompts').addEventListener('click', () => {
-  estado.quantos = Math.min(MAX_PROMPTS, estado.quantos + 1);
-  salvarEstado();
-  montarCampos();
-  atualizar();
 });
 
 // Ao voltar da Partida, a rodada pode ter mudado
